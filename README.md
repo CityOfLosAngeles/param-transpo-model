@@ -10,7 +10,7 @@ Los Angeles Department of Transportation
 
 ## Partners
 
-{{ University }} 
+Cal State University, Los Angeles
 
 ## City Team
 
