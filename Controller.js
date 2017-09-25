@@ -17,10 +17,12 @@
     "esri/geometry/geometryEngine",
 
     "esri/config",
+
+    "esri/renderers/SimpleRenderer", "esri/Color",
+    "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
+
     "dojo/i18n!esri/nls/jsapi",
-
     "dojo/_base/array", "dojo/parser", "dojo/keys",
-
     "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
     "dojo/domReady!"
   ], function(
@@ -29,7 +31,14 @@
     Color, SimpleMarkerSymbol, SimpleLineSymbol,
     Editor, TemplatePicker,
     geometryEngine,
-    esriConfig, jsapiBundle,
+    esriConfig,
+
+
+    SimpleRenderer,Color,SimpleFillSymbol,SimpleLineSymbol,
+
+
+
+    jsapiBundle,
     arrayUtils, parser, keys
   ) {
     parser.parse();
@@ -45,12 +54,13 @@
 
     var map = new Map("map", {
       basemap: "satellite",
-      center: [-118, 34],
-      zoom: 14,
+      center: [-118.2, 34],
+      zoom: 12,
       slider: false
     });
 
     map.on("layers-add-result", initEditor);
+
 
     //add boundaries and place names
     var labels = new ArcGISTiledMapServiceLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer");
@@ -59,25 +69,29 @@
     //layers
 
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
-        outFields: ['*']
+        outFields: ['*'],
+        opacity: .3,
     });
 
     var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
-        outFields: ['*']
+        outFields: ['*'],
+        opacity: .2,
     });
 
     var stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
-        outFields: ['*']
+        outFields: ['*'],
+        opacity: .2,
     });
 
     var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
-        outFields: ['*']
+        outFields: ['*'],
+        opacity: .15,
     });
 
     var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
-        outFields: ['*']
+        outFields: ['*'],
+        opacity: .1,
     });
-
 
     //Geometry types for the project location
     var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
@@ -95,12 +109,42 @@
       mode: FeatureLayer.MODE_ONDEMAND,
       outFields: ['*']
     });
+
+
+    schoolBufferLayer.on("load", function(){
+      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15,12,218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15,255,18]))));
+      schoolBufferLayer.setRenderer(renderer);
+    });
+
+    publicHealthLayer.on("load", function(){
+      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15,96,5])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15,255,18]))));
+      publicHealthLayer.setRenderer(renderer);
+    });
+
+    stormwaterLayer.on("load", function(){
+      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([135,12,56])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15,255,18]))));
+      stormwaterLayer.setRenderer(renderer);
+    });
+
+    urbanHeatLayer .on("load", function(){
+      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15,75,186])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15,255,18]))));
+      urbanHeatLayer .setRenderer(renderer);
+    });
+
+    economicHDILayer.on("load", function(){
+      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110,85,25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29,188,255]))));
+      economicHDILayer.setRenderer(renderer);
+    });
+
+
+
     map.addLayers([ responseLines, responsePolys, responsePoints]);
     var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer];
 
     layers.forEach(function(layer){
       map.addLayer(layer);
     });
+
 
 
     function initEditor(evt) {
