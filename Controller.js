@@ -7,6 +7,8 @@
     "esri/layers/ArcGISTiledMapServiceLayer",
     "esri/layers/FeatureLayer",
 
+    "esri/dijit/LayerList",
+
     "esri/Color",
     "esri/symbols/SimpleMarkerSymbol",
     "esri/symbols/SimpleLineSymbol",
@@ -27,7 +29,7 @@
     "dojo/domReady!"
   ], function(
     Map, GeometryService, Query,
-    ArcGISTiledMapServiceLayer, FeatureLayer,
+    ArcGISTiledMapServiceLayer, FeatureLayer, LayerList,
     Color, SimpleMarkerSymbol, SimpleLineSymbol,
     Editor, TemplatePicker,
     geometryEngine,
@@ -53,7 +55,7 @@
     esriConfig.defaults.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
     var map = new Map("map", {
-      basemap: "satellite",
+      basemap: "streets",
       center: [-118.2, 34],
       zoom: 12,
       slider: false
@@ -70,27 +72,32 @@
 
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
         outFields: ['*'],
-        opacity: .3,
+        opacity: 0.5,
+        visibility: false
     });
 
     var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
-        opacity: .2,
+        opacity: 0.5,
+        visibility: false
     });
 
     var stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
         outFields: ['*'],
-        opacity: .2,
+        opacity: 0.5,
+        visibility: false
     });
 
     var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
         outFields: ['*'],
-        opacity: .15,
+        opacity: 0.5,
+        visibility: false
     });
 
     var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
-        opacity: .1,
+        opacity: 0.5,
+        visibility: false
     });
 
     //Geometry types for the project location
@@ -127,7 +134,7 @@
     });
 
     urbanHeatLayer .on("load", function(){
-      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15,75,186])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15,255,18]))));
+      var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15,200,86])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15,255,18]))));
       urbanHeatLayer .setRenderer(renderer);
     });
 
@@ -145,7 +152,26 @@
       map.addLayer(layer);
     });
 
+    // Use a LayerList widget to toggle a layer's visibility on or off
 
+    var layerListToggle = new LayerList({
+    map: map,
+    showLegend: true,
+    showSubLayers: false,
+    showOpacitySlider: true,
+    layers: [
+      {layer: schoolBufferLayer, visibility: true},
+      {layer: publicHealthLayer, visibility: true},
+      {layer:stormwaterLayer, visibility: true},
+      {layer:urbanHeatLayer, visibility: true},
+      {layer:economicHDILayer, visibility: true},
+
+    ],
+
+    },"layerListDom");
+
+
+    layerListToggle.startup();
 
     function initEditor(evt) {
       var templateLayers = arrayUtils.map(evt.layers, function(result){
