@@ -126,8 +126,18 @@ require([
         visible: false
     });
 
+    //adding 2 layers to the list - sept 29
+    var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
+        outFields: ['*'],
+        opacity: 0.5,
+        visible: false
+    });
 
-
+    var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.5,
+        visible: false
+    });
 
 
     //Geometry types for the project location
@@ -178,9 +188,18 @@ require([
         downtownDashBuffer.setRenderer(renderer);
     });
 
+    streetDesign.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
+      streetDesign.setRenderer(renderer);
+    });
+
+    rStationConnectivity.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([120, 45, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+      rStationConnectivity.setRenderer(renderer);
+    });
 
     map.addLayers([responseLines, responsePolys, responsePoints]);
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetwork, schoolPolys, downtownDashBuffer];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetwork, schoolPolys, downtownDashBuffer, streetDesign, rStationConnectivity];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -203,6 +222,8 @@ require([
             { layer: highInjuryNetwork, visible: true },
             { layer: schoolPolys, visible: true },
             { layer: downtownDashBuffer, visible: true },
+            { layer: streetDesign, visible: true },
+            { layer: rStationConnectivity, visible: true },
         ],
 
     }, "layerListDom");
@@ -278,7 +299,7 @@ require([
             stormwaterLayer.queryFeatures(query, selectInBuffer);
             urbanHeatLayer.queryFeatures(query, selectInBuffer);
             economicHDILayer.queryFeatures(query, selectInBuffer);
-
+            rStationConnectivity.queryFeatures(query, selectInBuffer);
 
 
             function selectInBuffer(response) {
