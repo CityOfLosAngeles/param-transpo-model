@@ -64,39 +64,39 @@ require([
 
 
     //add boundaries and place names
-    var labels = new ArcGISTiledMapServiceLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer");
-    map.addLayer(labels);
+    //var labels = new ArcGISTiledMapServiceLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer");
+    //map.addLayer(labels);
 
     //layers
 
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.5,
-        visibility: false
+        visible: false
     });
 
     var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.5,
-        visibility: false
+        visible: false
     });
 
     var stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.5,
-        visibility: false
+        visible: false
     });
 
     var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.5,
-        visibility: false
+        visible: false
     });
 
     var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.5,
-        visibility: false
+        visible: false
     });
 
 
@@ -104,21 +104,31 @@ require([
     var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
         outFields: ['*'],
         opacity: 1,
-        visibility: false
+        visible: false
     });
 
 
     var highInjuryNetwork = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
         opacity: 1,
-        visibility: false
+        visible: false
     });
 
     var schoolPolys = new FeatureLayer("https://maps.lacity.org/lahub/rest/services/LAUSD_Schools/MapServer/2", {
         outFields: ['*'],
         opacity: 1,
-        visibility: false
+        visible: false
     });
+
+    var downtownDashBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/1d%20Downtown%20DASH%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.5,
+        visible: false
+    });
+
+
+
+
 
     //Geometry types for the project location
     var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
@@ -163,9 +173,14 @@ require([
         economicHDILayer.setRenderer(renderer);
     });
 
+    downtownDashBuffer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        downtownDashBuffer.setRenderer(renderer);
+    });
+
 
     map.addLayers([responseLines, responsePolys, responsePoints]);
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetwork, schoolPolys];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetwork, schoolPolys, downtownDashBuffer];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -179,14 +194,15 @@ require([
         showSubLayers: false,
         showOpacitySlider: true,
         layers: [
-            { layer: schoolBufferLayer, visibility: true },
-            { layer: publicHealthLayer, visibility: true },
-            { layer: stormwaterLayer, visibility: true },
-            { layer: urbanHeatLayer, visibility: true },
-            { layer: economicHDILayer, visibility: true },
-            { layer: criticalConnections, visibility: true },
-            { layer: highInjuryNetwork, visibility: true },
-            { layer: schoolPolys, visibility: true },
+            { layer: schoolBufferLayer, visible: true },
+            { layer: publicHealthLayer, visible: true },
+            { layer: stormwaterLayer, visible: true },
+            { layer: urbanHeatLayer, visible: true },
+            { layer: economicHDILayer, visible: true },
+            { layer: criticalConnections, visible: true },
+            { layer: highInjuryNetwork, visible: true },
+            { layer: schoolPolys, visible: true },
+            { layer: downtownDashBuffer, visible: true },
         ],
 
     }, "layerListDom");
