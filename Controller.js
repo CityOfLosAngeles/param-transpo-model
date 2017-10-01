@@ -108,13 +108,13 @@ require([
     });
 
 
-    var highInjuryNetwork = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
+    var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
         opacity: 1,
         visible: false
     });
 
-    var schoolPolys = new FeatureLayer("https://maps.lacity.org/lahub/rest/services/LAUSD_Schools/MapServer/2", {
+    var schoolPolysLayer = new FeatureLayer("https://maps.lacity.org/lahub/rest/services/LAUSD_Schools/MapServer/2", {
         outFields: ['*'],
         opacity: 1,
         visible: false
@@ -183,6 +183,17 @@ require([
         economicHDILayer.setRenderer(renderer);
     });
 
+    highInjuryNetworkLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        highInjuryNetworkLayer.setRenderer(renderer);
+    });
+
+    schoolPolysLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        schoolPolysLayer.setRenderer(renderer);
+    });
+
+
     downtownDashBuffer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         downtownDashBuffer.setRenderer(renderer);
@@ -199,7 +210,7 @@ require([
     });
 
     map.addLayers([responseLines, responsePolys, responsePoints]);
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetwork, schoolPolys, downtownDashBuffer, streetDesign, rStationConnectivity];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -219,8 +230,8 @@ require([
             { layer: urbanHeatLayer, visible: true },
             { layer: economicHDILayer, visible: true },
             { layer: criticalConnections, visible: true },
-            { layer: highInjuryNetwork, visible: true },
-            { layer: schoolPolys, visible: true },
+            { layer: highInjuryNetworkLayer, visible: true },
+            { layer: schoolPolysLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
             { layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
@@ -289,18 +300,49 @@ require([
             var query = new Query();
             query.geometry = evt.graphic.geometry;
             var projectLocation = query.geometry;
+            var layersAfterQuery = {"Half Mile Buffer Top 50":[], "California_HDI_Public_Health_Need_Indicator":[],
+                                    "Stormwater_Management_Features_Feasibility":[], "Urban_Heat_Island":[],
+                                    "California_HDI_Economic_Need_Indicator":[], "High Injury Network":[],
+                                    "School Campuses (LAUSD)":[]
+                                    };
 
+            var schoolBuffer = [];
+            var publicHDI = [];
+            var stormwater =[];
+            var urbanHeat =[];
+            var economicHDI =[];
+            var highInjuryNetwork =[];
+            var schoolPolys =[];
 
-
-            //search for features in these layers.
-
+          //  search for features in these layers.
             schoolBufferLayer.queryFeatures(query, selectInBuffer);
             publicHealthLayer.queryFeatures(query, selectInBuffer);
             stormwaterLayer.queryFeatures(query, selectInBuffer);
             urbanHeatLayer.queryFeatures(query, selectInBuffer);
             economicHDILayer.queryFeatures(query, selectInBuffer);
-            rStationConnectivity.queryFeatures(query, selectInBuffer);
+            highInjuryNetworkLayer.queryFeatures(query, selectInBuffer);
+            schoolPolysLayer.queryFeatures(query, selectInBuffer);
+      //    rStationConnectivity.queryFeatures(query, selectInBuffer);
 
+
+
+
+            setTimeout(function(){
+
+
+              var schoolBuffer =layersAfterQuery["Half Mile Buffer Top 50"];
+              var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
+              var stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
+              var urbanHeat = layersAfterQuery["Urban_Heat_Island"];
+              var economicHDI = layersAfterQuery["California_HDI_Economic_Need_Indicator"];
+              var highInjuryNetwork = layersAfterQuery["High Injury Network"];
+              var schoolPolys = layersAfterQuery["School Campuses (LAUSD)"];
+
+              safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, publicHDI);
+
+
+
+            }, 2000);
 
             function selectInBuffer(response) {
                 var feature;
@@ -315,6 +357,7 @@ require([
                         if (geometryEngine.contains(feature.geometry, projectLocation)) {
                             //add to the array
                             inBuffer.push(feature);
+                            layersAfterQuery[feature._layer.name].push(feature);
                         }
 
                         //If it is not a point, then it must be a line or polygon.  Check to see if it intersects with the buffer zone of each feature for this layer.
@@ -323,14 +366,76 @@ require([
                         if (geometryEngine.intersects(feature.geometry, projectLocation)) {
                             //add to the array
                             inBuffer.push(feature);
+                            layersAfterQuery[feature._layer.name].push(feature);
                         }
                     }
-
                 }
 
-                //print out array of features.
-                console.log(inBuffer);
+            } //end of SelectInBuffer
+
+            function schoolBufferScore(schoolBuffer) {
+              var score = 0;
+              if(schoolBuffer.length > 0) {
+                score = 5;
+              }
+              console.log("Half mile school buffer score = " + score);
+              return score;
             }
-        });
-    };
-});
+
+            function schoolPolysScore(schoolPolys) {
+              var score = 0;
+              if (schoolPolys.length > 0) {
+                score = 5;
+              }
+              console.log("School safety route score = " + score);
+              return score;
+            }
+
+            function highInjuryNetworkScore(highInjuryNetwork) {
+              var score = 0;
+              if (highInjuryNetwork.length > 0) {
+                score = 5;
+              }
+              console.log("High injury network score = " + score);
+              return score;
+            }
+
+            function publicHDIScore(publicHDI) {
+              var score =0;
+              if(publicHDI.length > 0){
+                score = publicHDI[0].attributes.Health_Sco;
+              }
+              console.log("public HDI score = " + score);
+              return score;
+            }
+
+            function stormwaterScore(stormwater) {
+              var score = 0;
+              if (stormwater.length > 0) {
+                score = 5;
+              }
+              return score;
+            }
+
+
+
+
+            function safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, publicHDI) {
+              var total = schoolBufferScore(schoolBuffer) + schoolPolysScore(schoolPolys) + highInjuryNetworkScore(highInjuryNetwork) + publicHDIScore(publicHDI);
+              var score = total /4;
+              console.log("Category 2: Safe And Healthy score = " + score);
+              return score;
+            }
+
+
+
+
+
+
+
+
+
+
+        }); // end of editToolbar.on
+    }; //end of initEditor
+}); //end of require
