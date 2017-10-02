@@ -373,21 +373,21 @@ require([
 
             } //end of SelectInBuffer
 
-            function schoolBufferScore(schoolBuffer) {
-              var score = 0;
-              if(schoolBuffer.length > 0) {
-                score = 5;
-              }
-              console.log("Half mile school buffer score = " + score);
-              return score;
-            }
-
             function schoolPolysScore(schoolPolys) {
               var score = 0;
               if (schoolPolys.length > 0) {
                 score = 5;
               }
-              console.log("School safety route score = " + score);
+              console.log("2a.Proximity to Schools score = " + score);
+              return score;
+            }
+
+            function schoolBufferScore(schoolBuffer) {
+              var score = 0;
+              if(schoolBuffer.length > 0) {
+                score = 5;
+              }
+              console.log("2b.Safe Route to Schools Program Target Areas score = " + score);
               return score;
             }
 
@@ -396,7 +396,7 @@ require([
               if (highInjuryNetwork.length > 0) {
                 score = 5;
               }
-              console.log("High injury network score = " + score);
+              console.log("2c. Vision Zero High Injury Network score = " + score);
               return score;
             }
 
@@ -405,7 +405,7 @@ require([
               if(publicHDI.length > 0){
                 score = publicHDI[0].attributes.Health_Sco;
               }
-              console.log("public HDI score = " + score);
+              console.log("2d.Public Health Improvement Neeed score = " + score);
               return score;
             }
 
@@ -421,7 +421,7 @@ require([
 
 
             function safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, publicHDI) {
-              var total = schoolBufferScore(schoolBuffer) + schoolPolysScore(schoolPolys) + highInjuryNetworkScore(highInjuryNetwork) + publicHDIScore(publicHDI);
+              var total = schoolPolysScore(schoolPolys) + schoolBufferScore(schoolBuffer) +  highInjuryNetworkScore(highInjuryNetwork) + publicHDIScore(publicHDI);
               var score = total /4;
               console.log("Category 2: Safe And Healthy score = " + score);
               return score;
