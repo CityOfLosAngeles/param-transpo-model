@@ -142,6 +142,19 @@ require([
         visible: false
     });
 
+    // added layers 1C & 2A - oct 6
+    var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
+    var halfMileSchool = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
 
     //Geometry types for the project location
     var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
@@ -208,12 +221,23 @@ require([
     });
 
     rStationConnectivity.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([120, 45, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
       rStationConnectivity.setRenderer(renderer);
     });
 
+    halfMileSchool.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([165, 245, 122])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+      halfMileSchool.setRenderer(renderer);
+    });
+
+    transDemand.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+      transDemand.setRenderer(renderer);
+    });
+
+
     map.addLayers([responseLines, responsePolys, responsePoints]);
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -238,6 +262,8 @@ require([
             { layer: downtownDashBuffer, visible: true },
             { layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
+            { layer: transDemand, visible: true },
+            { layer: halfMileSchool, visible: true },
         ],
 
     }, "layerListDom");
@@ -325,6 +351,8 @@ require([
             economicHDILayer.queryFeatures(query, selectInBuffer);
             highInjuryNetworkLayer.queryFeatures(query, selectInBuffer);
             schoolPolysLayer.queryFeatures(query, selectInBuffer);
+            transDemand.queryFeatures(query, selectInBuffer);
+            halfMileSchool.queryFeatures(query, selectInBuffer);
       //    rStationConnectivity.queryFeatures(query, selectInBuffer);
 
 
