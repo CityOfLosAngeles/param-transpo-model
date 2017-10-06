@@ -53,6 +53,9 @@ require([
     //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
     esriConfig.defaults.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
+    var score_content = document.getElementById('score');
+
+
     var map = new Map("map", {
         basemap: "streets",
         center: [-118.2, 34],
@@ -342,6 +345,8 @@ require([
 
 
 
+
+
             }, 2000);
 
             function selectInBuffer(response) {
@@ -373,21 +378,22 @@ require([
 
             } //end of SelectInBuffer
 
-            function schoolPolysScore(schoolPolys) {
-              var score = 0;
-              if (schoolPolys.length > 0) {
-                score = 5;
-              }
-              console.log("2a.Proximity to Schools score = " + score);
-              return score;
-            }
-
             function schoolBufferScore(schoolBuffer) {
               var score = 0;
               if(schoolBuffer.length > 0) {
                 score = 5;
               }
-              console.log("2b.Safe Route to Schools Program Target Areas score = " + score);
+              console.log("Half mile school buffer score = " + score);
+              return score;
+            }
+
+            function schoolPolysScore(schoolPolys) {
+              var score = 0;
+              if (schoolPolys.length > 0) {
+                score = 5;
+              }
+              console.log("School safety route score = " + score);
+              score_content.innerHTML += "School safety route score = " + score +"<br>"
               return score;
             }
 
@@ -396,7 +402,8 @@ require([
               if (highInjuryNetwork.length > 0) {
                 score = 5;
               }
-              console.log("2c. Vision Zero High Injury Network score = " + score);
+
+              score_content.innerHTML += "High injury network score = " + score + "<br>";
               return score;
             }
 
@@ -405,7 +412,7 @@ require([
               if(publicHDI.length > 0){
                 score = publicHDI[0].attributes.Health_Sco;
               }
-              console.log("2d.Public Health Improvement Neeed score = " + score);
+              score_content.innerHTML +="public HDI score = " + score + "<br>";
               return score;
             }
 
@@ -414,6 +421,7 @@ require([
               if (stormwater.length > 0) {
                 score = 5;
               }
+              score_content.innerHTML += "storm water score = " + score + "<br>"
               return score;
             }
 
@@ -421,9 +429,10 @@ require([
 
 
             function safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, publicHDI) {
-              var total = schoolPolysScore(schoolPolys) + schoolBufferScore(schoolBuffer) +  highInjuryNetworkScore(highInjuryNetwork) + publicHDIScore(publicHDI);
+              score_content.innerHTML = " ";
+              var total = schoolBufferScore(schoolBuffer) + schoolPolysScore(schoolPolys) + highInjuryNetworkScore(highInjuryNetwork) + publicHDIScore(publicHDI);
               var score = total /4;
-              console.log("Category 2: Safe And Healthy score = " + score);
+              score_content.innerHTML += "Category 2: Safe And Healthy score = " + score + "<br>";
               return score;
             }
 

@@ -18,6 +18,14 @@
             overflow: hidden;
         }
 
+        #score {
+          font-size: 1.2em;
+          width: 320px;
+          height: 30%;
+          border-style: solid;
+
+        }
+
         #map {
             padding: 0;
         }
@@ -59,6 +67,8 @@
             <div id="layerListDom"> </div>
         </div>
         <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'"></div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'right'" style="overflow:auto;">
+          <div id = "score"> </div>
     </div>
 </body>
 
