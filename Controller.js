@@ -155,6 +155,38 @@ require([
       visible: false
     });
 
+    // added all of 1a - oct 6
+
+    var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
+    var bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
+    var neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
+    var pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
+    var greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
+      outFields: ['*'],
+      opacity: 0.5,
+      visible: false
+    });
+
 
     //Geometry types for the project location
     var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
@@ -235,9 +267,32 @@ require([
       transDemand.setRenderer(renderer);
     });
 
+    transitEN.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+      transitEN.setRenderer(renderer);
+    });
 
+//    bicycleN.on("load", function() {
+//        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+//      bicycleN.setRenderer(renderer);
+//    });
+
+    neighborhoodN.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([245, 122, 182])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+      neighborhoodN.setRenderer(renderer);
+    });
+
+    pedestrianED.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([245, 162, 122])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+      pedestrianED.setRenderer(renderer);
+    });
+
+    greenN.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        greenN.setRenderer(renderer);
+    });
     map.addLayers([responseLines, responsePolys, responsePoints]);
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -264,6 +319,11 @@ require([
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
             { layer: halfMileSchool, visible: true },
+            { layer: transitEN, visible: true },
+            { layer: bicycleN, visible: true },
+            { layer: neighborhoodN, visible: true },
+            { layer: pedestrianED, visible: true },
+            { layer: greenN, visible: true },
         ],
 
     }, "layerListDom");
@@ -353,6 +413,11 @@ require([
             schoolPolysLayer.queryFeatures(query, selectInBuffer);
             transDemand.queryFeatures(query, selectInBuffer);
             halfMileSchool.queryFeatures(query, selectInBuffer);
+            transitEN.queryFeatures(query, selectInBuffer);
+            bicycleN.queryFeatures(query, selectInBuffer);
+            neighborhoodN.queryFeatures(query, selectInBuffer);
+            pedestrianED.queryFeatures(query, selectInBuffer);
+            greenN.queryFeatures(query, selectInBuffer);
       //    rStationConnectivity.queryFeatures(query, selectInBuffer);
 
 
