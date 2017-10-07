@@ -74,13 +74,13 @@ require([
 
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.7,
         visible: false
     });
 
     var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.7,
         visible: false
     });
 
@@ -92,13 +92,13 @@ require([
 
     var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.7,
         visible: false
     });
 
     var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.7,
         visible: false
     });
 
@@ -113,7 +113,7 @@ require([
 
     var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
-        opacity: 1,
+        opacity: 0.7,
         visible: false
     });
 
@@ -125,27 +125,27 @@ require([
 
     var downtownDashBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/1d%20Downtown%20DASH%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.8,
         visible: false
     });
 
     //adding 2 layers to the list - sept 29
     var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.8,
         visible: false
     });
 
     var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
         outFields: ['*'],
-        opacity: 0.5,
+        opacity: 0.8,
         visible: false
     });
 
     // added layers 1C & 2A - oct 6
     var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
       outFields: ['*'],
-      opacity: 0.5,
+      opacity: 0.8,
       visible: false
     });
 
@@ -159,31 +159,31 @@ require([
 
     var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
       outFields: ['*'],
-      opacity: 0.5,
+      opacity: 1.0,
       visible: false
     });
 
     var bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
       outFields: ['*'],
-      opacity: 0.5,
+      opacity: 1.0,
       visible: false
     });
 
     var neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
       outFields: ['*'],
-      opacity: 0.5,
+      opacity: 1.0,
       visible: false
     });
 
     var pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
       outFields: ['*'],
-      opacity: 0.5,
+      opacity: 1.0,
       visible: false
     });
 
     var greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
       outFields: ['*'],
-      opacity: 0.5,
+      opacity: 0.8,
       visible: false
     });
 
@@ -232,12 +232,12 @@ require([
     });
 
     highInjuryNetworkLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255,0,0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         highInjuryNetworkLayer.setRenderer(renderer);
     });
 
     schoolPolysLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         schoolPolysLayer.setRenderer(renderer);
     });
 
@@ -258,7 +258,7 @@ require([
     });
 
     halfMileSchool.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([165, 245, 122])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255,255,255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
       halfMileSchool.setRenderer(renderer);
     });
 
@@ -278,17 +278,17 @@ require([
 //    });
 
     neighborhoodN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([245, 122, 182])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0,0,255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
       neighborhoodN.setRenderer(renderer);
     });
 
     pedestrianED.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([245, 162, 122])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255,0,0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
       pedestrianED.setRenderer(renderer);
     });
 
     greenN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0,128,0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         greenN.setRenderer(renderer);
     });
     map.addLayers([responseLines, responsePolys, responsePoints]);
