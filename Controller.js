@@ -144,49 +144,62 @@ require([
 
     // added layers 1C & 2A - oct 6
     var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
-      outFields: ['*'],
-      opacity: 0.8,
-      visible: false
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
     });
 
     var halfMileSchool = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
-      outFields: ['*'],
-      opacity: 0.5,
-      visible: false
+        outFields: ['*'],
+        opacity: 0.5,
+        visible: false
     });
 
     // added all of 1a - oct 6
 
     var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
-      outFields: ['*'],
-      opacity: 1.0,
-      visible: false
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
     });
 
     var bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
-      outFields: ['*'],
-      opacity: 1.0,
-      visible: false
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
     });
 
     var neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
-      outFields: ['*'],
-      opacity: 1.0,
-      visible: false
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
     });
 
     var pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
-      outFields: ['*'],
-      opacity: 1.0,
-      visible: false
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
     });
 
     var greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
-      outFields: ['*'],
-      opacity: 0.8,
-      visible: false
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
     });
 
+
+    //Added October 7
+    var highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    })
+
+    var threeMileTripLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    })
 
     //Geometry types for the project location
     var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
@@ -230,12 +243,12 @@ require([
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         economicHDILayer.setRenderer(renderer);
     });
-
-    highInjuryNetworkLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255,0,0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-        highInjuryNetworkLayer.setRenderer(renderer);
-    });
-
+    /*
+        highInjuryNetworkLayer.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+            highInjuryNetworkLayer.setRenderer(renderer);
+        });
+    */
     schoolPolysLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         schoolPolysLayer.setRenderer(renderer);
@@ -249,50 +262,64 @@ require([
 
     streetDesign.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
-      streetDesign.setRenderer(renderer);
+        streetDesign.setRenderer(renderer);
     });
 
     rStationConnectivity.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-      rStationConnectivity.setRenderer(renderer);
+        rStationConnectivity.setRenderer(renderer);
     });
 
     halfMileSchool.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255,255,255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-      halfMileSchool.setRenderer(renderer);
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 255, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        halfMileSchool.setRenderer(renderer);
     });
 
     transDemand.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-      transDemand.setRenderer(renderer);
+        transDemand.setRenderer(renderer);
     });
 
     transitEN.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-      transitEN.setRenderer(renderer);
+        transitEN.setRenderer(renderer);
     });
 
-//    bicycleN.on("load", function() {
-//        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-//      bicycleN.setRenderer(renderer);
-//    });
+    //    bicycleN.on("load", function() {
+    //        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+    //      bicycleN.setRenderer(renderer);
+    //    });
 
     neighborhoodN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0,0,255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-      neighborhoodN.setRenderer(renderer);
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        neighborhoodN.setRenderer(renderer);
     });
 
     pedestrianED.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255,0,0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-      pedestrianED.setRenderer(renderer);
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        pedestrianED.setRenderer(renderer);
     });
 
     greenN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0,128,0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         greenN.setRenderer(renderer);
     });
+
+
+    //Need to recolor these 2 layers -- erase this comment when done
+    highInjuryNetworkBuffer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        highInjuryNetworkBuffer.setRenderer(renderer);
+    });
+
+    threeMileTripLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        threeMileTripLayer.setRenderer(renderer);
+    });
+
+
     map.addLayers([responseLines, responsePolys, responsePoints]);
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -324,6 +351,7 @@ require([
             { layer: neighborhoodN, visible: true },
             { layer: pedestrianED, visible: true },
             { layer: greenN, visible: true },
+            { layer: highInjuryNetworkBuffer, visible: true },
         ],
 
     }, "layerListDom");
@@ -389,21 +417,32 @@ require([
             var query = new Query();
             query.geometry = evt.graphic.geometry;
             var projectLocation = query.geometry;
-            var layersAfterQuery = {"Half Mile Buffer Top 50":[], "California_HDI_Public_Health_Need_Indicator":[],
-                                    "Stormwater_Management_Features_Feasibility":[], "Urban_Heat_Island":[],
-                                    "California_HDI_Economic_Need_Indicator":[], "High Injury Network":[],
-                                    "School Campuses (LAUSD)":[]
-                                    };
+            var layersAfterQuery = {
+                "Half Mile Buffer Top 50": [],
+                "California_HDI_Public_Health_Need_Indicator": [],
+                "Stormwater_Management_Features_Feasibility": [],
+                "Urban_Heat_Island": [],
+                "California_HDI_Economic_Need_Indicator": [],
+                "High Injury Network": [],
+                "Schools - Half-Mile Buffer": [],
+                "2 High Injury Network Half Mile Buffer": [],
+                "Critical_Connections": [],
+                "Percentage of Trips Under Three Miles": [],
+
+            };
 
             var schoolBuffer = [];
             var publicHDI = [];
-            var stormwater =[];
-            var urbanHeat =[];
-            var economicHDI =[];
-            var highInjuryNetwork =[];
-            var schoolPolys =[];
+            var stormwater = [];
+            var urbanHeat = [];
+            var economicHDI = [];
+            var highInjuryNetwork = [];
+            var schoolPolys = [];
+            var highInjuryBuffer = [];
+            var criticalConnect = [];
+            var threeMileTrips = [];
 
-          //  search for features in these layers.
+            //  search for features in these layers.
             schoolBufferLayer.queryFeatures(query, selectInBuffer);
             publicHealthLayer.queryFeatures(query, selectInBuffer);
             stormwaterLayer.queryFeatures(query, selectInBuffer);
@@ -418,24 +457,33 @@ require([
             neighborhoodN.queryFeatures(query, selectInBuffer);
             pedestrianED.queryFeatures(query, selectInBuffer);
             greenN.queryFeatures(query, selectInBuffer);
-      //    rStationConnectivity.queryFeatures(query, selectInBuffer);
+            highInjuryNetworkBuffer.queryFeatures(query, selectInBuffer);
+            criticalConnections.queryFeatures(query, selectInBuffer);
+            threeMileTripLayer.queryFeatures(query, selectInBuffer);
+            //    rStationConnectivity.queryFeatures(query, selectInBuffer);
 
 
 
 
-            setTimeout(function(){
+            setTimeout(function() {
 
 
-              var schoolBuffer =layersAfterQuery["Half Mile Buffer Top 50"];
-              var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
-              var stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
-              var urbanHeat = layersAfterQuery["Urban_Heat_Island"];
-              var economicHDI = layersAfterQuery["California_HDI_Economic_Need_Indicator"];
-              var highInjuryNetwork = layersAfterQuery["High Injury Network"];
-              var schoolPolys = layersAfterQuery["School Campuses (LAUSD)"];
+                var schoolBuffer = layersAfterQuery["Half Mile Buffer Top 50"];
+                var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
+                var stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
+                var urbanHeat = layersAfterQuery["Urban_Heat_Island"];
+                var economicHDI = layersAfterQuery["California_HDI_Economic_Need_Indicator"];
+                var highInjuryNetwork = layersAfterQuery["High Injury Network"];
+                var schoolPolys = layersAfterQuery["Schools - Half-Mile Buffer"];
+                var highInjuryBuffer = layersAfterQuery["2 High Injury Network Half Mile Buffer"];
+                var criticalConnect = layersAfterQuery["Critical_Connections"];
+                var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
 
-              safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, publicHDI);
-
+                latentActiveTransportationScore(threeMileTrips);
+                safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryBuffer, publicHDI);
+                economicHDIScore(economicHDI);
+                criticalConnetionScore(criticalConnect);
+                sustainableAndResilientScore(stormwater, urbanHeat);
 
 
 
@@ -471,72 +519,147 @@ require([
 
             } //end of SelectInBuffer
 
-            function schoolBufferScore(schoolBuffer) {
-              var score = 0;
-              if(schoolBuffer.length > 0) {
-                score = 5;
-              }
-              console.log("Half mile school buffer score = " + score);
-              return score;
+            /*
+                        function schoolBufferScore(schoolBuffer) {
+                            var score = 0;
+                            if (schoolBuffer.length > 0) {
+                                score = 5;
+                            }
+                            console.log("Half mile school buffer score = " + score);
+                            return score;
+                        }
+
+                        function schoolPolysScore(schoolPolys) {
+                            var score = 0;
+                            if (schoolPolys.length > 0) {
+                                score = 5;
+                            }
+                            console.log("School safety route score = " + score);
+                            score_content.innerHTML += "School safety route score = " + score + "<br>"
+                            return score;
+                        }
+            */
+
+            //Start of Section 1 Scoring
+            //Need to implement scoring for 1a, 1b, 1d
+
+            //1c
+            function latentActiveTransportationScore(threeMileTrips) {
+                score_content.innerHTML = " ";
+                var score = 0;
+                if (threeMileTrips.length > 0) {
+                    if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
+                    else if (threeMileTrips[0].attributes.PCT_3MI >= .35 && threeMileTrips[0].attributes.PCT_3MI < .5) score = 2.5;
+                }
+                score_content.innerHTML += "1c. Active Transportation Demand = " + score + "<br>"
+                return score;
             }
 
-            function schoolPolysScore(schoolPolys) {
-              var score = 0;
-              if (schoolPolys.length > 0) {
-                score = 5;
-              }
-              console.log("School safety route score = " + score);
-              score_content.innerHTML += "School safety route score = " + score +"<br>"
-              return score;
+
+            //Start of Section 2 Scoring
+            function schoolLayerScores(schoolBuffer, schoolPolys) {
+                var schoolBufferScore = 0;
+                var schoolPolyScore = 0;
+                if (schoolBuffer.length > 0) {
+                    schoolBufferScore = 5;
+                    schoolPolyScore = 5;
+                } else if (schoolPolys.length > 0) {
+                    schoolBufferScore = 0;
+                    schoolPolyScore = 5;
+                }
+                score_content.innerHTML += "Top 50 School Score = " + schoolBufferScore + "<br>Half Mile School Score = " + schoolPolyScore + "<br>"
+                return schoolBufferScore + schoolPolyScore;
             }
 
-            function highInjuryNetworkScore(highInjuryNetwork) {
-              var score = 0;
-              if (highInjuryNetwork.length > 0) {
-                score = 5;
-              }
 
-              score_content.innerHTML += "High injury network score = " + score + "<br>";
-              return score;
+            function highInjuryNetworkScore(highInjuryNetwork, highInjuryBuffer) {
+                var score = 0;
+                if (highInjuryNetwork.length > 0) score = 5;
+                else if (highInjuryBuffer.length > 0) score = 2.5;
+
+                score_content.innerHTML += "High Injury Network Score = " + score + "<br>";
+                return score;
             }
 
             function publicHDIScore(publicHDI) {
-              var score =0;
-              if(publicHDI.length > 0){
-                score = publicHDI[0].attributes.Health_Sco;
-              }
-              score_content.innerHTML +="public HDI score = " + score + "<br>";
-              return score;
+                var score = 0;
+                if (publicHDI.length > 0) {
+                    score = publicHDI[0].attributes.Health_Sco;
+                    if (score == 5) score = 5;
+                    else if (score == 4) score = 2.5;
+                    else if (score == 3) score = 1.25;
+                }
+                score_content.innerHTML += "Public HDI Score = " + score + "<br>";
+                return score;
             }
+
+
+            function safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI) {
+                //score_content.innerHTML = " ";
+                var total = schoolLayerScores(schoolBuffer, schoolPolys) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
+                var score = total / 4;
+                score_content.innerHTML += "Category 2 Score = " + score + "<br>";
+                return score;
+            }
+            //End of Section 2 Scoring
+
+            //Start of Section 3 Scoring
+            function economicHDIScore(economicHDI) {
+                var score = 0;
+                if (economicHDI.length > 0) {
+                    score = economicHDI[0].attributes.econ_dis_1;
+                    if (score == 5) score = 5;
+                    else if (score == 4) score = 2.5;
+                    else if (score == 3) score = 1.25;
+                }
+                score_content.innerHTML += "Economic HDI Score = " + score + "<br>";
+                return score;
+            }
+            //End of Section 3 Scoring
+
+            //Start of Section 4 Scoring
+            function criticalConnetionScore(criticalConnect) {
+                var score = 0;
+                if (criticalConnect.length > 0) {
+                    if (criticalConnect[0].attributes.Ct_Need == "Highly Critical") score = 5;
+                    else score = 2.5;
+                }
+                score_content.innerHTML += "Critical Connection Score = " + score + "<br>";
+                return score;
+            }
+            //End of Section 4 Scoring
+
+            //Start of Section 5 Scoring
 
             function stormwaterScore(stormwater) {
-              var score = 0;
-              if (stormwater.length > 0) {
-                score = 5;
-              }
-              score_content.innerHTML += "storm water score = " + score + "<br>"
-              return score;
+                var score = 0;
+                if (stormwater.length > 0) {
+                    if (stormwater[0].attributes.sw_label == "Very High") score = 5;
+                    else if (stormwater[0].attributes.sw_label == "High") score = 2.5;
+                    else if (stormwater[0].attributes.sw_label == "Medium") score = 1.25;
+                }
+                score_content.innerHTML += "Storm Water Score = " + score + "<br>"
+                return score;
             }
 
-
-
-
-            function safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, publicHDI) {
-              score_content.innerHTML = " ";
-              var total = schoolBufferScore(schoolBuffer) + schoolPolysScore(schoolPolys) + highInjuryNetworkScore(highInjuryNetwork) + publicHDIScore(publicHDI);
-              var score = total /4;
-              score_content.innerHTML += "Category 2: Safe And Healthy score = " + score + "<br>";
-              return score;
+            function urbanHeatScore(urbanHeat) {
+                var score = 0;
+                if (urbanHeat.length > 0) {
+                    if (urbanHeat[0].attributes.heatisland == "High") score = 5;
+                    else if (urbanHeat[0].attributes.heatisland == "Medium High") score = 2.5;
+                    else if (urbanHeat[0].attributes.heatisland == "Low") score = 1.25;
+                }
+                score_content.innerHTML += "Urban Heat Score = " + score + "<br>"
+                return score;
             }
 
+            function sustainableAndResilientScore(stormwater, urbanHeat) {
+                var score = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
+                score_content.innerHTML += "Category 5 Score = " + score + "<br>";
+                return score;
+            }
 
-
-
-
-
-
-
-
+            //End of Section 5 Scoring
 
         }); // end of editToolbar.on
     }; //end of initEditor
