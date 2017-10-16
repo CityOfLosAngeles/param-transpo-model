@@ -449,18 +449,18 @@ require([
             urbanHeatLayer.queryFeatures(query, selectInBuffer);
             economicHDILayer.queryFeatures(query, selectInBuffer);
             highInjuryNetworkLayer.queryFeatures(query, selectInBuffer);
-            schoolPolysLayer.queryFeatures(query, selectInBuffer);
-            transDemand.queryFeatures(query, selectInBuffer);
+            // schoolPolysLayer.queryFeatures(query, selectInBuffer);
+            //  transDemand.queryFeatures(query, selectInBuffer);
             halfMileSchool.queryFeatures(query, selectInBuffer);
-            transitEN.queryFeatures(query, selectInBuffer);
-            bicycleN.queryFeatures(query, selectInBuffer);
-            neighborhoodN.queryFeatures(query, selectInBuffer);
-            pedestrianED.queryFeatures(query, selectInBuffer);
-            greenN.queryFeatures(query, selectInBuffer);
+            // transitEN.queryFeatures(query, selectInBuffer);
+            // bicycleN.queryFeatures(query, selectInBuffer);
+            // neighborhoodN.queryFeatures(query, selectInBuffer);
+            // pedestrianED.queryFeatures(query, selectInBuffer);
+            // greenN.queryFeatures(query, selectInBuffer);
             highInjuryNetworkBuffer.queryFeatures(query, selectInBuffer);
             criticalConnections.queryFeatures(query, selectInBuffer);
             threeMileTripLayer.queryFeatures(query, selectInBuffer);
-            //    rStationConnectivity.queryFeatures(query, selectInBuffer);
+            // rStationConnectivity.queryFeatures(query, selectInBuffer);
 
 
 
@@ -477,14 +477,14 @@ require([
                 var schoolPolys = layersAfterQuery["Schools - Half-Mile Buffer"];
                 var highInjuryBuffer = layersAfterQuery["2 High Injury Network Half Mile Buffer"];
                 var criticalConnect = layersAfterQuery["Critical_Connections"];
-                var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
+                //var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
 
-                latentActiveTransportationScore(threeMileTrips);
-                safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryBuffer, publicHDI);
-                economicHDIScore(economicHDI);
-                criticalConnetionScore(criticalConnect);
-                sustainableAndResilientScore(stormwater, urbanHeat);
-
+                //latentActiveTransportationScore(threeMileTrips);
+                //safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryBuffer, publicHDI);
+                //economicHDIScore(economicHDI);
+                //criticalConnetionScore(criticalConnect);
+                //sustainableAndResilientScore(stormwater, urbanHeat);
+                totalScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
 
 
 
@@ -598,7 +598,7 @@ require([
                 //score_content.innerHTML = " ";
                 var total = schoolLayerScores(schoolBuffer, schoolPolys) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
                 var score = total / 4;
-                score_content.innerHTML += "Category 2 Score = " + score + "<br>";
+                score_content.innerHTML += "<b>Category 2 Score = " + score + "</b><br>";
                 return score;
             }
             //End of Section 2 Scoring
@@ -612,7 +612,7 @@ require([
                     else if (score == 4) score = 2.5;
                     else if (score == 3) score = 1.25;
                 }
-                score_content.innerHTML += "Economic HDI Score = " + score + "<br>";
+                score_content.innerHTML += "<b>Economic HDI Score = " + score + "</b><br>";
                 return score;
             }
             //End of Section 3 Scoring
@@ -624,13 +624,12 @@ require([
                     if (criticalConnect[0].attributes.Ct_Need == "Highly Critical") score = 5;
                     else score = 2.5;
                 }
-                score_content.innerHTML += "Critical Connection Score = " + score + "<br>";
+                score_content.innerHTML += "<b>Critical Connection Score = " + score + "</b><br>";
                 return score;
             }
             //End of Section 4 Scoring
 
             //Start of Section 5 Scoring
-
             function stormwaterScore(stormwater) {
                 var score = 0;
                 if (stormwater.length > 0) {
@@ -655,8 +654,31 @@ require([
 
             function sustainableAndResilientScore(stormwater, urbanHeat) {
                 var score = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
-                score_content.innerHTML += "Category 5 Score = " + score + "<br>";
+                score_content.innerHTML += "<b>Category 5 Score = " + score + "</b><br>";
                 return score;
+            }
+
+
+            function totalScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
+                score_content.innerHTML = " ";
+
+                var section2TotalScore = safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
+                var section2WeightedScore = section2TotalScore * 0.75;
+
+                var section3TotalScore = economicHDIScore(economicHDI);
+                var section3WeightedScore = section3TotalScore * 2;
+
+                var section4TotalScore = criticalConnetionScore(criticalConnect);
+                var section4WeightedScore = section4TotalScore * 0.5;
+
+                var section5TotalScore = sustainableAndResilientScore(stormwater, urbanHeat);
+                var section5WeightedScore = section5TotalScore * 0.5;
+
+                var total = section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore;
+                var weighted = section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore;
+                score_content.innerHTML += "<b>Total Score = " + total + "</b><br>";
+                score_content.innerHTML += "<b>Weighted Score = " + weighted + "</b><br>";
+
             }
 
             //End of Section 5 Scoring
