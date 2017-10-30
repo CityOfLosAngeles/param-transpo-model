@@ -139,22 +139,10 @@ require([
 
 
 
-
-
-
             function errorHandler (error) {
             dom.byId('upload-status').innerHTML =
             "<p style='color:red'>" + error.message + "</p>";
             }
-
-
-
-
-
-
-
-
-
 
 
 

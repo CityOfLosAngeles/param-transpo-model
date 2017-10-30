@@ -16,6 +16,15 @@
             width: 100%;
             margin: 0;
             overflow: hidden;
+            border-style: solid;
+
+        }
+
+        .claro {
+          padding: 20px;
+          border-style: solid;
+          border-width: 100px;
+          color: #003068;
         }
 
         #score {
@@ -26,15 +35,43 @@
         }
 
         #map {
-            padding: 0;
+          padding: 20px;
+          border-style: solid;
+          color: #00685a;
         }
 
         #header {
-            font-size: 1.1em;
+            font-size: 1.9em;
+            text-align: center;
             font-family: sans-serif;
             padding-left: 1em;
             padding-top: 4px;
-            color: #660000;
+            color: #00685a;
+        }
+
+        #layerListDom {
+          padding: 20px;
+          border-style: solid;
+          color: #00685a;
+        }
+
+        #editorDiv {
+          padding: 20px;
+          border-style: solid;
+          color: #00685a;
+
+        }
+        #templateDiv {
+          
+          border-style: solid;
+          border-width: 10px;
+          color: #00685a;
+        }
+        #rightDiv{
+          padding: 50px;
+          border-style: solid;
+          font-size: 1em;
+
         }
 
         .templatePicker {
@@ -68,12 +105,14 @@
         </div>
 
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" style="width: 300px;overflow:auto;">
-            <div id="templateDiv2"></div>
+            <div id="templateDiv"></div>
             <div id="editorDiv"></div>
             <div id="layerListDom"> </div>
+
         </div>
+
         <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'"></div>
-        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'right'" style="overflow:auto;">
+        <div data-dojo-type="dijit/layout/ContentPane" id = "rightDiv" data-dojo-props="region:'right'" style="overflow:auto;">
             <div id="score"> </div>
             <div id = 'rightpane'>
               <div style='padding-left:4px;'>
