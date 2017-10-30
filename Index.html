@@ -17,29 +17,28 @@
             margin: 0;
             overflow: hidden;
             border-style: solid;
-
         }
-
+        
         .claro {
-          padding: 20px;
-          border-style: solid;
-          border-width: 100px;
-          color: #003068;
+            padding: 20px;
+            border-style: solid;
+            border-width: 5px;
+            color: #050505;
         }
-
+        
         #score {
             font-size: 1.2em;
             width: 320px;
             height: auto;
             border-style: solid;
         }
-
+        
         #map {
-          padding: 20px;
-          border-style: solid;
-          color: #00685a;
+            padding: 20px;
+            border-style: solid;
+            color: #00685a;
         }
-
+        
         #header {
             font-size: 1.9em;
             text-align: center;
@@ -48,41 +47,39 @@
             padding-top: 4px;
             color: #00685a;
         }
-
+        
         #layerListDom {
-          border-style: solid;
-          border-width: 10px;
-          color: #00685a;
-
+            border-style: solid;
+            border-width: 10px;
+            color: #00685a;
         }
-
+        
         #editorDiv {
-          padding: 20px;
-          border-style: solid;
-          color: #00685a;
-
+            padding: 20px;
+            border-style: solid;
+            color: #00685a;
         }
+        
         #templateDiv {
-
-          border-style: solid;
-          border-width: 10px;
-          color: #00685a;
+            border-style: solid;
+            border-width: 10px;
+            color: #00685a;
         }
-        #rightDiv{
-          padding: 50px;
-          border-style: solid;
-          font-size: 1em;
-
+        
+        #rightDiv {
+            padding: 50px;
+            border-style: solid;
+            font-size: 1em;
         }
-
+        
         .templatePicker {
             border: none;
         }
-
+        
         .dj_ie .infowindow .window .top .right .user .content {
             position: relative;
         }
-
+        
         .dj_ie .simpleInfoWindow .content {
             position: relative;
         }
@@ -113,26 +110,26 @@
         </div>
 
         <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'"></div>
-        <div data-dojo-type="dijit/layout/ContentPane" id = "rightDiv" data-dojo-props="region:'right'" style="overflow:auto;">
+        <div data-dojo-type="dijit/layout/ContentPane" id="rightDiv" data-dojo-props="region:'right'" style="overflow:auto;">
             <div id="score"> </div>
-            <div id = 'rightpane'>
-              <div style='padding-left:4px;'>
-                <p>
-                  Add a zipped shapefile to the map.</p><p>Visit the
-                  <a target='_blank' href="https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm">Shapefiles</a> help topic for information and limitations.</p>
+            <div id='rightpane'>
+                <div style='padding-left:4px;'>
+                    <p>
+                        Add a zipped shapefile to the map.</p>
+
                     <form enctype="multipart/form-data" method="post" id="uploadForm">
-                    <div class="field">
-                        <label class="file-upload">
+                        <div class="field">
+                            <label class="file-upload">
                             <span><strong>Add File</strong></span>
                             <input type="file" name="file" id="inFile" />
                         </label>
-                    </div>
+                        </div>
                     </form>
                     <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
                     <div id="fileInfo">&nbsp;</div>
-              </div>
+                </div>
 
-        </div>
+            </div>
 
 
 
