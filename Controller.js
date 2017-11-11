@@ -11,7 +11,6 @@ require([
     "esri/Color",
     "esri/symbols/SimpleMarkerSymbol",
     "esri/symbols/SimpleLineSymbol",
-
     "esri/dijit/editing/Editor",
     "esri/dijit/editing/TemplatePicker",
 
@@ -30,7 +29,7 @@ require([
 
     "esri/renderers/SimpleRenderer", "esri/Color",
     "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
-
+    "esri/geometry/Multipoint",
     "dojo/i18n!esri/nls/jsapi",
     "dojo/_base/array", "dojo/parser", "dojo/keys", "dojo/dom",
     "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
@@ -46,7 +45,7 @@ require([
 
 
 
-    SimpleRenderer, Color, SimpleFillSymbol, SimpleLineSymbol,
+    SimpleRenderer, Color, SimpleFillSymbol, SimpleLineSymbol, Multipoint,
 
 
 
@@ -190,6 +189,7 @@ require([
                     'width': 20,
                     'height': 20
                 });
+                responsePoints.applyEdits(layer.graphics);
                 break;
             case 'esriGeometryPolygon':
                 symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
@@ -249,14 +249,11 @@ require([
         visible: false
     });
 
-
-    //Added 3 new Layers - Need to implement into intersection
     var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
         outFields: ['*'],
         opacity: 1,
         visible: false
     });
-
 
     var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
@@ -276,7 +273,6 @@ require([
         visible: false
     });
 
-    //adding 2 layers to the list - sept 29
     var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
         outFields: ['*'],
         opacity: 0.8,
@@ -289,7 +285,6 @@ require([
         visible: false
     });
 
-    // added layers 1C & 2A - oct 6
     var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
@@ -301,8 +296,6 @@ require([
         opacity: 0.5,
         visible: false
     });
-
-    // added all of 1a - oct 6
 
     var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
         outFields: ['*'],
@@ -334,8 +327,6 @@ require([
         visible: false
     });
 
-
-    //Added October 7
     var highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
@@ -349,18 +340,44 @@ require([
     })
 
     //Geometry types for the project location
-    var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
+    /*
+        var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_lines/FeatureServer/0", {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ['*']
+        });
+
+        ///   https: //services8.arcgis.com/nfOa0issNhtH9leK/arcgis/rest/services/pointDomain_Test/FeatureServer
+
+       
+            var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_points/FeatureServer/0", {
+                mode: FeatureLayer.MODE_ONDEMAND,
+                outFields: ['*']
+            });
+
+
+                var responsePolys = new FeatureLayer("https://services8.arcgis.com/9YzOpduhkOqvcqYN/arcgis/rest/services/la_polygon/FeatureServer/0", {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ['*']
+        });
+
+        */
+
+    var responseLines = new FeatureLayer("https://services8.arcgis.com/nfOa0issNhtH9leK/ArcGIS/rest/services/Lines/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
-
-    var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/losangeles_points/FeatureServer/0", {
+    var responsePoints = new FeatureLayer("https://services8.arcgis.com/nfOa0issNhtH9leK/ArcGIS/rest/services/Points/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
-    var responsePolys = new FeatureLayer("https://services8.arcgis.com/9YzOpduhkOqvcqYN/arcgis/rest/services/la_polygon/FeatureServer/0", {
+    var responsePolys = new FeatureLayer("https://services8.arcgis.com/nfOa0issNhtH9leK/ArcGIS/rest/services/Polygons/FeatureServer/0", {
+        mode: FeatureLayer.MODE_ONDEMAND,
+        outFields: ['*']
+    });
+
+    var responseMultiPoint = new FeatureLayer("https://services8.arcgis.com/nfOa0issNhtH9leK/ArcGIS/rest/services/Multipoint_Projects/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
@@ -428,33 +445,33 @@ require([
     });
 
     /*
-    transitEN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-        transitEN.setRenderer(renderer);
-    });
+        transitEN.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            transitEN.setRenderer(renderer);
+        });
 
-    //    bicycleN.on("load", function() {
-    //        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-    //      bicycleN.setRenderer(renderer);
-    //    });
+        //    bicycleN.on("load", function() {
+        //        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        //      bicycleN.setRenderer(renderer);
+        //    });
 
-    neighborhoodN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-        neighborhoodN.setRenderer(renderer);
-    });
+        neighborhoodN.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            neighborhoodN.setRenderer(renderer);
+        });
 
-    pedestrianED.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-        pedestrianED.setRenderer(renderer);
-    });
+        pedestrianED.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            pedestrianED.setRenderer(renderer);
+        });
 
-    greenN.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-        greenN.setRenderer(renderer);
-    });
+        greenN.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            greenN.setRenderer(renderer);
+        });
 
-*/
-    //Need to recolor these 2 layers -- erase this comment when done
+    */
+
     highInjuryNetworkBuffer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         highInjuryNetworkBuffer.setRenderer(renderer);
@@ -466,7 +483,7 @@ require([
     });
 
 
-    map.addLayers([responseLines, responsePolys, responsePoints]);
+    map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoint]);
     var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
 
     layers.forEach(function(layer) {
@@ -490,7 +507,7 @@ require([
             { layer: highInjuryNetworkLayer, visible: true },
             { layer: schoolPolysLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
-            { layer: streetDesign, visible: true },
+            //{ layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
             { layer: halfMileSchool, visible: true },
