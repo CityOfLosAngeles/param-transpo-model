@@ -1,46 +1,121 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-    <title>Edit rivers and waterbodies</title>
+    <title>LADOT Project Map Score</title>
 
     <link rel="stylesheet" href="https://js.arcgis.com/3.21/dijit/themes/claro/claro.css">
     <link rel="stylesheet" href="https://js.arcgis.com/3.21/esri/css/esri.css">
     <style>
-      html,body{height:100%;width:100%;margin:0;overflow:hidden;}
-      #map{
-        padding:0;
-      }
-      #header{
-        font-size: 1.1em;
-        font-family: sans-serif;
-        padding-left: 1em;
-        padding-top:4px;
-        color:#660000;
-      }
-      .templatePicker {
-        border: none;
-      }
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: Calibri;
+        }
 
-      .dj_ie .infowindow .window .top .right .user .content { position: relative; }
-      .dj_ie .simpleInfoWindow .content { position: relative; }
+        .claro {
+            background-color: #002e6d;
+            color: white;
+            font-family: Calibri;
+        }
+
+        #score {
+            font-size: 1.2em;
+            width: 250px;
+            height: auto;
+            font-family: Calibri;
+        }
+
+        #map {
+            color: #002e6d;
+        }
+
+        #header {
+            font-size: 1.9em;
+            text-align: center;
+            font-family: Calibri;
+            border: none;
+            background-color: #002e6d;
+        }
+
+        #layerListDom {
+            background-color: #002e6d;
+            color: #002e6d;
+            font-family: Calibri;
+        }
+
+        #editorDiv {
+            background-color: #002e6d;
+            font-family: Calibri;
+        }
+
+        #templateDiv {
+            color: #002e6d;
+        }
+
+        #rightDiv {
+            border: none;
+            font-size: 1em;
+            font-family: Calibri;
+            background-color: #002e6d;
+        }
+
+        .templatePicker {
+            border: none;
+        }
+
+        .dj_ie .infowindow .window .top .right .user .content {
+            position: relative;
+        }
+
+        .dj_ie .simpleInfoWindow .content {
+            position: relative;
+        }
     </style>
 
     <script src="https://js.arcgis.com/3.21/"></script>
     <script src="Controller.js"></script>
-  </head>
-  <body class="claro">
+</head>
+
+<body class="claro">
     <div id="main" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline'" style="height:width:100%;height:100%;">
-      <div data-dojo-type="dijit/layout/ContentPane" id="header" data-dojo-props="region:'top'">
-        LADOT Project Map Score
-      </div>
-      <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" style="width: 300px;overflow:hidden;">
-        <div id="templateDiv"></div>
-        <div id="editorDiv"></div>
-      </div>
-      <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'"></div>
-    </div>
-  </body>
+        <div data-dojo-type="dijit/layout/ContentPane" id="header" data-dojo-props="region:'top'">
+            LADOT Parameterized Transportation Model
+        </div>
+
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" style="width: 300px;overflow:auto;">
+            <div id="templateDiv"></div>
+            <!-- <div id="editorDiv"></div> -->
+            <div id="layerListDom"> </div>
+        </div>
+
+        <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'"></div>
+        <div data-dojo-type="dijit/layout/ContentPane" id="rightDiv" data-dojo-props="region:'right'" style="overflow:auto;">
+            <div id="score"> </div>
+            <div id='rightpane'>
+                <div style=' position: absolute; bottom: 0;'>
+                    <p> Add a zipped shapefile to the map.</p>
+                    <form enctype="multipart/form-data" method="post" id="uploadForm">
+                        <div class="field">
+                            <label class="file-upload">
+                            <span><strong>Add File</strong></span>
+                            <input type="file" name="file" id="inFile" />
+                        </label>
+                        </div>
+                    </form>
+                    <p>Visit the
+                        <a target='_blank' style="color:white" href="https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm">Shapefiles</a> help topic for information and limitations.</p>
+                    <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
+                    <div id="fileInfo">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+</body>
+
 </html>
