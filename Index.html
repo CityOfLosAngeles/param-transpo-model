@@ -20,7 +20,7 @@
         }
         
         .claro {
-            background-color: #002e6d;
+            background-color: white;
             color: white;
             font-family: Calibri;
         }
@@ -38,32 +38,31 @@
         
         #header {
             font-size: 1.9em;
-            text-align: center;
             font-family: Calibri;
             border: none;
-            background-color: #002e6d;
+            color: #002e6d;
+            background-color: white;
         }
         
         #layerListDom {
-            background-color: #002e6d;
-            color: #002e6d;
             font-family: Calibri;
         }
         
         #editorDiv {
-            background-color: #002e6d;
             font-family: Calibri;
         }
         
         #templateDiv {
-            color: #002e6d;
+            font-family: Calibri;
+            color: black;
         }
         
         #rightDiv {
             border: none;
             font-size: 1em;
             font-family: Calibri;
-            background-color: #002e6d;
+            background-color: white;
+            color: black;
         }
         
         .templatePicker {
@@ -86,7 +85,7 @@
 <body class="claro">
     <div id="main" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline'" style="height:width:100%;height:100%;">
         <div data-dojo-type="dijit/layout/ContentPane" id="header" data-dojo-props="region:'top'">
-            LADOT Parameterized Transportation Model
+            <img src="logo.png" width="75" height="21"> Parameterized Transportation Model
         </div>
 
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" style="width: 300px;overflow:auto;">
@@ -100,17 +99,17 @@
             <div id="score"> </div>
             <div id='rightpane'>
                 <div style=' position: absolute; bottom: 0;'>
-                    <p> Add a zipped shapefile to the map.</p>
+                    <!-- <p> Add a zipped shapefile to the map.</p> -->
                     <form enctype="multipart/form-data" method="post" id="uploadForm">
                         <div class="field">
                             <label class="file-upload">
-                            <span><strong>Add File</strong></span>
+                            <span><strong>Add a zipped shapefile to the map.</strong></span>
                             <input type="file" name="file" id="inFile" />
                         </label>
                         </div>
                     </form>
                     <p>Visit the
-                        <a target='_blank' style="color:white" href="https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm">Shapefiles</a> help topic for information and limitations.</p>
+                        <a target='_blank' style="color:black" href="https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm">Shapefiles</a> help topic for information and limitations.</p>
                     <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
                     <div id="fileInfo">&nbsp;</div>
                 </div>
