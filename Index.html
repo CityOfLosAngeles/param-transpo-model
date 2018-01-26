@@ -32,6 +32,20 @@
             font-family: Calibri;
         }
 
+		#extractDiv{
+            font-size: 1.2em;
+            width: 250px;
+            height: auto;
+            font-family: Calibri;
+        }
+
+		#report {
+          font: bold 12px;
+          text-decoration: none;
+          background-color: #EEEEEE;
+          color: #333333;
+        }
+
         #map {
             color: #002e6d;
         }
@@ -77,6 +91,7 @@
             position: relative;
         }
     </style>
+  
 
     <script src="https://js.arcgis.com/3.21/"></script>
     <script src="Controller.js"></script>
@@ -89,17 +104,53 @@
         </div>
 
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" style="width: 300px;overflow:auto;">
+
             <div id="templateDiv"></div>
-            <!-- <div id="editorDiv"></div> -->
+
             <div id="layerListDom"> </div>
+
+
         </div>
 
-        <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'"></div>
-        <div data-dojo-type="dijit/layout/ContentPane" id="rightDiv" data-dojo-props="region:'right'" style="overflow:auto;">
-            <div id="score"> </div>
-            <div id='rightpane'>
-                <div style=' position: absolute; bottom: 0;'>
-                    <!-- <p> Add a zipped shapefile to the map.</p> -->
+
+        <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'">
+          <img id="loader" src="loader.gif"/>
+          <div id="legendContainer">
+          <div id="legend"></div>
+      </div>
+        </div>
+
+
+
+        <div data-dojo-type="dijit/layout/BorderContainer" id="rightContainer" data-dojo-props="design:'sidebar', region:'right'"  style="color:black;width: 300px;overflow:auto;">
+
+
+
+          <div data-dojo-type="dijit/layout/ContentPane" id="extractDiv" data-dojo-props="region:'center'">
+              <div id="toolPanel">
+                <div id="status"></div>
+                <div id="analysisDiv"></div>
+              </div>
+
+              <div id="infoPanel" style="display:none;">
+                <a id="closeBtn" title="Close" style="position:absolute;top:10px;right:5px;cursor:pointer;">
+                  <img border="0" src="https://js.arcgis.com/3.23/esri/dijit/analysis/images/close.gif">
+                </a>
+                <div id="analysisInfo"></div>
+              </div>
+          </div>
+
+          <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" style="overflow:auto;">
+            <div id="score" syle:"width: 300px; height: 400px; position: absolute">
+            </div>
+          </div>
+
+
+          <div data-dojo-type="dijit/layout/ContentPane" id="rightDiv" data-dojo-props="region:'bottom'" style="overflow:auto;">
+
+              <div id='rightpane'>
+
+                <div>
                     <form enctype="multipart/form-data" method="post" id="uploadForm">
                         <div class="field">
                             <label class="file-upload">
@@ -111,10 +162,20 @@
                     <p>Visit the
                         <a target='_blank' style="color:black" href="https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm">Shapefiles</a> help topic for information and limitations.</p>
                     <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
-                    <div id="fileInfo">&nbsp;</div>
+                    <div id="fileInfo">&nbsp;
+                    </div>
+                    <button id="extractData">Extract Data</button>
+                    <button>
+                    <a id="report" target="_blank" download="file.txt" style = "color:'green'">Download</a>
+                    </button
+                    </div>
                 </div>
-            </div>
+              </div>
+
+
         </div>
+  </div>
+
 </body>
 
 </html>
