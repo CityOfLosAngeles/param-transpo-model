@@ -1,5 +1,7 @@
 require([
     "esri/map",
+    "esri/toolbars/draw",
+    "esri/graphic",
     "esri/tasks/GeometryService",
     "esri/tasks/query",
 
@@ -52,7 +54,7 @@ require([
 
 
 ], function(
-    Map, GeometryService, Query,
+    Map, Draw, Graphic, GeometryService, Query,
     ArcGISTiledMapServiceLayer, FeatureLayer, LayerList,
     Color, SimpleMarkerSymbol, SimpleLineSymbol,
     Editor, TemplatePicker,
@@ -354,13 +356,16 @@ require([
 
 
         map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
+
+
         var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
 
         layers.forEach(function(layer) {
             map.addLayer(layer);
         });
 
-        console.log(responsePoints);
+          console.log(map.graphicsLayerIds);
+
 
 //Download Score Report
     function downloadReport(content){
@@ -446,13 +451,33 @@ require([
     }
 
     function includesId(responseLayer, id) {
+
       for(var i = 0; i < responseLayer.graphics.length; i++) {
-        if(responseLayer.graphics[i].attributes.ProjectID){
-          if(responseLayer.graphics[i].attributes.ProjectID == id){
+          console.log(responseLayer.graphics[i]);
+          if(responseLayer.graphics[i].attributes.projectid == id){
+            console.log(true);
             return true;
+
           }
-        }
+
       }
+
+      return false;
+    }
+
+
+    function includesPoly(responseLayer, id) {
+
+      for(var i = 0; i < responseLayer.graphics.length; i++) {
+          console.log(responseLayer.graphics[i]);
+          if(responseLayer.graphics[i].attributes.ProjectID == id){
+            console.log(true);
+            return true;
+
+          }
+
+      }
+
       return false;
     }
 
@@ -479,13 +504,13 @@ require([
             changeRenderer(featureLayer);
             fullExtent = fullExtent ?
                 fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
-                console.log(featureLayer);
+            //    console.log(featureLayer);
             layers.push(featureLayer);
         });
         map.addLayers(layers);
         map.setExtent(fullExtent.expand(1.25), true);
 
-        dom.byId('upload-status').innerHTML = "";
+        
     }
 
 
@@ -505,20 +530,14 @@ require([
                     'height': 20
                 });
                 var pointGraphics = [];
-
-
-
-
-
-
                 for(var i = 0; i < layer.graphics.length; i++) {
+                  //console.log(layer.graphics[i].attributes.ProjectID);
                   if(!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)){
-
                     pointGraphics.push(layer.graphics[i]);
+                    console.log(true);
                   }
-
-
                 }
+
                 console.log(pointGraphics.length);
                 responsePoints.applyEdits(pointGraphics);
                 break;
@@ -530,19 +549,22 @@ require([
                     var polygonGraphics = [];
 
                     for(var i = 0; i < layer.graphics.length; i++) {
-                      if(!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)){
-                        polygonGraphics.push(layer.graphics[i]);
+                      if(!includesPoly(responsePolys, layer.graphics[i].attributes.ProjectID)){
                         console.log(layer.graphics[i]);
+                        polygonGraphics.push(layer.graphics[i]);
+
                       }
                     }
-                    console.log(polygonGraphics.length);
-                    responsePolys.applyEdits(layer.polygonGraphics);
+                  console.log(layer.graphics);
+                    //console.log(polygonGraphics);
+                    responsePolys.applyEdits(polygonGraphics);
                 break;
             case 'esriGeometryPolyline':
 
                     var polylineGraphics = [];
 
                     for(var i = 0; i < layer.graphics.length; i++) {
+
                       if(!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)){
                         polylineGraphics.push(layer.graphics[i]);
                         console.log(layer.graphics[i]);
@@ -653,11 +675,16 @@ require([
 
 
 
+
 //Initiate Editor
     function initEditor(evt) {
         var templateLayers = arrayUtils.map(evt.layers, function(result) {
             return result.layer;
         });
+
+
+        var drawToolbar = new Draw(map);
+
         var templatePicker = new TemplatePicker({
             featureLayers: templateLayers,
             grouping: true,
@@ -665,6 +692,31 @@ require([
             columns: 3
         }, "templateDiv");
         templatePicker.startup();
+
+
+        var selectedTemplate;
+                templatePicker.on("selection-change", function() {
+                    if (templatePicker.getSelected()) {
+                        selectedTemplate = templatePicker.getSelected();
+                    }
+                    switch (selectedTemplate.featureLayer.geometryType) {
+
+                        case "esriGeometryMultipoint":
+                            drawToolbar.activate(Draw.MULTI_POINT);
+                            break;
+                        default:
+                          break;
+                    }
+                });
+
+                drawToolbar.on("draw-end", function(evt) {
+                          drawToolbar.deactivate();
+
+                          var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
+                          var newGraphic = new Graphic(evt.geometry, null, newAttributes);
+      					          console.log(newGraphic);
+                          selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
+                      });
 
         var layers = arrayUtils.map(evt.layers, function(result) {
             return { featureLayer: result.layer };
@@ -681,7 +733,6 @@ require([
                     Editor.CREATE_TOOL_CIRCLE,
                     Editor.CREATE_TOOL_TRIANGLE,
                     Editor.CREATE_TOOL_RECTANGLE
-
                 ]
             },
             toolbarOptions: {
@@ -714,6 +765,7 @@ require([
             report = "";
             var query = new Query();
             query.geometry = evt.graphic.geometry;
+            console.log(evt);
             var projectLocation = query.geometry;
             var layersAfterQuery = {
                 "Half Mile Buffer Top 50": [],
