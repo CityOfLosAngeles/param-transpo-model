@@ -46,7 +46,7 @@ require([
 
     "dojo/i18n!esri/nls/jsapi",
     "dojo/_base/array", "dojo/parser", "dojo/keys", "dojo/dom",
-    "dijit/layout/BorderContainer","dijit/layout/ContentPane",
+    "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
     "dojo/domReady!"
 
 
@@ -78,7 +78,7 @@ require([
     var score_content = document.getElementById('score');
     var report = "";
 
-    document.getElementById ("extractData").addEventListener ("click", initializeHotSpotTool);
+    document.getElementById("extractData").addEventListener("click", initializeHotSpotTool);
 
 
     esriConfig.defaults.io.corsEnabledServers.push('analysis.arcgis.com');
@@ -97,231 +97,230 @@ require([
     });
 
 
-        var map = new Map("map", {
-            basemap: "streets",
-            center: [-118.2, 34],
-            zoom: 12,
-            slider: false
-        });
+    var map = new Map("map", {
+        basemap: "streets",
+        center: [-118.2, 34],
+        zoom: 12,
+        slider: false
+    });
 
-        map.on("layers-add-result", initEditor);
+    map.on("layers-add-result", initEditor);
 
-        //layers
+    //layers
 
-        var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.7,
-            visible: false
-        });
+    var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.7,
+        visible: false
+    });
 
-        var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.7,
-            visible: false
-        });
+    var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.7,
+        visible: false
+    });
 
-        var stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.5,
-            visible: false
-        });
+    var stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.5,
+        visible: false
+    });
 
-        var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.7,
-            visible: false
-        });
+    var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.7,
+        visible: false
+    });
 
-        var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.7,
-            visible: false
-        });
-
-
-        //Added 3 new Layers - Need to implement into intersection
-        var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 1,
-            visible: false
-        });
+    var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.7,
+        visible: false
+    });
 
 
-        var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
-            outFields: ['*'],
-            opacity: 0.7,
-            visible: false
-        });
-
-        var schoolPolysLayer = new FeatureLayer("https://maps.lacity.org/lahub/rest/services/LAUSD_Schools/MapServer/2", {
-            outFields: ['*'],
-            opacity: 1,
-            visible: false
-        });
-
-        var downtownDashBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/1d%20Downtown%20DASH%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        });
-
-        //adding 2 layers to the list - sept 29
-        var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        });
-
-        var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        });
-
-        // added layers 1C & 2A - oct 6
-        var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        });
-
-        var halfMileSchool = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
-            outFields: ['*'],
-            opacity: 0.5,
-            visible: false
-        });
-
-        // added all of 1a - oct 6
-
-        var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
-            outFields: ['*'],
-            opacity: 1.0,
-            visible: false
-        });
-
-        var bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
-            outFields: ['*'],
-            opacity: 1.0,
-            visible: false
-        });
-
-        var neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
-            outFields: ['*'],
-            opacity: 1.0,
-            visible: false
-        });
-
-        var pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
-            outFields: ['*'],
-            opacity: 1.0,
-            visible: false
-        });
-
-        var greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        });
+    //Added 3 new Layers - Need to implement into intersection
+    var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 1,
+        visible: false
+    });
 
 
-        //Added October 7
-        var highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        })
+    var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
+        outFields: ['*'],
+        opacity: 0.7,
+        visible: false
+    });
 
-        var threeMileTripLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
-            outFields: ['*'],
-            opacity: 0.8,
-            visible: false
-        })
+    var schoolPolysLayer = new FeatureLayer("https://maps.lacity.org/lahub/rest/services/LAUSD_Schools/MapServer/2", {
+        outFields: ['*'],
+        opacity: 1,
+        visible: false
+    });
 
-    var responseLines = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/arcgis/rest/services/Lines/FeatureServer/0", {
-      mode: FeatureLayer.MODE_ONDEMAND,
-      outFields: ['*']
-     });
+    var downtownDashBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/1d%20Downtown%20DASH%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
 
+    //adding 2 layers to the list - sept 29
+    var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
 
-    var responsePoints = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/arcgis/rest/services/Points/FeatureServer/0", {
-       mode: FeatureLayer.MODE_ONDEMAND,
-       outFields: ['*']
-      });
+    var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
 
-    var responsePolys = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/arcgis/rest/services/Polygons/FeatureServer/0", {
+    // added layers 1C & 2A - oct 6
+    var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
+
+    var halfMileSchool = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
+        outFields: ['*'],
+        opacity: 0.5,
+        visible: false
+    });
+
+    // added all of 1a - oct 6
+
+    var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
+    });
+
+    var bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
+    });
+
+    var neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
+    });
+
+    var pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
+    });
+
+    var greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
+
+    var highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    })
+
+    var threeMileTripLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    })
+
+    var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
+
+    var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
+        mode: FeatureLayer.MODE_ONDEMAND,
+        outFields: ['*']
+    });
+
+    var responsePolys = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Polygon/FeatureServer/0", {
+        mode: FeatureLayer.MODE_ONDEMAND,
+        outFields: ['*']
+    });
+
+    /*
     var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
           mode: FeatureLayer.MODE_ONDEMAND,
           outFields: ['*']
     });
+*/
 
 
+    schoolBufferLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 12, 218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        schoolBufferLayer.setRenderer(renderer);
+    });
 
-        schoolBufferLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 12, 218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
-            schoolBufferLayer.setRenderer(renderer);
+    publicHealthLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 96, 5])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        publicHealthLayer.setRenderer(renderer);
+    });
+
+    stormwaterLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([135, 12, 56])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        stormwaterLayer.setRenderer(renderer);
+    });
+
+    urbanHeatLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 200, 86])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        urbanHeatLayer.setRenderer(renderer);
+    });
+
+    economicHDILayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        economicHDILayer.setRenderer(renderer);
+    });
+    /*
+        highInjuryNetworkLayer.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+            highInjuryNetworkLayer.setRenderer(renderer);
         });
-
-        publicHealthLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 96, 5])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
-            publicHealthLayer.setRenderer(renderer);
-        });
-
-        stormwaterLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([135, 12, 56])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
-            stormwaterLayer.setRenderer(renderer);
-        });
-
-        urbanHeatLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 200, 86])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
-            urbanHeatLayer.setRenderer(renderer);
-        });
-
-        economicHDILayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-            economicHDILayer.setRenderer(renderer);
-        });
-        /*
-            highInjuryNetworkLayer.on("load", function() {
-                var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-                highInjuryNetworkLayer.setRenderer(renderer);
-            });
-        */
-        schoolPolysLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-            schoolPolysLayer.setRenderer(renderer);
-        });
+    */
+    schoolPolysLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        schoolPolysLayer.setRenderer(renderer);
+    });
 
 
-        downtownDashBuffer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-            downtownDashBuffer.setRenderer(renderer);
-        });
+    downtownDashBuffer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        downtownDashBuffer.setRenderer(renderer);
+    });
 
-        streetDesign.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
-            streetDesign.setRenderer(renderer);
-        });
+    streetDesign.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
+        streetDesign.setRenderer(renderer);
+    });
 
-        rStationConnectivity.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            rStationConnectivity.setRenderer(renderer);
-        });
+    rStationConnectivity.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        rStationConnectivity.setRenderer(renderer);
+    });
 
-        halfMileSchool.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 255, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            halfMileSchool.setRenderer(renderer);
-        });
+    halfMileSchool.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 255, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        halfMileSchool.setRenderer(renderer);
+    });
 
-        transDemand.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            transDemand.setRenderer(renderer);
-        });
+    transDemand.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        transDemand.setRenderer(renderer);
+    });
 
-        /*
+    /*
         transitEN.on("load", function() {
             var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
             transitEN.setRenderer(renderer);
@@ -343,45 +342,45 @@ require([
             greenN.setRenderer(renderer);
         });
     */
-        //Need to recolor these 2 layers -- erase this comment when done
-        highInjuryNetworkBuffer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            highInjuryNetworkBuffer.setRenderer(renderer);
-        });
+    //Need to recolor these 2 layers -- erase this comment when done
+    highInjuryNetworkBuffer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        highInjuryNetworkBuffer.setRenderer(renderer);
+    });
 
-        threeMileTripLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            threeMileTripLayer.setRenderer(renderer);
-        });
-
-
-        map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
+    threeMileTripLayer.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        threeMileTripLayer.setRenderer(renderer);
+    });
 
 
-        var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
-
-        layers.forEach(function(layer) {
-            map.addLayer(layer);
-        });
-
-          console.log(map.graphicsLayerIds);
+    map.addLayers([responseLines, responsePolys, responsePoints /*, responseMultiPoints*/ ]);
 
 
-//Download Score Report
-    function downloadReport(content){
-      data = [];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
 
-      data.push(content);
-      properties = {type: 'plain/text'}; // Specify the file's mime-type.
-      try {
-        // Specify the filename using the File constructor, but ...
-        file = new File(content, "file.doc", properties);
-      } catch (e) {
-// ... fall back to the Blob constructor if that isn't supported.
-      file = new Blob(data, properties);
-      }
-      url = URL.createObjectURL(file);
-      document.getElementById('report').href = url;
+    layers.forEach(function(layer) {
+        map.addLayer(layer);
+    });
+
+    console.log(map.graphicsLayerIds);
+
+
+    //Download Score Report
+    function downloadReport(content) {
+        data = [];
+
+        data.push(content);
+        properties = { type: 'plain/text' }; // Specify the file's mime-type.
+        try {
+            // Specify the filename using the File constructor, but ...
+            file = new File(content, "file.doc", properties);
+        } catch (e) {
+            // ... fall back to the Blob constructor if that isn't supported.
+            file = new Blob(data, properties);
+        }
+        url = URL.createObjectURL(file);
+        document.getElementById('report').href = url;
 
     }
 
@@ -389,7 +388,7 @@ require([
 
 
 
-//Create Feature Collection to be added into the map
+    //Create Feature Collection to be added into the map
     function generateFeatureCollection(fileName) {
         var name = fileName.split(".");
         //Chrome and IE add c:\fakepath to the value - we need to remove it
@@ -452,37 +451,37 @@ require([
 
     function includesId(responseLayer, id) {
 
-      for(var i = 0; i < responseLayer.graphics.length; i++) {
-          console.log(responseLayer.graphics[i]);
-          if(responseLayer.graphics[i].attributes.projectid == id){
-            console.log(true);
-            return true;
+        for (var i = 0; i < responseLayer.graphics.length; i++) {
+            console.log(responseLayer.graphics[i]);
+            if (responseLayer.graphics[i].attributes.projectid == id) {
+                console.log(true);
+                return true;
 
-          }
+            }
 
-      }
+        }
 
-      return false;
+        return false;
     }
 
 
     function includesPoly(responseLayer, id) {
 
-      for(var i = 0; i < responseLayer.graphics.length; i++) {
-          console.log(responseLayer.graphics[i]);
-          if(responseLayer.graphics[i].attributes.ProjectID == id){
-            console.log(true);
-            return true;
+        for (var i = 0; i < responseLayer.graphics.length; i++) {
+            console.log(responseLayer.graphics[i]);
+            if (responseLayer.graphics[i].attributes.ProjectID == id) {
+                console.log(true);
+                return true;
 
-          }
+            }
 
-      }
+        }
 
-      return false;
+        return false;
     }
 
 
-//Add new Features
+    //Add new Features
     function addShapefileToMap(featureCollection) {
         //add the shapefile to the map and zoom to the feature collection extent
         //If you want to persist the feature collection when you reload browser you could store the collection in
@@ -510,7 +509,7 @@ require([
         map.addLayers(layers);
         map.setExtent(fullExtent.expand(1.25), true);
 
-        
+
     }
 
 
@@ -530,12 +529,12 @@ require([
                     'height': 20
                 });
                 var pointGraphics = [];
-                for(var i = 0; i < layer.graphics.length; i++) {
-                  //console.log(layer.graphics[i].attributes.ProjectID);
-                  if(!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)){
-                    pointGraphics.push(layer.graphics[i]);
-                    console.log(true);
-                  }
+                for (var i = 0; i < layer.graphics.length; i++) {
+                    //console.log(layer.graphics[i].attributes.ProjectID);
+                    if (!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)) {
+                        pointGraphics.push(layer.graphics[i]);
+                        console.log(true);
+                    }
                 }
 
                 console.log(pointGraphics.length);
@@ -546,33 +545,33 @@ require([
                     new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
                         new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
 
-                    var polygonGraphics = [];
+                var polygonGraphics = [];
 
-                    for(var i = 0; i < layer.graphics.length; i++) {
-                      if(!includesPoly(responsePolys, layer.graphics[i].attributes.ProjectID)){
+                for (var i = 0; i < layer.graphics.length; i++) {
+                    if (!includesPoly(responsePolys, layer.graphics[i].attributes.ProjectID)) {
                         console.log(layer.graphics[i]);
                         polygonGraphics.push(layer.graphics[i]);
 
-                      }
                     }
-                  console.log(layer.graphics);
-                    //console.log(polygonGraphics);
-                    responsePolys.applyEdits(polygonGraphics);
+                }
+                console.log(layer.graphics);
+                //console.log(polygonGraphics);
+                responsePolys.applyEdits(polygonGraphics);
                 break;
             case 'esriGeometryPolyline':
 
-                    var polylineGraphics = [];
+                var polylineGraphics = [];
 
-                    for(var i = 0; i < layer.graphics.length; i++) {
+                for (var i = 0; i < layer.graphics.length; i++) {
 
-                      if(!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)){
+                    if (!includesId(responsePoints, layer.graphics[i].attributes.ProjectID)) {
                         polylineGraphics.push(layer.graphics[i]);
                         console.log(layer.graphics[i]);
-                      }
                     }
-                    console.log(polylineGraphics.length);
-                    responseLines.applyEdits(polylineGraphics);
-                    break;
+                }
+                console.log(polylineGraphics.length);
+                responseLines.applyEdits(polylineGraphics);
+                break;
 
         }
         if (symbol) {
@@ -581,62 +580,62 @@ require([
     }
 
 
-//Extract Data
-   function initializeHotSpotTool(){
-             showToolPanel();
+    //Extract Data
+    function initializeHotSpotTool() {
+        showToolPanel();
 
-             //Define the default inputs for the widget
-             var extractDataParams = {
-                 featureLayers: [responseLines, responsePolys, responsePoints],
-                 inputLayers: [responseLines, responsePolys, responsePoints],
-                 portalUrl: "https://www.arcgis.com",
-                 showSelectFolder: true,
-                 showChooseExtent: false,
-                 showCredits:false,
-                 clip: false,
-                 map: map
-             };
+        //Define the default inputs for the widget
+        var extractDataParams = {
+            featureLayers: [responseLines, responsePolys, responsePoints],
+            inputLayers: [responseLines, responsePolys, responsePoints],
+            portalUrl: "https://www.arcgis.com",
+            showSelectFolder: true,
+            showChooseExtent: false,
+            showCredits: false,
+            clip: false,
+            map: map
+        };
 
-             hotSpots = new ExtractData(extractDataParams, "analysisDiv");
+        hotSpots = new ExtractData(extractDataParams, "analysisDiv");
 
-             // the only way i can get this tool to execute is when users sketch a study area of their own
-             hotSpots.startup();
+        // the only way i can get this tool to execute is when users sketch a study area of their own
+        hotSpots.startup();
 
-             //If any errors occur reset the widget (Not Working...troubleshoot)
-             on(hotSpots, "job-fail", function(params){
-                 // handle
-             });
-             on(hotSpots, "job-status", function(status){
-               if(status.jobStatus === 'esriJobFailed'){
-               alert("Job Failed: " + status.messages[0].description);
-                 // handle
-               }
+        //If any errors occur reset the widget (Not Working...troubleshoot)
+        on(hotSpots, "job-fail", function(params) {
+            // handle
+        });
+        on(hotSpots, "job-status", function(status) {
+            if (status.jobStatus === 'esriJobFailed') {
+                alert("Job Failed: " + status.messages[0].description);
+                // handle
+            }
 
-             });
-             on(hotSpots, "job-cancel", function(){
-                 // handle
-             });
-             on(hotSpots, "job-submit", function(result){
-                 //display the loading icon
-                 domUtils.show(dom.byId("loader"));
+        });
+        on(hotSpots, "job-cancel", function() {
+            // handle
+        });
+        on(hotSpots, "job-submit", function(result) {
+            //display the loading icon
+            domUtils.show(dom.byId("loader"));
 
-             });
+        });
 
-             on(hotSpots, "job-result", function(result){
-                 //hide the loading icon
-                 domUtils.hide(dom.byId("loader"));
-                 // fetch/display the results
-             });
-         }
+        on(hotSpots, "job-result", function(result) {
+            //hide the loading icon
+            domUtils.hide(dom.byId("loader"));
+            // fetch/display the results
+        });
+    }
 
-         function showToolPanel(){
-             // expand the right panel to display the content
-             var cp = registry.byId("extractDiv");
-             domStyle.set(cp.domNode, {width: "20%"});
-             registry.byId("rightContainer").resize();
+    function showToolPanel() {
+        // expand the right panel to display the content
+        var cp = registry.byId("extractDiv");
+        domStyle.set(cp.domNode, { width: "20%" });
+        registry.byId("rightContainer").resize();
 
 
-         }
+    }
 
 
     // Use a LayerList widget to toggle a layer's visibility on or off
@@ -676,7 +675,7 @@ require([
 
 
 
-//Initiate Editor
+    //Initiate Editor
     function initEditor(evt) {
         var templateLayers = arrayUtils.map(evt.layers, function(result) {
             return result.layer;
@@ -695,28 +694,28 @@ require([
 
 
         var selectedTemplate;
-                templatePicker.on("selection-change", function() {
-                    if (templatePicker.getSelected()) {
-                        selectedTemplate = templatePicker.getSelected();
-                    }
-                    switch (selectedTemplate.featureLayer.geometryType) {
+        templatePicker.on("selection-change", function() {
+            if (templatePicker.getSelected()) {
+                selectedTemplate = templatePicker.getSelected();
+            }
+            switch (selectedTemplate.featureLayer.geometryType) {
 
-                        case "esriGeometryMultipoint":
-                            drawToolbar.activate(Draw.MULTI_POINT);
-                            break;
-                        default:
-                          break;
-                    }
-                });
+                case "esriGeometryMultipoint":
+                    drawToolbar.activate(Draw.MULTI_POINT);
+                    break;
+                default:
+                    break;
+            }
+        });
 
-                drawToolbar.on("draw-end", function(evt) {
-                          drawToolbar.deactivate();
+        drawToolbar.on("draw-end", function(evt) {
+            drawToolbar.deactivate();
 
-                          var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
-                          var newGraphic = new Graphic(evt.geometry, null, newAttributes);
-      					          console.log(newGraphic);
-                          selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
-                      });
+            var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
+            var newGraphic = new Graphic(evt.geometry, null, newAttributes);
+            console.log(newGraphic);
+            selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
+        });
 
         var layers = arrayUtils.map(evt.layers, function(result) {
             return { featureLayer: result.layer };
@@ -866,25 +865,25 @@ require([
                         if (geometryEngine.intersects(feature.geometry, projectLocation)) {
                             //add to the array
 
-                            if(feature._layer.name == "California_HDI_Public_Health_Need_Indicator") {
+                            if (feature._layer.name == "California_HDI_Public_Health_Need_Indicator") {
 
-                              var intersectPolygon = geometryEngine.intersect(feature.geometry, projectLocation);
-                              var area = geometryEngine.geodesicArea(intersectPolygon, 'square-meters');
-                              var area_score = {"area" : area, "score" : feature.attributes.Health_Sco}
-                              layersAfterQuery[feature._layer.name].push(area_score);
+                                var intersectPolygon = geometryEngine.intersect(feature.geometry, projectLocation);
+                                var area = geometryEngine.geodesicArea(intersectPolygon, 'square-meters');
+                                var area_score = { "area": area, "score": feature.attributes.Health_Sco }
+                                layersAfterQuery[feature._layer.name].push(area_score);
 
-                            }else {
+                            } else {
 
-                            layersAfterQuery[feature._layer.name].push(feature);
-                          }
+                                layersAfterQuery[feature._layer.name].push(feature);
+                            }
 
                         }
-                    }else {
-                      if (geometryEngine.intersects(feature.geometry, projectLocation)) {
-                          //add to the array
-                          inBuffer.push(feature);
-                          layersAfterQuery[feature._layer.name].push(feature);
-                      }
+                    } else {
+                        if (geometryEngine.intersects(feature.geometry, projectLocation)) {
+                            //add to the array
+                            inBuffer.push(feature);
+                            layersAfterQuery[feature._layer.name].push(feature);
+                        }
                     }
                 }
 
@@ -938,20 +937,20 @@ require([
             function publicHDIScore(publicHDI) {
 
                 var score = 0;
-                if((publicHDI.length > 0 ) && (projectLocation.type == "polygon")){
+                if ((publicHDI.length > 0) && (projectLocation.type == "polygon")) {
 
-                  var totalArea = 0;
-                  for(var i = 0; i < publicHDI.length; i++){
-                    totalArea += publicHDI[i].area;
-                  }
-                  for(var i = 0; i < publicHDI.length; i++){
-                    score += (publicHDI[i].area / totalArea) * publicHDI[i].score;
-                  }
-                } else{
-                  if(publicHDI[0]) {
+                    var totalArea = 0;
+                    for (var i = 0; i < publicHDI.length; i++) {
+                        totalArea += publicHDI[i].area;
+                    }
+                    for (var i = 0; i < publicHDI.length; i++) {
+                        score += (publicHDI[i].area / totalArea) * publicHDI[i].score;
+                    }
+                } else {
+                    if (publicHDI[0]) {
 
-                    score = publicHDI[0].attributes.Health_Sco;
-                  }
+                        score = publicHDI[0].attributes.Health_Sco;
+                    }
                 }
                 score_content.innerHTML += "Public HDI Score = " + score.toFixed(2) + "<br>";
                 report += "Public HDI Score = " + score.toFixed(2) + "\n";
@@ -1054,9 +1053,9 @@ require([
                 report += "Weighted Score = " + weighted.toFixed(2) + "\n";
 
 
-               var reportArray = [];
-               reportArray.push(("Project Name: " + evt.graphic.attributes.project_name + "\n\n"));
-               reportArray.push(report);
+                var reportArray = [];
+                reportArray.push(("Project Name: " + evt.graphic.attributes.project_name + "\n\n"));
+                reportArray.push(report);
 
 
 
