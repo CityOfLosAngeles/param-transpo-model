@@ -4,19 +4,14 @@ require([
     "esri/graphic",
     "esri/tasks/GeometryService",
     "esri/tasks/query",
-
     "esri/layers/ArcGISTiledMapServiceLayer",
     "esri/layers/FeatureLayer",
-
     "esri/dijit/LayerList",
-
     "esri/Color",
     "esri/symbols/SimpleMarkerSymbol",
     "esri/symbols/SimpleLineSymbol",
-
     "esri/dijit/editing/Editor",
     "esri/dijit/editing/TemplatePicker",
-
     "esri/geometry/geometryEngine",
     "esri/dijit/analysis/ExtractData",
     "dijit/registry",
@@ -28,9 +23,7 @@ require([
     "esri/arcgis/Portal",
     "esri/dijit/analysis/FindHotSpots",
     "esri/dijit/Legend",
-
     "esri/config",
-
     "esri/InfoTemplate",
     "esri/request",
     "esri/geometry/scaleUtils",
@@ -39,19 +32,12 @@ require([
     "dojo/on",
     "dojo/sniff",
     "dojo/_base/lang",
-
-
     "esri/renderers/SimpleRenderer", "esri/Color",
     "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
-
     "dojo/i18n!esri/nls/jsapi",
     "dojo/_base/array", "dojo/parser", "dojo/keys", "dojo/dom",
     "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
     "dojo/domReady!"
-
-
-
-
 
 ], function(
     Map, Draw, Graphic, GeometryService, Query,
@@ -96,7 +82,6 @@ require([
         }
     });
 
-
     var map = new Map("map", {
         basemap: "streets",
         center: [-118.2, 34],
@@ -106,7 +91,7 @@ require([
 
     map.on("layers-add-result", initEditor);
 
-    //layers
+    //List of Layers
 
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
         outFields: ['*'],
@@ -138,14 +123,11 @@ require([
         visible: false
     });
 
-
-    //Added 3 new Layers - Need to implement into intersection
     var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
         outFields: ['*'],
         opacity: 1,
         visible: false
     });
-
 
     var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
@@ -165,7 +147,6 @@ require([
         visible: false
     });
 
-    //adding 2 layers to the list - sept 29
     var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
         outFields: ['*'],
         opacity: 0.8,
@@ -178,7 +159,6 @@ require([
         visible: false
     });
 
-    // added layers 1C & 2A - oct 6
     var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
@@ -190,8 +170,6 @@ require([
         opacity: 0.5,
         visible: false
     });
-
-    // added all of 1a - oct 6
 
     var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
         outFields: ['*'],
@@ -240,7 +218,6 @@ require([
         outFields: ['*']
     });
 
-
     var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
@@ -251,13 +228,10 @@ require([
         outFields: ['*']
     });
 
-    /*
-    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
-          mode: FeatureLayer.MODE_ONDEMAND,
-          outFields: ['*']
+    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/kbuL963vJA6OC8rS/arcgis/rest/services/Multipoint/FeatureServer/0", {
+        mode: FeatureLayer.MODE_ONDEMAND,
+        outFields: ['*']
     });
-*/
-
 
     schoolBufferLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 12, 218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
@@ -283,17 +257,11 @@ require([
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         economicHDILayer.setRenderer(renderer);
     });
-    /*
-        highInjuryNetworkLayer.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-            highInjuryNetworkLayer.setRenderer(renderer);
-        });
-    */
+
     schoolPolysLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         schoolPolysLayer.setRenderer(renderer);
     });
-
 
     downtownDashBuffer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
@@ -320,29 +288,6 @@ require([
         transDemand.setRenderer(renderer);
     });
 
-    /*
-        transitEN.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            transitEN.setRenderer(renderer);
-        });
-        //    bicycleN.on("load", function() {
-        //        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-        //      bicycleN.setRenderer(renderer);
-        //    });
-        neighborhoodN.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            neighborhoodN.setRenderer(renderer);
-        });
-        pedestrianED.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            pedestrianED.setRenderer(renderer);
-        });
-        greenN.on("load", function() {
-            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-            greenN.setRenderer(renderer);
-        });
-    */
-    //Need to recolor these 2 layers -- erase this comment when done
     highInjuryNetworkBuffer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         highInjuryNetworkBuffer.setRenderer(renderer);
@@ -353,9 +298,7 @@ require([
         threeMileTripLayer.setRenderer(renderer);
     });
 
-
-    map.addLayers([responseLines, responsePolys, responsePoints /*, responseMultiPoints*/ ]);
-
+    map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
     var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
 
@@ -365,11 +308,9 @@ require([
 
     console.log(map.graphicsLayerIds);
 
-
     //Download Score Report
     function downloadReport(content) {
         data = [];
-
         data.push(content);
         properties = { type: 'plain/text' }; // Specify the file's mime-type.
         try {
@@ -381,7 +322,6 @@ require([
         }
         url = URL.createObjectURL(file);
         document.getElementById('report').href = url;
-
     }
 
 
@@ -450,17 +390,13 @@ require([
     }
 
     function includesId(responseLayer, id) {
-
         for (var i = 0; i < responseLayer.graphics.length; i++) {
             console.log(responseLayer.graphics[i]);
             if (responseLayer.graphics[i].attributes.projectid == id) {
                 console.log(true);
                 return true;
-
             }
-
         }
-
         return false;
     }
 
@@ -1051,6 +987,31 @@ require([
                 score_content.innerHTML += "<b>Weighted Score = " + weighted.toFixed(2) + "</b><br>";
                 report += "\nTotal Score = " + total.toFixed(2) + "\n";
                 report += "Weighted Score = " + weighted.toFixed(2) + "\n";
+
+                evt.graphic.attributes.Tot_Score = total;
+                evt.graphic.attributes.Weight_Score = weighted;
+
+
+                switch (evt.graphic.geometry.type) {
+                    case 'point':
+                        responsePoints.applyEdits(null, [evt.graphic], null);
+                        break;
+                    case 'polyline':
+                        responseLines.applyEdits(null, [evt.graphic], null);
+                        break;
+                    case 'polygon':
+                        responsePolys.applyEdits(null, [evt.graphic], null);
+                        break;
+                    case 'multipoint':
+                        //responseMultiPoints.applyEdits(null, [evt.graphic], null);
+                        break;
+                }
+
+
+
+
+
+
 
 
                 var reportArray = [];
