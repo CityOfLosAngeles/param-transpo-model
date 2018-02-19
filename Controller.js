@@ -255,28 +255,28 @@ require([
             visible: false
         })
 
-    var responseLines = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/arcgis/rest/services/Lines/FeatureServer/0", {
-      mode: FeatureLayer.MODE_SNAPSHOT,
-      outFields: ['*']
-     });
+        var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ['*']
+        });
 
 
-     var responsePoints = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/arcgis/rest/services/Points/FeatureServer/0", {
-        mode: FeatureLayer.MODE_SNAPSHOT,
-        outFields: ['*']
-    });
+        var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ['*']
+        });
+
+        var responsePolys = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Polygon/FeatureServer/0", {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ['*']
+        });
 
 
+        var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/kbuL963vJA6OC8rS/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
+              mode: FeatureLayer.MODE_ONDEMAND,
+              outFields: ['*']
+        });
 
-    var responsePolys = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/arcgis/rest/services/Polygons/FeatureServer/0", {
-        mode: FeatureLayer.MODE_SNAPSHOT,
-        outFields: ['*']
-    });
-
-    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/DcGhva9ip32u1Ab8/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
-          mode: FeatureLayer.MODE_SNAPSHOT,
-          outFields: ['*']
-    });
 
 
 
@@ -740,7 +740,7 @@ require([
 function initEditTool(results) {
 
                 var canEdit = false;
-                if(currentUser == "anguyen56") {
+                if(currentUser =="anguyen56") {
                   canEdit = true;
                 }
 
@@ -754,10 +754,11 @@ function initEditTool(results) {
                         if (map.infoWindow.isShowing) {
                             map.infoWindow.hide();
                         }
+
                         var layerInfos = [{
                             'featureLayer': layer,
-                            'isEditable': canEdit,
-                            'showDeleteButton': canEdit,
+                            'isEditable': true,
+                            'showDeleteButton': true,
                             'showAttachments': false,
                         }]
                         var attInspector = new AttributeInspector({
@@ -808,6 +809,7 @@ function initEditTool(results) {
                         map.infoWindow.hide();
                     }
                     drawToolbar.deactivate();
+                    generateScore(evt);
                     var fieldAttributes = layerFieldToAttributes(selectedTemplate.featureLayer.fields);
                     var newAttributes = lang.mixin(fieldAttributes, selectedTemplate.template.prototype.attributes);
                     var newGraphic = new Graphic(result.geometry, null, newAttributes);
