@@ -8,19 +8,14 @@ require([
     "esri/graphic",
     "esri/tasks/GeometryService",
     "esri/tasks/query",
-
     "esri/layers/ArcGISTiledMapServiceLayer",
     "esri/layers/FeatureLayer",
-
     "esri/dijit/LayerList",
-
     "esri/Color",
     "esri/symbols/SimpleMarkerSymbol",
     "esri/symbols/SimpleLineSymbol",
-
     "esri/dijit/editing/Editor",
     "esri/dijit/editing/TemplatePicker",
-
     "esri/geometry/geometryEngine",
     "esri/dijit/analysis/ExtractData",
     "dijit/registry",
@@ -32,9 +27,7 @@ require([
     "esri/arcgis/Portal",
     "esri/dijit/analysis/FindHotSpots",
     "esri/dijit/Legend",
-
     "esri/config",
-
     "esri/InfoTemplate",
     "esri/request",
     "esri/geometry/scaleUtils",
@@ -48,15 +41,10 @@ require([
 
     "esri/renderers/SimpleRenderer", "esri/Color",
     "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
-
     "dojo/i18n!esri/nls/jsapi",
     "dojo/_base/array", "dojo/parser", "dojo/keys", "dojo/dom",
     "dijit/layout/BorderContainer","dijit/layout/ContentPane",
     "dojo/domReady!"
-
-
-
-
 
 ], function(
     Map, InfoWindow, AttributeInspector, domConstruct,Draw, Edit, Graphic, GeometryService, Query,
