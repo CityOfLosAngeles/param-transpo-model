@@ -655,6 +655,7 @@ require([
                  initEditTool(evt);
             }, function(){
                 console.log("cancelled");
+                initEditTool(evt);
            }, function(){
                console.log("fulfilled");
           }, function(){
@@ -745,8 +746,8 @@ function initEditTool(results) {
 
                         var layerInfos = [{
                             'featureLayer': layer,
-                            'isEditable': true,
-                            'showDeleteButton': true,
+                            'isEditable': false,
+                            'showDeleteButton': false,
                             'showAttachments': false,
                         }]
                         var attInspector = new AttributeInspector({
@@ -791,16 +792,25 @@ function initEditTool(results) {
                         }
                     }
                 });
-                drawToolbar.on("draw-end", function(result) {
+
+
+
+                drawToolbar.on("draw-complete", function(result) {
                     //display the editable info window for newly created features
                     if (map.infoWindow.isShowing) {
                         map.infoWindow.hide();
                     }
+
+
                     drawToolbar.deactivate();
-                    generateScore(evt);
+
                     var fieldAttributes = layerFieldToAttributes(selectedTemplate.featureLayer.fields);
                     var newAttributes = lang.mixin(fieldAttributes, selectedTemplate.template.prototype.attributes);
                     var newGraphic = new Graphic(result.geometry, null, newAttributes);
+
+
+
+
                     var layerInfos = [{
                         'featureLayer': selectedTemplate.featureLayer,
                         'isEditable': true
