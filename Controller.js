@@ -1182,7 +1182,7 @@ require([
                     responsePolys.applyEdits(null, [evt.graphic], null);
                     break;
                 case 'multipoint':
-                    //responseMultiPoints.applyEdits(null, [evt.graphic], null);
+                    responseMultiPoints.applyEdits(null, [evt.graphic], null);
                     break;
             }
 
