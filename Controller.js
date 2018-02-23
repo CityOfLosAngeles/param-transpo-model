@@ -746,8 +746,8 @@ function initEditTool(results) {
 
                         var layerInfos = [{
                             'featureLayer': layer,
-                            'isEditable': false,
-                            'showDeleteButton': false,
+                            'isEditable': canEdit,
+                            'showDeleteButton': canEdit,
                             'showAttachments': false,
                         }]
                         var attInspector = new AttributeInspector({
@@ -759,6 +759,10 @@ function initEditTool(results) {
                             map.infoWindow.setContent(attInspector.domNode);
                             map.infoWindow.resize(310, 165);
                             map.infoWindow.show(evt.screenPoint, map.getInfoWindowAnchor(evt.screenPoint));
+                        });
+                        attInspector.on("delete", function(result) {
+                            result.feature.getLayer().applyEdits(null, null, [result.feature]);
+                            map.infoWindow.hide();
                         });
 
                         generateScore(evt);
