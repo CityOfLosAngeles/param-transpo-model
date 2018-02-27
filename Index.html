@@ -32,18 +32,18 @@
             font-family: Calibri;
         }
 
-        #extractDiv {
+		#extractDiv{
             font-size: 1.2em;
             width: 250px;
             height: auto;
             font-family: Calibri;
         }
 
-        #report {
-            font: bold 12px;
-            text-decoration: none;
-            background-color: #EEEEEE;
-            color: #333333;
+		#report {
+          font: bold 12px;
+          text-decoration: none;
+          background-color: #EEEEEE;
+          color: #333333;
         }
 
         #map {
@@ -82,7 +82,6 @@
         .templatePicker {
             border: none;
         }
-<<<<<<< HEAD
 
 		.esriAttributeInspector {
 			height:100px;
@@ -90,9 +89,6 @@
 
 
 
-=======
-
->>>>>>> a1efa3de47e2007ed5a88b3664b4e6a0d8f9d4a9
         .dj_ie .infowindow .window .top .right .user .content {
             position: relative;
         }
@@ -124,58 +120,57 @@
 
 
         <div data-dojo-type="dijit/layout/ContentPane" id="map" data-dojo-props="region:'center'">
-            <img id="loader" src="loader.gif" />
-            <div id="legendContainer">
-                <div id="legend"></div>
-            </div>
+          <img id="loader" src="loader.gif"/>
+          <div id="legendContainer">
+          <div id="legend"></div>
+      </div>
         </div>
 
 
 
-        <div data-dojo-type="dijit/layout/BorderContainer" id="rightContainer" data-dojo-props="design:'sidebar', region:'right'" style="color:black;width: 300px;overflow:auto;">
+        <div data-dojo-type="dijit/layout/BorderContainer" id="rightContainer" data-dojo-props="design:'sidebar', region:'right'"  style="color:black;width: 300px;overflow:auto;">
 
 
 
-            <div data-dojo-type="dijit/layout/ContentPane" id="extractDiv" data-dojo-props="region:'center'">
-                <div id="toolPanel">
-                    <div id="status"></div>
-                    <div id="analysisDiv"></div>
-                </div>
+          <div data-dojo-type="dijit/layout/ContentPane" id="extractDiv" data-dojo-props="region:'center'">
+              <div id="toolPanel">
+                <div id="status"></div>
+                <div id="analysisDiv"></div>
+              </div>
 
-                <div id="infoPanel" style="display:none;">
-                    <a id="closeBtn" title="Close" style="position:absolute;top:10px;right:5px;cursor:pointer;">
-                        <img border="0" src="https://js.arcgis.com/3.23/esri/dijit/analysis/images/close.gif">
-                    </a>
-                    <div id="analysisInfo"></div>
-                </div>
+              <div id="infoPanel" style="display:none;">
+                <a id="closeBtn" title="Close" style="position:absolute;top:10px;right:5px;cursor:pointer;">
+                  <img border="0" src="https://js.arcgis.com/3.23/esri/dijit/analysis/images/close.gif">
+                </a>
+                <div id="analysisInfo"></div>
+              </div>
+          </div>
+
+          <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" style="overflow:auto;">
+            <div id="score" syle:"width: 300px; height: 400px; position: absolute">
             </div>
-
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" style="overflow:auto;">
-                <div id="score" syle: "width: 300px; height: 400px; position: absolute">
-                </div>
-            </div>
+          </div>
 
 
-            <div data-dojo-type="dijit/layout/ContentPane" id="rightDiv" data-dojo-props="region:'bottom'" style="overflow:auto;">
+          <div data-dojo-type="dijit/layout/ContentPane" id="rightDiv" data-dojo-props="region:'bottom'" style="overflow:auto;">
 
-                <div id='rightpane'>
+              <div id='rightpane'>
 
-                    <div>
-                        <form enctype="multipart/form-data" method="post" id="uploadForm">
-                            <div class="field">
-                                <label class="file-upload">
+                <div>
+                    <form enctype="multipart/form-data" method="post" id="uploadForm">
+                        <div class="field">
+                            <label class="file-upload">
                             <span><strong>Add a zipped shapefile to the map.</strong></span>
                             <input type="file" name="file" id="inFile" />
                         </label>
-                            </div>
-                        </form>
-
-                        <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
-                        <div id="fileInfo">&nbsp;
                         </div>
-                        <button id="extractData">Extract Data</button>
-                        <button>
-                    <a id="report" target="_blank" download="file.txt" style = "color:'green'">Download</a>
+                    </form>
+
+                    <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
+                    <div id="fileInfo">&nbsp;
+                    </div>
+                    <button>
+                    <a id="report" target="_blank" download="file.txt" style = "color:'green'">Download Report</a>
                     </button
                     </div>
                 </div>

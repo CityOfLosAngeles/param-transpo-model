@@ -100,6 +100,7 @@ require([
     });
 
     var currentUser = "";
+    var admins = ["anguyen56", "kevinlam825"];
 
 
     var map = new Map("map", {
@@ -657,12 +658,12 @@ require([
 
         //Define the default inputs for the widget
         var extractDataParams = {
-            featureLayers: [responseLines, responsePolys, responsePoints],
-            inputLayers: [responseLines, responsePolys, responsePoints],
+            featureLayers: [responseLines, responsePolys, responsePoints, responseMultiPoints],
+            inputLayers: [responseLines, responsePolys, responsePoints, responseMultiPoints],
             portalUrl: "https://www.arcgis.com",
             showSelectFolder: true,
             showChooseExtent: false,
-            showCredits: true,
+            showCredits: false,
             clip: false,
             map: map
         };
@@ -715,6 +716,7 @@ require([
             currentUser = hotSpots.portalUser.username;
             console.log(currentUser);
             initEditTool(evt);
+            generateFeatureCollection("fake_file");
         }, function() {
             console.log("cancelled");
             initEditTool(evt);
@@ -795,9 +797,9 @@ require([
     function initEditTool(results) {
 
         var canEdit = false;
-        if (currentUser == "anguyen56") {
-            canEdit = true;
-        }
+        admins.forEach(function(username){
+          if(currentUser == username) canEdit = true;
+        });
 
         var layers = array.map(results.layers, function(result) {
             return result.layer;
@@ -1162,7 +1164,7 @@ require([
             var total = modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) + latentActiveTransportationScore(threeMileTrips) + connectivityScore(transitPrioArea, downtownDash, communityDash);
             var score = total / 3;
             score_content.innerHTML += "<b>Category 1 Score = " + score.toFixed(2) + "</b><br>";
-            report += "Category 1 Score = " + score + "\n";
+            report += "Category 1 Score = " + score.toFixed(2) + "\n";
             return score;
         }
 
@@ -1345,7 +1347,14 @@ require([
 
 
             var reportArray = [];
-            reportArray.push(("Project Name: " + evt.graphic.attributes.project_name + "\n\n"));
+            reportArray.push(("FID: " + evt.graphic.attributes.FID + "\n\n"));
+            reportArray.push(("ID_Number: " + evt.graphic.attributes.ID_Number + "\n\n"));
+            reportArray.push(("Id: " + evt.graphic.attributes.Id + "\n\n"));
+            reportArray.push(("MIP_Progra: " + evt.graphic.attributes.MIP_Progra + "\n\n"));
+            reportArray.push(("Modal_Prio: " + evt.graphic.attributes.Modal_Prio + "\n\n"));
+            reportArray.push(("Name: " + evt.graphic.attributes.Name + "\n\n"));
+            reportArray.push(("Scope: " + evt.graphic.attributes.Scope + "\n\n"));
+
             reportArray.push(report);
 
 
