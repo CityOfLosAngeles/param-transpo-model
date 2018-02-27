@@ -462,9 +462,9 @@ require([
     function includesProject(responseLayer, ID_Number) {
 
         for (var i = 0; i < responseLayer.graphics.length; i++) {
-          //  console.log(responseLayer.graphics[i]);
+            //  console.log(responseLayer.graphics[i]);
             if (responseLayer.graphics[i].attributes.ID_Number == ID_Number) {
-            //    console.log(true);
+                //    console.log(true);
                 return true;
 
             }
@@ -494,7 +494,7 @@ require([
                 map.infoWindow.setFeatures([event.graphic]);
             });
             //change default symbol if desired. Comment this out and the layer will draw with the default symbology
-           changeRenderer(featureLayer);
+            changeRenderer(featureLayer);
             fullExtent = fullExtent ?
                 fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
             //    console.log(featureLayer);
@@ -529,12 +529,12 @@ require([
                         pointGraphics.push(layer.graphics[i]);
 
                     }
-                  //  console.log(layer.graphics[i]);
+                    //  console.log(layer.graphics[i]);
                 }
 
                 console.log(pointGraphics.length);
-               responsePoints.applyEdits(pointGraphics);
-              //  responsePoints.applyEdits(layer.graphics);
+                responsePoints.applyEdits(pointGraphics);
+                //  responsePoints.applyEdits(layer.graphics);
                 break;
             case 'esriGeometryPolygon':
                 symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
@@ -545,7 +545,7 @@ require([
 
                 for (var i = 0; i < layer.graphics.length; i++) {
                     if (!includesProject(responsePolys, layer.graphics[i].attributes.ID_Number)) {
-                      //  console.log(layer.graphics[i]);
+                        //  console.log(layer.graphics[i]);
                         polygonGraphics.push(layer.graphics[i]);
 
                     }
@@ -560,25 +560,25 @@ require([
 
 
 
-                case 'esriGeometryMultipoint':
-                    symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                            new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
+            case 'esriGeometryMultipoint':
+                symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                        new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
 
-                    var multiPointGraphics = [];
+                var multiPointGraphics = [];
 
-                    for (var i = 0; i < layer.graphics.length; i++) {
-                        if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
-                            console.log(layer.graphics[i]);
-                            multiPointGraphics.push(layer.graphics[i]);
+                for (var i = 0; i < layer.graphics.length; i++) {
+                    if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
+                        console.log(layer.graphics[i]);
+                        multiPointGraphics.push(layer.graphics[i]);
 
-                        }
                     }
-                    console.log(layer.graphics);
-                    //console.log(polygonGraphics);
-                    responseMultiPoints.applyEdits(multiPointGraphics);
-                    responseMultiPoints.applyEdits(layer.graphics);
-                    break;
+                }
+                console.log(layer.graphics);
+                //console.log(polygonGraphics);
+                responseMultiPoints.applyEdits(multiPointGraphics);
+                responseMultiPoints.applyEdits(layer.graphics);
+                break;
 
 
             case 'esriGeometryPolyline':
@@ -589,14 +589,14 @@ require([
 
                     if (!includesProject(responseLines, layer.graphics[i].attributes.ID_Number)) {
                         polylineGraphics.push(layer.graphics[i]);
-                  //      console.log(layer.graphics[i]);
+                        //      console.log(layer.graphics[i]);
                     }
-                  //  console.log(layer.graphics[i]);
+                    //  console.log(layer.graphics[i]);
                 }
 
                 console.log(polylineGraphics.length);
-               responseLines.applyEdits(polylineGraphics);
-              //  responseLines.applyEdits(layer.graphics);
+                responseLines.applyEdits(polylineGraphics);
+                //  responseLines.applyEdits(layer.graphics);
                 break;
 
         }
@@ -829,7 +829,7 @@ require([
             var fieldAttributes = layerFieldToAttributes(selectedTemplate.featureLayer.fields);
             var newAttributes = lang.mixin(fieldAttributes, selectedTemplate.template.prototype.attributes);
             var newGraphic = new Graphic(result.geometry, null, newAttributes);
-            evt = {graphic: newGraphic};
+            evt = { graphic: newGraphic };
             generateScore(evt);
 
 
@@ -912,6 +912,11 @@ require([
             "2 High Injury Network Half Mile Buffer": [],
             "Critical_Connections": [],
             "Percentage of Trips Under Three Miles": [],
+            "Bicycle Network": [],
+            "Transit Enhanced Network (TEN)": [],
+            "Neighborhood Network (NEN)": [],
+            "Pedestrian Enhanced Districts (PEDs)": [],
+            "Green Network": [],
 
         };
 
@@ -925,6 +930,11 @@ require([
         var highInjuryBuffer = [];
         var criticalConnect = [];
         var threeMileTrips = [];
+        var bicycleNetwork = [];
+        var transitNetwork = [];
+        var neighborhoodNetwork = [];
+        var pedestrianNetwork = [];
+        var greenNetwork = [];
 
         //  search for features in these layers.
         schoolBufferLayer.queryFeatures(query, selectInBuffer);
@@ -933,20 +943,18 @@ require([
         urbanHeatLayer.queryFeatures(query, selectInBuffer);
         economicHDILayer.queryFeatures(query, selectInBuffer);
         highInjuryNetworkLayer.queryFeatures(query, selectInBuffer);
-        // schoolPolysLayer.queryFeatures(query, selectInBuffer);
-        //  transDemand.queryFeatures(query, selectInBuffer);
+
         halfMileSchool.queryFeatures(query, selectInBuffer);
-        // transitEN.queryFeatures(query, selectInBuffer);
-        // bicycleN.queryFeatures(query, selectInBuffer);
-        // neighborhoodN.queryFeatures(query, selectInBuffer);
-        // pedestrianED.queryFeatures(query, selectInBuffer);
-        // greenN.queryFeatures(query, selectInBuffer);
+
         highInjuryNetworkBuffer.queryFeatures(query, selectInBuffer);
         criticalConnections.queryFeatures(query, selectInBuffer);
         threeMileTripLayer.queryFeatures(query, selectInBuffer);
-        // rStationConnectivity.queryFeatures(query, selectInBuffer);
 
-
+        bicycleN.queryFeatures(query, selectInBuffer);
+        transitEN.queryFeatures(query, selectInBuffer);
+        neighborhoodN.queryFeatures(query, selectInBuffer);
+        pedestrianED.queryFeatures(query, selectInBuffer);
+        greenN.queryFeatures(query, selectInBuffer);
 
 
 
@@ -963,14 +971,19 @@ require([
             var schoolPolys = layersAfterQuery["Schools - Half-Mile Buffer"];
             var highInjuryBuffer = layersAfterQuery["2 High Injury Network Half Mile Buffer"];
             var criticalConnect = layersAfterQuery["Critical_Connections"];
-            //var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
+            var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
+            var bicycleNetwork = layersAfterQuery["Bicycle Network"];
+            var transitNetwork = layersAfterQuery["Transit Enhanced Network (TEN)"];
+            var neighborhoodNetwork = layersAfterQuery["Neighborhood Network (NEN)"];
+            var pedestrianNetwork = layersAfterQuery["Pedestrian Enhanced Districts (PEDs)"];
+            var greenNetwork = layersAfterQuery["Green Network"];
 
             //latentActiveTransportationScore(threeMileTrips);
             //safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryBuffer, publicHDI);
             //economicHDIScore(economicHDI);
             //criticalConnetionScore(criticalConnect);
             //sustainableAndResilientScore(stormwater, urbanHeat);
-            totalScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
+            totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
 
 
 
@@ -1027,10 +1040,38 @@ require([
 
         //Start of Section 1 Scoring
         //Need to implement scoring for 1a, 1b, 1d
+        //1a
+        function modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) {
+            score_content.innerHTML = " ";
+            var score = 0;
+
+            if (evt.graphic.attributes.Modal_Prio == 'Pedestrian') { //Pedestrian Scoring
+                if (bicycleNetwork.length > 0) {
+                    if (bicycleNetwork[0].attributes.BICYCLE_N == 1) score += 0.5
+                }
+                if (transitNetwork.length > 0) score += 0.5
+                if (neighborhoodNetwork.length > 0) score += 0.5
+                if (pedestrianNetwork.length > 0) score += 1
+
+            } else if (evt.graphic.attributes.Modal_Prio == 'Bicyclist') { //Bicyclist Scoring
+                if (bicycleNetwork.length > 0) score += 1
+                if (neighborhoodNetwork.length > 0) score += 0.5
+                if (greenNetwork.length > 0) score += 1
+
+            } else if (evt.graphic.attributes.Modal_Prio == 'Transit') { //Transit Scoring
+                if (transitNetwork.length > 0) score += 1
+
+            }
+
+            score_content.innerHTML += "Mobility Plan Network Concept Alignment = " + score + "<br>"
+            report += "1a. Mobility Plan Network Concept = " + score + "\n";
+
+            return score;
+        }
 
         //1c
         function latentActiveTransportationScore(threeMileTrips) {
-            score_content.innerHTML = " ";
+            // score_content.innerHTML = " ";
             var score = 0;
             if (threeMileTrips.length > 0) {
                 if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
@@ -1165,8 +1206,12 @@ require([
         }
 
 
-        function totalScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
+        function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
             score_content.innerHTML = " ";
+
+            modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork);
+            latentActiveTransportationScore(threeMileTrips);
+
 
             var section2TotalScore = safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
             var section2WeightedScore = section2TotalScore * 0.75;
