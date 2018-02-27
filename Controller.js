@@ -171,6 +171,12 @@ require([
         visible: false
     });
 
+    var dashCommunityBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/DASH%20Community%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
+
     //adding 2 layers to the list - sept 29
     var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
         outFields: ['*'],
@@ -228,6 +234,14 @@ require([
         opacity: 0.8,
         visible: false
     });
+
+    //1d layer
+    var transitPrio = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/4", {
+        outFields: ['*'],
+        opacity: 1.0,
+        visible: false
+    });
+
 
 
     //Added October 7
@@ -366,7 +380,7 @@ require([
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
 
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -528,20 +542,20 @@ require([
                         pointGraphics.push(layer.graphics[i]);
 
                     }
-                  //  console.log(layer.graphics[i]);
+                    //  console.log(layer.graphics[i]);
                 }
 
                 console.log(pointGraphics.length);
 
-                pointGraphics.forEach(function(i){
-                  evt = {graphic: i};
-                  generateScore(evt);
+                pointGraphics.forEach(function(i) {
+                    evt = { graphic: i };
+                    generateScore(evt);
 
                 });
 
-               responsePoints.applyEdits(pointGraphics);
+                responsePoints.applyEdits(pointGraphics);
 
-              //  responsePoints.applyEdits(layer.graphics);
+                //  responsePoints.applyEdits(layer.graphics);
                 break;
             case 'esriGeometryPolygon':
                 symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
@@ -552,7 +566,7 @@ require([
 
                 for (var i = 0; i < layer.graphics.length; i++) {
                     if (!includesProject(responsePolys, layer.graphics[i].attributes.ID_Number)) {
-                      //  console.log(layer.graphics[i]);
+                        //  console.log(layer.graphics[i]);
                         polygonGraphics.push(layer.graphics[i]);
 
                     }
@@ -560,9 +574,9 @@ require([
                 }
                 console.log(polygonGraphics.length);
 
-                polygonGraphics.forEach(function(i){
-                  evt = {graphic: i};
-                  generateScore(evt);
+                polygonGraphics.forEach(function(i) {
+                    evt = { graphic: i };
+                    generateScore(evt);
 
                 });
 
@@ -575,34 +589,34 @@ require([
 
 
 
-                case 'esriGeometryMultipoint':
-                    symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                            new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
+            case 'esriGeometryMultipoint':
+                symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                        new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
 
-                    var multiPointGraphics = [];
+                var multiPointGraphics = [];
 
-                    for (var i = 0; i < layer.graphics.length; i++) {
-                        if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
-                            console.log(layer.graphics[i]);
-                            multiPointGraphics.push(layer.graphics[i]);
+                for (var i = 0; i < layer.graphics.length; i++) {
+                    if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
+                        console.log(layer.graphics[i]);
+                        multiPointGraphics.push(layer.graphics[i]);
 
-                        }
                     }
-                    console.log(layer.graphics);
+                }
+                console.log(layer.graphics);
 
-                    multiPointGraphics.forEach(function(i){
-                      evt = {graphic: i};
-                      generateScore(evt);
+                multiPointGraphics.forEach(function(i) {
+                    evt = { graphic: i };
+                    generateScore(evt);
 
-                    });
+                });
 
 
-                    //console.log(polygonGraphics);
-                    responseMultiPoints.applyEdits(multiPointGraphics);
-                  //  responseMultiPoints.applyEdits(layer.graphics);
+                //console.log(polygonGraphics);
+                responseMultiPoints.applyEdits(multiPointGraphics);
+                //  responseMultiPoints.applyEdits(layer.graphics);
 
-                    break;
+                break;
 
 
             case 'esriGeometryPolyline':
@@ -613,21 +627,21 @@ require([
 
                     if (!includesProject(responseLines, layer.graphics[i].attributes.ID_Number)) {
                         polylineGraphics.push(layer.graphics[i]);
-                  //      console.log(layer.graphics[i]);
+                        //      console.log(layer.graphics[i]);
                     }
-                  //  console.log(layer.graphics[i]);
+                    //  console.log(layer.graphics[i]);
                 }
 
                 console.log(polylineGraphics.length);
-                polylineGraphics.forEach(function(i){
-                  evt = {graphic: i};
-                  generateScore(evt);
+                polylineGraphics.forEach(function(i) {
+                    evt = { graphic: i };
+                    generateScore(evt);
 
                 });
 
-               responseLines.applyEdits(polylineGraphics);
+                responseLines.applyEdits(polylineGraphics);
 
-              //  responseLines.applyEdits(layer.graphics);
+                //  responseLines.applyEdits(layer.graphics);
                 break;
 
         }
@@ -757,6 +771,7 @@ require([
             { layer: highInjuryNetworkLayer, visible: true },
             { layer: schoolPolysLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
+            { layer: dashCommunityBuffer, visible: true },
             { layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
@@ -767,6 +782,7 @@ require([
             { layer: pedestrianED, visible: true },
             { layer: greenN, visible: true },
             { layer: highInjuryNetworkBuffer, visible: true },
+            { layer: transitPrio, visible: true },
         ],
 
     }, "layerListDom");
@@ -950,6 +966,10 @@ require([
             "Neighborhood Network (NEN)": [],
             "Pedestrian Enhanced Districts (PEDs)": [],
             "Green Network": [],
+            "Transit Priority Area (TPA)": [],
+            "1d Downtown DASH Bus Stop Areas (Quarter-Mile Buffer)": [],
+            "DASH Community Bus Stop Areas (Quarter-Mile Buffer)": [],
+
 
         };
 
@@ -968,6 +988,9 @@ require([
         var neighborhoodNetwork = [];
         var pedestrianNetwork = [];
         var greenNetwork = [];
+        var transitPrioArea = [];
+        var downtownDash = [];
+        var communityDash = [];
 
         //  search for features in these layers.
         schoolBufferLayer.queryFeatures(query, selectInBuffer);
@@ -989,11 +1012,14 @@ require([
         pedestrianED.queryFeatures(query, selectInBuffer);
         greenN.queryFeatures(query, selectInBuffer);
 
+        transitPrio.queryFeatures(query, selectInBuffer);
+        downtownDashBuffer.queryFeatures(query, selectInBuffer);
+        dashCommunityBuffer.queryFeatures(query, selectInBuffer);
+
 
 
 
         setTimeout(function() {
-
 
             var schoolBuffer = layersAfterQuery["Half Mile Buffer Top 50"];
             var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
@@ -1010,15 +1036,11 @@ require([
             var neighborhoodNetwork = layersAfterQuery["Neighborhood Network (NEN)"];
             var pedestrianNetwork = layersAfterQuery["Pedestrian Enhanced Districts (PEDs)"];
             var greenNetwork = layersAfterQuery["Green Network"];
+            var transitPrioArea = layersAfterQuery["Transit Priority Area (TPA)"];
+            var downtownDash = layersAfterQuery["1d Downtown DASH Bus Stop Areas (Quarter-Mile Buffer)"];
+            var communityDash = layersAfterQuery["DASH Community Bus Stop Areas (Quarter-Mile Buffer)"];
 
-            //latentActiveTransportationScore(threeMileTrips);
-            //safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryBuffer, publicHDI);
-            //economicHDIScore(economicHDI);
-            //criticalConnetionScore(criticalConnect);
-            //sustainableAndResilientScore(stormwater, urbanHeat);
-            totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
-
-
+            totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
 
         }, 2000);
 
@@ -1072,7 +1094,6 @@ require([
 
 
         //Start of Section 1 Scoring
-        //Need to implement scoring for 1a, 1b, 1d
         //1a
         function modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) {
             score_content.innerHTML = " ";
@@ -1080,7 +1101,9 @@ require([
 
             if (evt.graphic.attributes.Modal_Prio == 'Pedestrian') { //Pedestrian Scoring
                 if (bicycleNetwork.length > 0) {
-                    if (bicycleNetwork[0].attributes.BICYCLE_N == 1) score += 0.5
+                    bicycleNetwork.forEach(function(feature) {
+                        if (feature.attributes.BICYCLE_N == 1) score = 0.5
+                    });
                 }
                 if (transitNetwork.length > 0) score += 0.5
                 if (neighborhoodNetwork.length > 0) score += 0.5
@@ -1096,25 +1119,52 @@ require([
 
             }
 
-            score_content.innerHTML += "Mobility Plan Network Concept Alignment = " + score + "<br>"
-            report += "1a. Mobility Plan Network Concept = " + score + "\n";
+            score_content.innerHTML += "MP Network Concept Score = " + score + "<br>"
+            report += "1a. Mobility Plan Network Concept Score = " + score + "\n";
 
             return score;
         }
 
         //1c
         function latentActiveTransportationScore(threeMileTrips) {
-            // score_content.innerHTML = " ";
             var score = 0;
             if (threeMileTrips.length > 0) {
                 if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
                 else if (threeMileTrips[0].attributes.PCT_3MI >= .35 && threeMileTrips[0].attributes.PCT_3MI < .5) score = 2.5;
             }
-            score_content.innerHTML += "1c. Active Transportation Demand = " + score + "<br>"
-            report += "1c. Active Transportation Demand = " + score + "\n";
+            score_content.innerHTML += "Active Transportation Score = " + score + "<br>"
+            report += "1c. Active Transportation Demand Score = " + score + "\n";
             return score;
         }
 
+        //1d
+        function connectivityScore(transitPrioArea, downtownDash, communityDash) {
+            var score = 0;
+            if (transitPrioArea.length > 0) { //First check Transit Priority layer
+                transitPrioArea.forEach(function(feature) {
+                    if (score < 5) {
+                        if (feature.attributes.NEW_TYPE == "ROW BRT" || feature.attributes.NEW_TYPE == "Intersection" || feature.attributes.NEW_TYPE == "Rail Station") score = 2.5;
+                        if (feature.attributes.NEW_TYPE == "Heavy Rail" || feature.attributes.NEW_TYPE == "Light Rail" || feature.attributes.NEW_TYPE == "Rail Station") score = 5;
+                    }
+                });
+            }
+
+            if (score == 0) {
+                if (downtownDash.length > 0 || communityDash.length > 0) score = 2.5;
+            }
+
+            score_content.innerHTML += "Connectivity Score = " + score + "<br>"
+            report += "1d. First/Last Mile Connectivity Score = " + score + "\n";
+            return score;
+        }
+
+        function mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash) {
+            var total = modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) + latentActiveTransportationScore(threeMileTrips) + connectivityScore(transitPrioArea, downtownDash, communityDash);
+            var score = total / 3;
+            score_content.innerHTML += "<b>Category 1 Score = " + score.toFixed(2) + "</b><br>";
+            report += "Category 1 Score = " + score + "\n";
+            return score;
+        }
 
         //Start of Section 2 Scoring
         function schoolLayerScores(schoolBuffer, schoolPolys) {
@@ -1209,9 +1259,13 @@ require([
         function stormwaterScore(stormwater) {
             var score = 0;
             if (stormwater.length > 0) {
-                if (stormwater[0].attributes.sw_label == "Very High") score = 5;
-                else if (stormwater[0].attributes.sw_label == "High") score = 2.5;
-                else if (stormwater[0].attributes.sw_label == "Medium") score = 1.25;
+                stormwater.forEach(function(feature) {
+                    if (score < 5) {
+                        if (score == 0 && feature.attributes.sw_label == "Medium") score = 1.25
+                        if (feature.attributes.sw_label == "High") score = 2.5;
+                        if (feature.attributes.sw_label == "Very High") score = 5;
+                    }
+                });
             }
             score_content.innerHTML += "Storm Water Score = " + score + "<br>";
             report += "Storm Water Score = " + score + "\n";
@@ -1222,9 +1276,13 @@ require([
         function urbanHeatScore(urbanHeat) {
             var score = 0;
             if (urbanHeat.length > 0) {
-                if (urbanHeat[0].attributes.heatisland == "High") score = 5;
-                else if (urbanHeat[0].attributes.heatisland == "Medium High") score = 2.5;
-                else if (urbanHeat[0].attributes.heatisland == "Low") score = 1.25;
+                urbanHeat.forEach(function(feature) {
+                    if (score < 5) {
+                        if (score == 0 && feature.attributes.heatisland == "Low") score = 1.25;
+                        if (feature.attributes.heatisland == "Medium High") score = 2.5;
+                        if (feature.attributes.heatisland == "High") score = 5;
+                    }
+                });
             }
             score_content.innerHTML += "Urban Heat Score = " + score + "<br>";
             report += "Urban Heat Score = " + score + "\n";
@@ -1239,12 +1297,11 @@ require([
         }
 
 
-        function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
+        function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
             score_content.innerHTML = " ";
 
-            modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork);
-            latentActiveTransportationScore(threeMileTrips);
-
+            var section1TotalScore = mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash);
+            var section1WeightedScore = (section1TotalScore / 2) * 0.75;
 
             var section2TotalScore = safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
             var section2WeightedScore = section2TotalScore * 0.75;
@@ -1258,16 +1315,16 @@ require([
             var section5TotalScore = sustainableAndResilientScore(stormwater, urbanHeat);
             var section5WeightedScore = section5TotalScore * 0.5;
 
-            var total = section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore;
-            var weighted = section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore;
-            score_content.innerHTML += "<br><b>Total Score = " + total.toFixed(2) + "</b><br>";
-            score_content.innerHTML += "<b>Weighted Score = " + weighted.toFixed(2) + "</b><br>";
-            report += "\nTotal Score = " + total.toFixed(2) + "\n";
-            report += "Weighted Score = " + weighted.toFixed(2) + "\n";
+            var total = (section1TotalScore + section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore).toFixed(2);
+            var weighted = (section1WeightedScore + section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore).toFixed(2);
+            score_content.innerHTML += "<br><b>Total Score = " + total + "</b><br>";
+            score_content.innerHTML += "<b>Weighted Score = " + weighted + "</b><br>";
+            report += "\nTotal Score = " + total + "\n";
+            report += "Weighted Score = " + weighted + "\n";
 
             //Assign score to seleceted graphic
-            evt.graphic.attributes.Tot_Score = total.toFixed(2);
-            evt.graphic.attributes.Weight_Score = weighted.toFixed(2);
+            evt.graphic.attributes.Tot_Score = total;
+            evt.graphic.attributes.Weight_Score = weighted;
 
             //Update layer of respective graphic after assigning score as attribute
             switch (evt.graphic.geometry.type) {
@@ -1284,6 +1341,7 @@ require([
                     responseMultiPoints.applyEdits(null, [evt.graphic], null);
                     break;
             }
+
 
 
             var reportArray = [];
