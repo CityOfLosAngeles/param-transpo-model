@@ -506,7 +506,6 @@ require([
         dom.byId('upload-status').innerHTML = "";
     }
 
-
     function changeRenderer(layer) {
         //change the default symbol for the feature collection for polygons and points
         var symbol = null;
@@ -529,12 +528,20 @@ require([
                         pointGraphics.push(layer.graphics[i]);
 
                     }
-                    //  console.log(layer.graphics[i]);
+                  //  console.log(layer.graphics[i]);
                 }
 
                 console.log(pointGraphics.length);
-                responsePoints.applyEdits(pointGraphics);
-                //  responsePoints.applyEdits(layer.graphics);
+
+                pointGraphics.forEach(function(i){
+                  evt = {graphic: i};
+                  generateScore(evt);
+
+                });
+
+               responsePoints.applyEdits(pointGraphics);
+
+              //  responsePoints.applyEdits(layer.graphics);
                 break;
             case 'esriGeometryPolygon':
                 symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
@@ -545,40 +552,57 @@ require([
 
                 for (var i = 0; i < layer.graphics.length; i++) {
                     if (!includesProject(responsePolys, layer.graphics[i].attributes.ID_Number)) {
-                        //  console.log(layer.graphics[i]);
+                      //  console.log(layer.graphics[i]);
                         polygonGraphics.push(layer.graphics[i]);
 
                     }
 
                 }
                 console.log(polygonGraphics.length);
+
+                polygonGraphics.forEach(function(i){
+                  evt = {graphic: i};
+                  generateScore(evt);
+
+                });
+
                 //console.log(polygonGraphics);
                 responsePolys.applyEdits(polygonGraphics);
+
                 // responsePolys.applyEdits(layer.graphics);
                 break;
 
 
 
 
-            case 'esriGeometryMultipoint':
-                symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                        new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
+                case 'esriGeometryMultipoint':
+                    symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                            new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
 
-                var multiPointGraphics = [];
+                    var multiPointGraphics = [];
 
-                for (var i = 0; i < layer.graphics.length; i++) {
-                    if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
-                        console.log(layer.graphics[i]);
-                        multiPointGraphics.push(layer.graphics[i]);
+                    for (var i = 0; i < layer.graphics.length; i++) {
+                        if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
+                            console.log(layer.graphics[i]);
+                            multiPointGraphics.push(layer.graphics[i]);
 
+                        }
                     }
-                }
-                console.log(layer.graphics);
-                //console.log(polygonGraphics);
-                responseMultiPoints.applyEdits(multiPointGraphics);
-                responseMultiPoints.applyEdits(layer.graphics);
-                break;
+                    console.log(layer.graphics);
+
+                    multiPointGraphics.forEach(function(i){
+                      evt = {graphic: i};
+                      generateScore(evt);
+
+                    });
+
+
+                    //console.log(polygonGraphics);
+                    responseMultiPoints.applyEdits(multiPointGraphics);
+                  //  responseMultiPoints.applyEdits(layer.graphics);
+
+                    break;
 
 
             case 'esriGeometryPolyline':
@@ -589,14 +613,21 @@ require([
 
                     if (!includesProject(responseLines, layer.graphics[i].attributes.ID_Number)) {
                         polylineGraphics.push(layer.graphics[i]);
-                        //      console.log(layer.graphics[i]);
+                  //      console.log(layer.graphics[i]);
                     }
-                    //  console.log(layer.graphics[i]);
+                  //  console.log(layer.graphics[i]);
                 }
 
                 console.log(polylineGraphics.length);
-                responseLines.applyEdits(polylineGraphics);
-                //  responseLines.applyEdits(layer.graphics);
+                polylineGraphics.forEach(function(i){
+                  evt = {graphic: i};
+                  generateScore(evt);
+
+                });
+
+               responseLines.applyEdits(polylineGraphics);
+
+              //  responseLines.applyEdits(layer.graphics);
                 break;
 
         }
@@ -691,6 +722,8 @@ require([
         console.log(hotSpots.signInPromise.isFulfilled());
 
     }
+
+
 
 
     function showToolPanel() {
