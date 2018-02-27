@@ -399,6 +399,7 @@ require([
 
     //Create Feature Collection to be added into the map
     function generateFeatureCollection(fileName) {
+
         var name = fileName.split(".");
         //Chrome and IE add c:\fakepath to the value - we need to remove it
         //See this link for more info: http://davidwalsh.name/fakepath
@@ -472,7 +473,6 @@ require([
 
         return false;
     }
-
 
 
     //Add new Features
@@ -604,6 +604,8 @@ require([
             layer.setRenderer(new SimpleRenderer(symbol));
         }
     }
+
+
     //Extract Data
     function initializeHotSpotTool(evt) {
         showToolPanel();
@@ -780,6 +782,7 @@ require([
                     map.infoWindow.hide();
                 });
 
+                console.log(evt);
                 generateScore(evt);
             });
         });
@@ -826,7 +829,8 @@ require([
             var fieldAttributes = layerFieldToAttributes(selectedTemplate.featureLayer.fields);
             var newAttributes = lang.mixin(fieldAttributes, selectedTemplate.template.prototype.attributes);
             var newGraphic = new Graphic(result.geometry, null, newAttributes);
-
+            evt = {graphic: newGraphic};
+            generateScore(evt);
 
 
 
@@ -844,6 +848,8 @@ require([
                 map.infoWindow.resize(325, 185);
                 map.infoWindow.show(screenPoint, map.getInfoWindowAnchor(screenPoint));
                 templatePicker.clearSelection();
+
+
             });
             attInspector.on("attribute-change", function(result) {
                 result.feature.attributes[result.fieldName] = result.fieldValue; // result will contains  a feature layer to access its attributes
@@ -890,9 +896,9 @@ require([
 
     function generateScore(evt) {
         report = "";
+
         var query = new Query();
         query.geometry = evt.graphic.geometry;
-
 
         var projectLocation = query.geometry;
         var layersAfterQuery = {
@@ -1182,8 +1188,8 @@ require([
             report += "Weighted Score = " + weighted.toFixed(2) + "\n";
 
             //Assign score to seleceted graphic
-            evt.graphic.attributes.Tot_Score = total;
-            evt.graphic.attributes.Weight_Score = weighted;
+            evt.graphic.attributes.Tot_Score = total.toFixed(2);
+            evt.graphic.attributes.Weight_Score = weighted.toFixed(2);
 
             //Update layer of respective graphic after assigning score as attribute
             switch (evt.graphic.geometry.type) {
@@ -1196,7 +1202,7 @@ require([
                 case 'polygon':
                     responsePolys.applyEdits(null, [evt.graphic], null);
                     break;
-                case 'multipoint':
+                default:
                     responseMultiPoints.applyEdits(null, [evt.graphic], null);
                     break;
             }
