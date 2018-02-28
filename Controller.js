@@ -100,7 +100,7 @@ require([
     });
 
     var currentUser = "";
-    var admins = ["anguyen56", "kevinlam825"];
+    var admins = ["anguyen56", "kevinlam825", "david.somers_lahub", "karina.macias", "hunterowens"];
 
 
     var map = new Map("map", {
