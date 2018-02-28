@@ -832,6 +832,10 @@ require([
                     result.feature.getLayer().applyEdits(null, null, [result.feature]);
                     map.infoWindow.hide();
                 });
+                attInspector.on("attribute-change", function(result) {
+                    result.feature.attributes[result.fieldName] = result.fieldValue; // result will contains  a feature layer to access its attributes
+                    result.feature.getLayer().applyEdits(null, [result.feature], null);
+                });
 
                 console.log(evt);
                 generateScore(evt);
