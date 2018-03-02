@@ -818,7 +818,7 @@ require([
         var canEdit = false;
         admins.forEach(function(username) {
             if (currentUser == username) canEdit = true;
-            document.getElementById("weightChange").style.display = "none"
+            document.getElementById("weightChange").style.display = "block";
         });
 
         var layers = array.map(results.layers, function(result) {
@@ -1235,9 +1235,11 @@ require([
                     score += (publicHDI[i].area / totalArea) * publicHDI[i].score;
                 }
             } else {
-                if (publicHDI[0]) {
-
+                if (publicHDI.length > 0) {
                     score = publicHDI[0].attributes.Health_Sco;
+                    if (score == 5) score = 5;
+                    else if (score == 4) score = 2.5;
+                    else if (score == 3) score = 1.25;
                 }
             }
             score_content.innerHTML += "Public HDI Score = " + score.toFixed(2) + "<br>";
