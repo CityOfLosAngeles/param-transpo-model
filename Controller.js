@@ -731,9 +731,9 @@ require([
 
             }
 
-            console.log(hotSpots.portalUser);
+            //console.log(hotSpots.portalUser);
             currentUser = hotSpots.portalUser.username;
-            console.log(currentUser);
+            //console.log(currentUser);
             initEditTool(evt);
             generateFeatureCollection("fake_file");
         }, function() {
