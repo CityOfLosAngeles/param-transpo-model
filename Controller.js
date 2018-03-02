@@ -1,3 +1,23 @@
+//Set default values
+var section1WeightValue = 0.75;
+var section2WeightValue = 0.75;
+var section3WeightValue = 2;
+var section4WeightValue = 0.5;
+var section5WeightValue = 0.5;
+
+function updateWeights(sect1, sect2, sect3, sect4, sect5) {
+    if (sect1.value >= 0 && sect2.value >= 0 && sect3.value >= 0 && sect4.value >= 0 && sect5.value >= 0) {
+        section1WeightValue = sect1.value;
+        section2WeightValue = sect2.value;
+        section3WeightValue = sect3.value;
+        section4WeightValue = sect4.value;
+        section5WeightValue = sect5.value;
+
+        modal.style.display = "none";
+    } else alert("Please insert valid numbers only");
+}
+
+
 require([
     "esri/map",
     "esri/dijit/InfoWindow",
@@ -113,7 +133,8 @@ require([
     map.on("layers-add-result", initializeHotSpotTool);
 
 
-    //Layers
+    //layers
+
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.7,
@@ -144,11 +165,14 @@ require([
         visible: false
     });
 
+
+    //Added 3 new Layers - Need to implement into intersection
     var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
         outFields: ['*'],
         opacity: 1,
         visible: false
     });
+
 
     var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
@@ -174,6 +198,7 @@ require([
         visible: false
     });
 
+    //adding 2 layers to the list - sept 29
     var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
         outFields: ['*'],
         opacity: 0.8,
@@ -186,6 +211,7 @@ require([
         visible: false
     });
 
+    // added layers 1C & 2A - oct 6
     var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
@@ -197,6 +223,8 @@ require([
         opacity: 0.5,
         visible: false
     });
+
+    // added all of 1a - oct 6
 
     var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
         outFields: ['*'],
@@ -228,12 +256,16 @@ require([
         visible: false
     });
 
+    //1d layer
     var transitPrio = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/4", {
         outFields: ['*'],
         opacity: 1.0,
         visible: false
     });
 
+
+
+    //Added October 7
     var highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
@@ -251,6 +283,7 @@ require([
         outFields: ['*']
     });
 
+
     var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
@@ -261,6 +294,7 @@ require([
         outFields: ['*']
     });
 
+
     var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/kbuL963vJA6OC8rS/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
@@ -268,7 +302,7 @@ require([
 
 
 
-    //Change layer visualization
+
     schoolBufferLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 12, 218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
         schoolBufferLayer.setRenderer(renderer);
@@ -293,7 +327,12 @@ require([
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         economicHDILayer.setRenderer(renderer);
     });
-
+    /*
+        highInjuryNetworkLayer.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+            highInjuryNetworkLayer.setRenderer(renderer);
+        });
+    */
     schoolPolysLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         schoolPolysLayer.setRenderer(renderer);
@@ -325,6 +364,29 @@ require([
         transDemand.setRenderer(renderer);
     });
 
+    /*
+        transitEN.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([170, 102, 205])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            transitEN.setRenderer(renderer);
+        });
+        //    bicycleN.on("load", function() {
+        //        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color(52, 52, 52])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        //      bicycleN.setRenderer(renderer);
+        //    });
+        neighborhoodN.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            neighborhoodN.setRenderer(renderer);
+        });
+        pedestrianED.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            pedestrianED.setRenderer(renderer);
+        });
+        greenN.on("load", function() {
+            var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+            greenN.setRenderer(renderer);
+        });
+    */
+    //Need to recolor these 2 layers -- erase this comment when done
     highInjuryNetworkBuffer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         highInjuryNetworkBuffer.setRenderer(renderer);
@@ -336,17 +398,16 @@ require([
     });
 
 
-    //Insert layers for drawing tool
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
-    //Insert other layers used for scoring
+
     var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
     });
 
-    console.log(map.graphicsLayerIds);
+    //console.log(map.graphicsLayerIds);
 
 
     //Download Score Report
@@ -366,6 +427,10 @@ require([
         document.getElementById('report').href = url;
 
     }
+
+
+
+
 
     //Create Feature Collection to be added into the map
     function generateFeatureCollection(fileName) {
@@ -421,6 +486,7 @@ require([
             error: lang.hitch(this, errorHandler)
         });
     }
+
 
 
     function errorHandler(error) {
@@ -627,7 +693,6 @@ require([
         // the only way i can get this tool to execute is when users sketch a study area of their own
         hotSpots.startup();
 
-        console.log("ddd");
 
         //If any errors occur reset the widget (Not Working...troubleshoot)
         on(hotSpots, "job-fail", function(params) {
@@ -659,7 +724,7 @@ require([
         while (!hotSpots) {
 
         }
-        console.log(hotSpots.signInPromise.isFulfilled());
+        //console.log(hotSpots.signInPromise.isFulfilled());
         hotSpots.signInPromise.then(function() {
 
             while (!hotSpots.portalUser) {
@@ -668,7 +733,7 @@ require([
 
             console.log(hotSpots.portalUser);
             currentUser = hotSpots.portalUser.username;
-            //console.log(currentUser);
+            console.log(currentUser);
             initEditTool(evt);
             generateFeatureCollection("fake_file");
         }, function() {
@@ -689,7 +754,7 @@ require([
         });
 
 
-        console.log(hotSpots.signInPromise.isFulfilled());
+        //console.log(hotSpots.signInPromise.isFulfilled());
 
     }
 
@@ -753,6 +818,7 @@ require([
         var canEdit = false;
         admins.forEach(function(username) {
             if (currentUser == username) canEdit = true;
+            document.getElementById("weightChange").style.display = "none"
         });
 
         var layers = array.map(results.layers, function(result) {
@@ -791,7 +857,7 @@ require([
                     result.feature.getLayer().applyEdits(null, [result.feature], null);
                 });
 
-                console.log(evt);
+                //console.log(evt);
                 generateScore(evt);
             });
         });
@@ -1053,6 +1119,9 @@ require([
         } //end of SelectInBuffer
 
 
+
+
+
         //Start of Section 1 Scoring
         //1a
         function modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) {
@@ -1261,19 +1330,19 @@ require([
             score_content.innerHTML = " ";
 
             var section1TotalScore = mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash);
-            var section1WeightedScore = (section1TotalScore / 2) * 0.75;
+            var section1WeightedScore = (section1TotalScore / 2) * section1WeightValue;
 
             var section2TotalScore = safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
-            var section2WeightedScore = section2TotalScore * 0.75;
+            var section2WeightedScore = section2TotalScore * section2WeightValue;
 
             var section3TotalScore = economicHDIScore(economicHDI);
-            var section3WeightedScore = section3TotalScore * 2;
+            var section3WeightedScore = section3TotalScore * section3WeightValue;
 
             var section4TotalScore = criticalConnetionScore(criticalConnect);
-            var section4WeightedScore = section4TotalScore * 0.5;
+            var section4WeightedScore = section4TotalScore * section4WeightValue;
 
             var section5TotalScore = sustainableAndResilientScore(stormwater, urbanHeat);
-            var section5WeightedScore = section5TotalScore * 0.5;
+            var section5WeightedScore = section5TotalScore * section5WeightValue;
 
             var total = (section1TotalScore + section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore).toFixed(2);
             var weighted = (section1WeightedScore + section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore).toFixed(2);
