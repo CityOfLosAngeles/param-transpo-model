@@ -18,38 +18,38 @@
             overflow: hidden;
             font-family: Calibri;
         }
-        
+
         .claro {
             background-color: white;
             color: white;
             font-family: Calibri;
         }
-        
+
         #score {
             font-size: 1.2em;
             width: 250px;
             height: auto;
             font-family: Calibri;
         }
-        
+
         #extractDiv {
             font-size: 1.2em;
             width: 250px;
             height: auto;
             font-family: Calibri;
         }
-        
+
         #report {
             font: bold 12px;
             text-decoration: none;
             background-color: #EEEEEE;
             color: #333333;
         }
-        
+
         #map {
             color: #002e6d;
         }
-        
+
         #header {
             font-size: 1.9em;
             font-family: Calibri;
@@ -57,20 +57,20 @@
             color: #002e6d;
             background-color: white;
         }
-        
+
         #layerListDom {
             font-family: Calibri;
         }
-        
+
         #editorDiv {
             font-family: Calibri;
         }
-        
+
         #templatePickerDiv {
             font-family: Calibri;
             color: black;
         }
-        
+
         #rightDiv {
             border: none;
             font-size: 1em;
@@ -78,23 +78,23 @@
             background-color: white;
             color: black;
         }
-        
+
         .templatePicker {
             border: none;
         }
-        
+
         .esriAttributeInspector {
             height: 100px;
         }
-        
+
         .dj_ie .infowindow .window .top .right .user .content {
             position: relative;
         }
-        
+
         .dj_ie .simpleInfoWindow .content {
             position: relative;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -108,7 +108,7 @@
             background-color: rgb(0, 0, 0);
             background-color: rgba(0, 0, 0, 0.4);
         }
-        
+
         .modal-content {
             color: #000;
             margin: auto;
@@ -118,18 +118,18 @@
             border: 1px solid #888;
             width: 250px;
         }
-        
+
         .modal-form {
             display: inline-block;
         }
-        
+
         .close {
             color: #aaaaaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
-        
+
         .close:hover,
         .close:focus {
             color: #000;
@@ -239,6 +239,10 @@
                     <span><strong>Change scoring weights</strong></span><br>
                     <button id="weightButton">Weights</button>
                 </div>
+                <div id ="deleteGraphics">
+                  <span><strong>Delete All Projects</strong></span><br>
+                  <button id="deleteGraphicsButton"> Delete </button>
+                </div>
 
                 <div id='rightpane'>
 
@@ -266,22 +270,19 @@
 
         </div>
 
-        
+
   </div>
 
 <script>
     var modal = document.getElementById('weightWindow');
     var btn = document.getElementById("weightButton");
     var span = document.getElementsByClassName("close")[0];
-
     btn.onclick = function() {
         modal.style.display = "block";
     }
-
     span.onclick = function() {
         modal.style.display = "none";
     }
-
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
