@@ -290,6 +290,19 @@ require([
         outFields: ['*']
     });
 
+    function newVisuals() {
+        var symbol = new SimpleLineSymbol({
+            "color": [0, 92, 230, 220],
+            "width": 2.25,
+            "type": "esriSLS",
+            "style": "esriSLSSolid"
+        });
+
+        var renderer = new esri.renderer.SimpleRenderer(symbol);
+        responseLines.setRenderer(renderer);
+    }
+
+    newVisuals();
 
     //Change layer visualization
 
@@ -771,37 +784,35 @@ require([
     layerListToggle.startup();
 
     function deleteGraphics() {
-      deleteGraphicsButton.addEventListener("click", () => {
-        responsePolys.applyEdits(null, null, responsePolys.graphics);
-      responseLines.applyEdits(null, null, responseLines.graphics);
-    });
+        deleteGraphicsButton.addEventListener("click", () => {
+            responsePolys.applyEdits(null, null, responsePolys.graphics);
+            responseLines.applyEdits(null, null, responseLines.graphics);
+        });
 
 
-    //build query filter
-    var query = new esri.tasks.Query();
-    query.returnGeometry = true;
-    query.outFields = ["*"];
-    query.outSpatialReference = { "wkid": 27700 };
-    query.where = "1 = 1";
-    // Query for the features with the given object ID
-    pointsOfInterestD.queryFeatures(query, function (featureSet) {
-        var graphics = featureSet.features;
-        pointsOfInterestD.applyEdits(null, null, graphics, function (deletes) {
-            console.debug(deletes.length)
-        },
-        function errCallback(err) {
-            alert(err);
-        })
-    });
-  }
+        //build query filter
+        var query = new esri.tasks.Query();
+        query.returnGeometry = true;
+        query.outFields = ["*"];
+        query.outSpatialReference = { "wkid": 27700 };
+        query.where = "1 = 1";
+        // Query for the features with the given object ID
+        pointsOfInterestD.queryFeatures(query, function(featureSet) {
+            var graphics = featureSet.features;
+            pointsOfInterestD.applyEdits(null, null, graphics, function(deletes) {
+                    console.debug(deletes.length)
+                },
+                function errCallback(err) {
+                    alert(err);
+                })
+        });
+    }
 
     function initEditTool(results) {
 
         var canEdit = false;
         admins.forEach(function(username) {
             if (currentUser == username) canEdit = true;
-            console.log("hit");
-            console.log(document.getElementById("weightChange"));
             document.getElementById("weightChange").style.display = "block";
 
         });
