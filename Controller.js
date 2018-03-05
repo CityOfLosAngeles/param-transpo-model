@@ -785,8 +785,10 @@ require([
 
     function deleteGraphics() {
         deleteGraphicsButton.addEventListener("click", () => {
-            responsePolys.applyEdits(null, null, responsePolys.graphics);
-            responseLines.applyEdits(null, null, responseLines.graphics);
+          responsePolys.applyEdits(null, null, responsePolys.graphics);
+          responseLines.applyEdits(null, null, responseLines.graphics);
+          responsePoints.applyEdits(null, null, responsePoints.graphics);
+          responseMultiPoints.applyEdits(null, null, responseMultiPoints.graphics);
         });
 
 
