@@ -290,7 +290,7 @@ require([
         outFields: ['*']
     });
 
-    function newVisuals() {
+    function newVisuals() { //Change visuals for user drawn lines
         var symbol = new SimpleLineSymbol({
             "color": [0, 92, 230, 220],
             "width": 2.25,
@@ -785,10 +785,10 @@ require([
 
     function deleteGraphics() {
         deleteGraphicsButton.addEventListener("click", () => {
-          responsePolys.applyEdits(null, null, responsePolys.graphics);
-          responseLines.applyEdits(null, null, responseLines.graphics);
-          responsePoints.applyEdits(null, null, responsePoints.graphics);
-          responseMultiPoints.applyEdits(null, null, responseMultiPoints.graphics);
+            responsePolys.applyEdits(null, null, responsePolys.graphics);
+            responseLines.applyEdits(null, null, responseLines.graphics);
+            responsePoints.applyEdits(null, null, responsePoints.graphics);
+            responseMultiPoints.applyEdits(null, null, responseMultiPoints.graphics);
         });
 
 
@@ -814,8 +814,10 @@ require([
 
         var canEdit = false;
         admins.forEach(function(username) {
-            if (currentUser == username) canEdit = true;
-            document.getElementById("weightChange").style.display = "block";
+            if (currentUser == username) {
+                canEdit = true;
+                document.getElementById("weightChange").style.display = "block";
+            }
 
         });
 
