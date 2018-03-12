@@ -180,7 +180,7 @@ require([
         visible: false
     });
 
-    var schoolPolysLayer = new FeatureLayer("https://maps.lacity.org/lahub/rest/services/LAUSD_Schools/MapServer/2", {
+    var schoolPolysLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
         outFields: ['*'],
         opacity: 1,
         visible: false
@@ -285,7 +285,7 @@ require([
         outFields: ['*']
     });
 
-    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/kbuL963vJA6OC8rS/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
+    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/8uuVaw0xI7Z3CRoB/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
