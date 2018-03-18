@@ -26,16 +26,18 @@
         }
         
         #score {
-            font-size: 1.2em;
+            font-size: 1.1em;
             width: 250px;
-            height: auto;
+            max-height: 250px;
             font-family: Calibri;
+            overflow-y: scroll
         }
         
         #extractDiv {
             font-size: 1.2em;
             width: 250px;
-            height: auto;
+            max-height: auto;
+            overflow-x: visible;
             font-family: Calibri;
         }
         
@@ -159,12 +161,16 @@
                 <form action="" style="display: inline-block; text-align: center;">
                     Mobility Plan Alignment Weight:<br>
                     <input id="sec1" type="text" name="section1" value="0.75">
+                    <br>
                     <br> Safe & Healthy Weight:<br>
                     <input type="text" name="section2" value="0.75">
+                    <br>
                     <br> Equitable and Inclusive Weight:<br>
                     <input type="text" name="section3" value="2">
+                    <br>
                     <br> Acessible and Affordable Weight:<br>
                     <input type="text" name="section4" value="0.5">
+                    <br>
                     <br> Sustainable and Resilient Weight:<br>
                     <input type="text" name="section5" value="0.5">
                     <br>
@@ -228,7 +234,7 @@
             </div>
 
             <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" style="overflow:auto;">
-                <div id="score" syle: "width: 300px; height: 400px; position: absolute">
+                <div id="score">
                 </div>
             </div>
 
