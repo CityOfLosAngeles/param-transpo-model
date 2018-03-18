@@ -1031,19 +1031,15 @@ require([
         urbanHeatLayer.queryFeatures(query, selectInBuffer);
         economicHDILayer.queryFeatures(query, selectInBuffer);
         highInjuryNetworkLayer.queryFeatures(query, selectInBuffer);
-
         halfMileSchool.queryFeatures(query, selectInBuffer);
-
         highInjuryNetworkBuffer.queryFeatures(query, selectInBuffer);
         criticalConnections.queryFeatures(query, selectInBuffer);
         threeMileTripLayer.queryFeatures(query, selectInBuffer);
-
         bicycleN.queryFeatures(query, selectInBuffer);
         transitEN.queryFeatures(query, selectInBuffer);
         neighborhoodN.queryFeatures(query, selectInBuffer);
         pedestrianED.queryFeatures(query, selectInBuffer);
         greenN.queryFeatures(query, selectInBuffer);
-
         transitPrio.queryFeatures(query, selectInBuffer);
         downtownDashBuffer.queryFeatures(query, selectInBuffer);
         dashCommunityBuffer.queryFeatures(query, selectInBuffer);
@@ -1156,6 +1152,7 @@ require([
 
             score_content.innerHTML += "MP Network Concept Score = " + score + "<br>"
             report += "1a. Mobility Plan Network Concept Score = " + score + "\n";
+            evt.graphic.attributes.MP_Network_Concept_Score = score;
 
             return score;
         }
@@ -1169,6 +1166,8 @@ require([
             }
             score_content.innerHTML += "Active Transportation Score = " + score + "<br>"
             report += "1c. Active Transportation Demand Score = " + score + "\n";
+            evt.graphic.attributes.Active_Transportation_Score = score;
+
             return score;
         }
 
@@ -1190,6 +1189,8 @@ require([
 
             score_content.innerHTML += "Connectivity Score = " + score + "<br>"
             report += "1d. First/Last Mile Connectivity Score = " + score + "\n";
+            evt.graphic.attributes.Connectivity_Score = score;
+
             return score;
         }
 
@@ -1212,8 +1213,11 @@ require([
                 schoolBufferScore = 0;
                 schoolPolyScore = 5;
             }
-            score_content.innerHTML += "Top 50 School Score = " + schoolBufferScore + "<br>Half Mile School Score = " + schoolPolyScore + "<br>"
-            report += "Top 50 School Score = " + schoolBufferScore + "\nHalf Mile School Score = " + schoolPolyScore + "\n";
+            score_content.innerHTML += "Half Mile School Score = " + schoolPolyScore + "<br>Safe Routes Score = " + schoolBufferScore + "<br>"
+            report += "Half Mile School Score = " + schoolPolyScore + "\nSafe Routes School Score = " + schoolBufferScore + "\n";
+            evt.graphic.attributes.Half_Mile_School_Score = schoolPolyScore;
+            evt.graphic.attributes.Safe_Routes_School_Score = schoolBufferScore;
+
             return schoolBufferScore + schoolPolyScore;
         }
 
@@ -1225,6 +1229,8 @@ require([
 
             score_content.innerHTML += "High Injury Network Score = " + score + "<br>";
             report += "High Injury Network Score = " + score + "\n";
+            evt.graphic.attributes.High_Injury_Network_Score = score;
+
             return score;
         }
 
@@ -1251,6 +1257,8 @@ require([
             }
             score_content.innerHTML += "Public HDI Score = " + score.toFixed(2) + "<br>";
             report += "Public HDI Score = " + score.toFixed(2) + "\n";
+            evt.graphic.attributes.Public_HDI_Score = score.toFixed(2);
+
             return score;
         }
 
@@ -1276,6 +1284,8 @@ require([
             }
             score_content.innerHTML += "<b>Economic HDI Score = " + score + "</b><br>";
             report += "Economic HDI Score = " + score + "\n";
+            evt.graphic.attributes.Economic_HDI_Score = score;
+
             return score;
         }
         //End of Section 3 Scoring
@@ -1289,6 +1299,8 @@ require([
             }
             score_content.innerHTML += "<b>Critical Connection Score = " + score + "</b><br>";
             report += "Critical Connection Score = " + score + "\n";
+            evt.graphic.attributes.Critical_Connection_Score = score;
+
             return score;
         }
         //End of Section 4 Scoring
@@ -1307,6 +1319,7 @@ require([
             }
             score_content.innerHTML += "Storm Water Score = " + score + "<br>";
             report += "Storm Water Score = " + score + "\n";
+            evt.graphic.attributes.Stormwater_Score = score;
 
             return score;
         }
@@ -1324,6 +1337,8 @@ require([
             }
             score_content.innerHTML += "Urban Heat Score = " + score + "<br>";
             report += "Urban Heat Score = " + score + "\n";
+            evt.graphic.attributes.Urban_Heat_Score = score;
+
             return score;
         }
 
@@ -1355,8 +1370,8 @@ require([
 
             var total = (section1TotalScore + section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore).toFixed(2);
             var weighted = (section1WeightedScore + section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore).toFixed(2);
-            score_content.innerHTML += "<br><b>Total Score = " + total + "</b><br>";
-            score_content.innerHTML += "<b>Weighted Score = " + weighted + "</b><br>";
+            score_content.innerHTML = "<br><b>Total Score = " + total + "</b><br><b>Weighted Score = " + weighted + "</b><br><br>" + score_content.innerHTML;
+            //score_content.innerHTML += "<b>Weighted Score = " + weighted + "</b><br>";
             report += "\nTotal Score = " + total + "\n";
             report += "Weighted Score = " + weighted + "\n";
 
