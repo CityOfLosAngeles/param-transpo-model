@@ -198,12 +198,6 @@ require([
         visible: false
     });
 
-    var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
-        outFields: ['*'],
-        opacity: 0.8,
-        visible: false
-    });
-
     var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
@@ -341,11 +335,6 @@ require([
         downtownDashBuffer.setRenderer(renderer);
     });
 
-    streetDesign.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
-        streetDesign.setRenderer(renderer);
-    });
-
     rStationConnectivity.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         rStationConnectivity.setRenderer(renderer);
@@ -375,7 +364,7 @@ require([
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
 
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -765,7 +754,6 @@ require([
             { layer: schoolPolysLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
             { layer: dashCommunityBuffer, visible: true },
-            { layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
             { layer: halfMileSchool, visible: true },
