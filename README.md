@@ -12,9 +12,7 @@ The project creates a needs-driven transportation capital project scoring web ma
 
 ### How to change the weight and total score with a new layer
 
-To change the weight, the user has to be logged in with an administrative account.  On the right-side column of the web app, there is a button called 'Weights' underneath the title "Change scoring weights".  Click on the Weights button, 5 categories will appear and the user will be allowed to manually change weights for each of the given categories. Once the user is done changing weights of their chosen categories, the user will click the 'Submit' button so that the new weights are applied.
-
-After the weights are changed, the user has to click 'Updated Scores' button so that the new weights are implemented in the new score.  
+The user has to log in with an administrator account to change the weight.  On the right-side column of the web app, there is a button called 'Weights' underneath the title "Change scoring weights".  Click on the 'Weights' button, 5 categories will appear and the user will be allowed to manually change weights for each of the given categories. Once the user is done changing weights of their chosen categories, the user will click the 'Submit' button so that the new weights are applied. After the weights are changed, the user has to click 'Updated Scores' button so that the new weights are implemented in the new score.  
 
 ### How weighting by area works
 
