@@ -201,11 +201,7 @@ require([
         visible: false
     });
 
-    var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
-        outFields: ['*'],
-        opacity: 0.8,
-        visible: false
-    });
+
 
     var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
         outFields: ['*'],
@@ -344,11 +340,6 @@ require([
         downtownDashBuffer.setRenderer(renderer);
     });
 
-    streetDesign.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
-        streetDesign.setRenderer(renderer);
-    });
-
     rStationConnectivity.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         rStationConnectivity.setRenderer(renderer);
@@ -378,7 +369,7 @@ require([
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
 
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -485,116 +476,116 @@ require([
 
 
     //Add new Features
-    function generateFeatureCollection (fileName) {
-             var name = fileName.split(".");
-             //Chrome and IE add c:\fakepath to the value - we need to remove it
-             //See this link for more info: http://davidwalsh.name/fakepath
-             name = name[0].replace("c:\\fakepath\\", "");
+    function generateFeatureCollection(fileName) {
+        var name = fileName.split(".");
+        //Chrome and IE add c:\fakepath to the value - we need to remove it
+        //See this link for more info: http://davidwalsh.name/fakepath
+        name = name[0].replace("c:\\fakepath\\", "");
 
-             dom.byId('upload-status').innerHTML = '<b>Loading </b>' + name;
+        dom.byId('upload-status').innerHTML = '<b>Loading </b>' + name;
 
-             //Define the input params for generate see the rest doc for details
-             //http://www.arcgis.com/apidocs/rest/index.html?generate.html
-             var params = {
-               'name': name,
-               'targetSR': map.spatialReference,
-               'maxRecordCount': 1000,
-               'enforceInputFileSizeLimit': true,
-               'enforceOutputJsonSizeLimit': true
-             };
+        //Define the input params for generate see the rest doc for details
+        //http://www.arcgis.com/apidocs/rest/index.html?generate.html
+        var params = {
+            'name': name,
+            'targetSR': map.spatialReference,
+            'maxRecordCount': 1000,
+            'enforceInputFileSizeLimit': true,
+            'enforceOutputJsonSizeLimit': true
+        };
 
-             //generalize features for display Here we generalize at 1:40,000 which is approx 10 meters
-             //This should work well when using web mercator.
-             var extent = scaleUtils.getExtentForScale(map, 40000);
-             var resolution = extent.getWidth() / map.width;
-             params.generalize = true;
-             params.maxAllowableOffset = resolution;
-             params.reducePrecision = true;
-             params.numberOfDigitsAfterDecimal = 0;
+        //generalize features for display Here we generalize at 1:40,000 which is approx 10 meters
+        //This should work well when using web mercator.
+        var extent = scaleUtils.getExtentForScale(map, 40000);
+        var resolution = extent.getWidth() / map.width;
+        params.generalize = true;
+        params.maxAllowableOffset = resolution;
+        params.reducePrecision = true;
+        params.numberOfDigitsAfterDecimal = 0;
 
-             var myContent = {
-               'filetype': 'shapefile',
-               'publishParameters': JSON.stringify(params),
-               'f': 'json',
-               'callback.html': 'textarea'
-             };
+        var myContent = {
+            'filetype': 'shapefile',
+            'publishParameters': JSON.stringify(params),
+            'f': 'json',
+            'callback.html': 'textarea'
+        };
 
-             //use the rest generate operation to generate a feature collection from the zipped shapefile
-             request({
-               url: portalUrl + '/sharing/rest/content/features/generate',
-               content: myContent,
-               form: dom.byId('uploadForm'),
-               handleAs: 'json',
-               load: lang.hitch(this, function (response) {
-                 if (response.error) {
-                   errorHandler(response.error);
-                   return;
-                 }
-                 var layerName = response.featureCollection.layers[0].layerDefinition.name;
-                 dom.byId('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
-                 addShapefileToMap(response.featureCollection);
-               }),
-               error: lang.hitch(this, errorHandler)
-             });
-           }
+        //use the rest generate operation to generate a feature collection from the zipped shapefile
+        request({
+            url: portalUrl + '/sharing/rest/content/features/generate',
+            content: myContent,
+            form: dom.byId('uploadForm'),
+            handleAs: 'json',
+            load: lang.hitch(this, function(response) {
+                if (response.error) {
+                    errorHandler(response.error);
+                    return;
+                }
+                var layerName = response.featureCollection.layers[0].layerDefinition.name;
+                dom.byId('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
+                addShapefileToMap(response.featureCollection);
+            }),
+            error: lang.hitch(this, errorHandler)
+        });
+    }
 
-           function errorHandler (error) {
-             dom.byId('upload-status').innerHTML =
-             "<p style='color:red'>" + error.message + "</p>";
-           }
+    function errorHandler(error) {
+        dom.byId('upload-status').innerHTML =
+            "<p style='color:red'>" + error.message + "</p>";
+    }
 
-           function addShapefileToMap (featureCollection) {
-             //add the shapefile to the map and zoom to the feature collection extent
-             //If you want to persist the feature collection when you reload browser you could store the collection in
-             //local storage by serializing the layer using featureLayer.toJson()  see the 'Feature Collection in Local Storage' sample
-             //for an example of how to work with local storage.
-             var fullExtent;
-             var layers = [];
+    function addShapefileToMap(featureCollection) {
+        //add the shapefile to the map and zoom to the feature collection extent
+        //If you want to persist the feature collection when you reload browser you could store the collection in
+        //local storage by serializing the layer using featureLayer.toJson()  see the 'Feature Collection in Local Storage' sample
+        //for an example of how to work with local storage.
+        var fullExtent;
+        var layers = [];
 
-             arrayUtils.forEach(featureCollection.layers, function (layer) {
+        arrayUtils.forEach(featureCollection.layers, function(layer) {
 
-               var featureLayer = new FeatureLayer(layer, {
+            var featureLayer = new FeatureLayer(layer, {
 
-               });
-               //associate the feature with the popup on click to enable highlight and zoom to
-               featureLayer.on('click', function (event) {
-                 map.infoWindow.setFeatures([event.graphic]);
-               });
+            });
+            //associate the feature with the popup on click to enable highlight and zoom to
+            featureLayer.on('click', function(event) {
+                map.infoWindow.setFeatures([event.graphic]);
+            });
 
-               //change default symbol if desired. Comment this out and the layer will draw with the default symbology
-               changeRenderer(featureLayer);
-               fullExtent = fullExtent ?
-                 fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
-               layers.push(featureLayer);
-             });
-             map.addLayers(layers);
+            //change default symbol if desired. Comment this out and the layer will draw with the default symbology
+            changeRenderer(featureLayer);
+            fullExtent = fullExtent ?
+                fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
+            layers.push(featureLayer);
+        });
+        map.addLayers(layers);
 
-             map.setExtent(fullExtent.expand(1.25), true);
+        map.setExtent(fullExtent.expand(1.25), true);
 
-             dom.byId('upload-status').innerHTML = "";
-           }
+        dom.byId('upload-status').innerHTML = "";
+    }
 
-           function changeRenderer (layer) {
-             //change the default symbol for the feature collection for polygons and points
-             var symbol = null;
-             switch (layer.geometryType) {
-              case 'esriGeometryPoint':
-                 responsePoints.applyEdits(layer.graphics);
-                 break;
-              case 'esriGeometryPolygon':
+    function changeRenderer(layer) {
+        //change the default symbol for the feature collection for polygons and points
+        var symbol = null;
+        switch (layer.geometryType) {
+            case 'esriGeometryPoint':
+                responsePoints.applyEdits(layer.graphics);
+                break;
+            case 'esriGeometryPolygon':
                 responsePolys.applyEdits(layer.graphics);
                 break;
-              case 'esriGeometryPolyline':
+            case 'esriGeometryPolyline':
                 responseLines.applyEdits(layer.graphics);
                 break;
-              case 'esriGeometryMultipoint':
+            case 'esriGeometryMultipoint':
                 responseMultiPoints.applyEdits(layer.graphics);
                 break;
-              }
-             if (symbol) {
-               layer.setRenderer(new SimpleRenderer(symbol));
-             }
-           }
+        }
+        if (symbol) {
+            layer.setRenderer(new SimpleRenderer(symbol));
+        }
+    }
 
 
     //Extract Data
@@ -720,7 +711,6 @@ require([
             { layer: schoolPolysLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
             { layer: dashCommunityBuffer, visible: true },
-            { layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
             { layer: halfMileSchool, visible: true },
@@ -737,31 +727,32 @@ require([
 
 
     layerListToggle.startup();
-    function updateScores(){
+
+    function updateScores() {
         updateScoresButton.addEventListener("click", () => {
 
-          console.log(responsePolys);
-          responsePolys.graphics.forEach( x  => {
-              generateScore({graphic: x});
+            console.log(responsePolys);
+            responsePolys.graphics.forEach(x => {
+                generateScore({ graphic: x });
 
 
-          });
+            });
 
-          responsePoints.graphics.forEach( x  => {
-              generateScore({graphic: x});
-
-
-          });
+            responsePoints.graphics.forEach(x => {
+                generateScore({ graphic: x });
 
 
-
-          responseLines.graphics.forEach( x  => {
-            generateScore({graphic: x});
-
-          });
+            });
 
 
-          console.log("done");
+
+            responseLines.graphics.forEach(x => {
+                generateScore({ graphic: x });
+
+            });
+
+
+            console.log("done");
 
 
 
@@ -775,7 +766,7 @@ require([
             responseLines.applyEdits(null, null, responseLines.graphics);
             responsePoints.applyEdits(null, null, responsePoints.graphics);
             responseMultiPoints.applyEdits(null, null, responseMultiPoints.graphics);
-    });
+        });
 
 
 
