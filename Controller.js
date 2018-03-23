@@ -102,7 +102,7 @@ require([
     var report = "";
 
     var deleteGraphicsButton = document.getElementById('deleteGraphicsButton');
-
+    var updateScoresButton = document.getElementById('updateScoresButton');
 
 
 
@@ -134,6 +134,9 @@ require([
 
     map.on("layers-add-result", initializeHotSpotTool);
     map.on("layers-add-result", deleteGraphics);
+    map.on("layers-add-result", updateScores);
+
+
 
     //layers
 
@@ -193,6 +196,12 @@ require([
     });
 
     var dashCommunityBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/DASH%20Community%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
+        outFields: ['*'],
+        opacity: 0.8,
+        visible: false
+    });
+
+    var streetDesign = new FeatureLayer("http://maps.lacity.org/lahub/rest/services/Street_Information/MapServer/36", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
@@ -335,6 +344,11 @@ require([
         downtownDashBuffer.setRenderer(renderer);
     });
 
+    streetDesign.on("load", function() {
+        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([102, 55, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([19, 88, 255]))));
+        streetDesign.setRenderer(renderer);
+    });
+
     rStationConnectivity.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         rStationConnectivity.setRenderer(renderer);
@@ -364,7 +378,7 @@ require([
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
 
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, streetDesign, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -471,170 +485,122 @@ require([
 
 
     //Add new Features
-    function addShapefileToMap(featureCollection) {
-        //add the shapefile to the map and zoom to the feature collection extent
-        //If you want to persist the feature collection when you reload browser you could store the collection in
-        //local storage by serializing the layer using featureLayer.toJson()  see the 'Feature Collection in Local Storage' sample
-        //for an example of how to work with local storage.
-        var fullExtent;
-        var layers = [];
+    function generateFeatureCollection (fileName) {
+             var name = fileName.split(".");
+             //Chrome and IE add c:\fakepath to the value - we need to remove it
+             //See this link for more info: http://davidwalsh.name/fakepath
+             name = name[0].replace("c:\\fakepath\\", "");
 
-        arrayUtils.forEach(featureCollection.layers, function(layer) {
-            var infoTemplate = new InfoTemplate("Details", "${*}");
-            var featureLayer = new FeatureLayer(layer, {
-                infoTemplate: infoTemplate
-            });
-            //associate the feature with the popup on click to enable highlight and zoom to
-            featureLayer.on('click', function(event) {
-                map.infoWindow.setFeatures([event.graphic]);
-            });
-            //change default symbol if desired. Comment this out and the layer will draw with the default symbology
-            changeRenderer(featureLayer);
-            fullExtent = fullExtent ?
-                fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
-            //    console.log(featureLayer);
-            layers.push(featureLayer);
-        });
-        map.addLayers(layers);
-        map.setExtent(fullExtent.expand(1.25), true);
+             dom.byId('upload-status').innerHTML = '<b>Loading </b>' + name;
 
-        dom.byId('upload-status').innerHTML = "";
-    }
+             //Define the input params for generate see the rest doc for details
+             //http://www.arcgis.com/apidocs/rest/index.html?generate.html
+             var params = {
+               'name': name,
+               'targetSR': map.spatialReference,
+               'maxRecordCount': 1000,
+               'enforceInputFileSizeLimit': true,
+               'enforceOutputJsonSizeLimit': true
+             };
 
-    function changeRenderer(layer) {
-        //change the default symbol for the feature collection for polygons and points
-        var symbol = null;
-        switch (layer.geometryType) {
-            case 'esriGeometryPoint':
-                symbol = new PictureMarkerSymbol({
-                    'angle': 0,
-                    'xoffset': 0,
-                    'yoffset': 0,
-                    'type': 'esriPMS',
-                    'url': 'https://static.arcgis.com/images/Symbols/Shapes/BluePin1LargeB.png',
-                    'contentType': 'image/png',
-                    'width': 20,
-                    'height': 20
-                });
-                var pointGraphics = [];
-                for (var i = 0; i < layer.graphics.length; i++) {
-                    //console.log(layer.graphics[i].attributes.ProjectID);
-                    if (!includesProject(responsePoints, layer.graphics[i].attributes.ID_Number)) {
-                        pointGraphics.push(layer.graphics[i]);
+             //generalize features for display Here we generalize at 1:40,000 which is approx 10 meters
+             //This should work well when using web mercator.
+             var extent = scaleUtils.getExtentForScale(map, 40000);
+             var resolution = extent.getWidth() / map.width;
+             params.generalize = true;
+             params.maxAllowableOffset = resolution;
+             params.reducePrecision = true;
+             params.numberOfDigitsAfterDecimal = 0;
 
-                    }
-                    //  console.log(layer.graphics[i]);
-                }
+             var myContent = {
+               'filetype': 'shapefile',
+               'publishParameters': JSON.stringify(params),
+               'f': 'json',
+               'callback.html': 'textarea'
+             };
 
-                //console.log(pointGraphics.length);
+             //use the rest generate operation to generate a feature collection from the zipped shapefile
+             request({
+               url: portalUrl + '/sharing/rest/content/features/generate',
+               content: myContent,
+               form: dom.byId('uploadForm'),
+               handleAs: 'json',
+               load: lang.hitch(this, function (response) {
+                 if (response.error) {
+                   errorHandler(response.error);
+                   return;
+                 }
+                 var layerName = response.featureCollection.layers[0].layerDefinition.name;
+                 dom.byId('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
+                 addShapefileToMap(response.featureCollection);
+               }),
+               error: lang.hitch(this, errorHandler)
+             });
+           }
 
-                pointGraphics.forEach(function(i) {
-                    evt = { graphic: i };
-                    generateScore(evt);
+           function errorHandler (error) {
+             dom.byId('upload-status').innerHTML =
+             "<p style='color:red'>" + error.message + "</p>";
+           }
 
-                });
+           function addShapefileToMap (featureCollection) {
+             //add the shapefile to the map and zoom to the feature collection extent
+             //If you want to persist the feature collection when you reload browser you could store the collection in
+             //local storage by serializing the layer using featureLayer.toJson()  see the 'Feature Collection in Local Storage' sample
+             //for an example of how to work with local storage.
+             var fullExtent;
+             var layers = [];
 
-                responsePoints.applyEdits(pointGraphics);
+             arrayUtils.forEach(featureCollection.layers, function (layer) {
 
-                //  responsePoints.applyEdits(layer.graphics);
+               var featureLayer = new FeatureLayer(layer, {
+
+               });
+               //associate the feature with the popup on click to enable highlight and zoom to
+               featureLayer.on('click', function (event) {
+                 map.infoWindow.setFeatures([event.graphic]);
+               });
+
+               //change default symbol if desired. Comment this out and the layer will draw with the default symbology
+               changeRenderer(featureLayer);
+               fullExtent = fullExtent ?
+                 fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
+               layers.push(featureLayer);
+             });
+             map.addLayers(layers);
+
+             map.setExtent(fullExtent.expand(1.25), true);
+
+             dom.byId('upload-status').innerHTML = "";
+           }
+
+           function changeRenderer (layer) {
+             //change the default symbol for the feature collection for polygons and points
+             var symbol = null;
+             switch (layer.geometryType) {
+              case 'esriGeometryPoint':
+                 responsePoints.applyEdits(layer.graphics);
+                 break;
+              case 'esriGeometryPolygon':
+                responsePolys.applyEdits(layer.graphics);
                 break;
-            case 'esriGeometryPolygon':
-                symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                        new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
-
-                var polygonGraphics = [];
-
-                for (var i = 0; i < layer.graphics.length; i++) {
-                    if (!includesProject(responsePolys, layer.graphics[i].attributes.ID_Number)) {
-                        //  console.log(layer.graphics[i]);
-                        polygonGraphics.push(layer.graphics[i]);
-
-                    }
-
-                }
-                //console.log(polygonGraphics.length);
-
-                polygonGraphics.forEach(function(i) {
-                    evt = { graphic: i };
-                    generateScore(evt);
-
-                });
-
-                //console.log(polygonGraphics);
-                responsePolys.applyEdits(polygonGraphics);
-                responsePolys.refresh();
-                // responsePolys.applyEdits(layer.graphics);
+              case 'esriGeometryPolyline':
+                responseLines.applyEdits(layer.graphics);
                 break;
-
-
-
-
-            case 'esriGeometryMultipoint':
-                symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                        new Color([112, 112, 112]), 1), new Color([136, 136, 136, 0.25]));
-
-                var multiPointGraphics = [];
-
-                for (var i = 0; i < layer.graphics.length; i++) {
-                    if (!includesProject(responseMultiPoints, layer.graphics[i].attributes.ID_Number)) {
-                        //console.log(layer.graphics[i]);
-                        multiPointGraphics.push(layer.graphics[i]);
-
-                    }
-                }
-                // console.log(layer.graphics);
-
-                multiPointGraphics.forEach(function(i) {
-                    evt = { graphic: i };
-                    generateScore(evt);
-
-                });
-
-
-                //console.log(polygonGraphics);
-                responseMultiPoints.applyEdits(multiPointGraphics);
-                //  responseMultiPoints.applyEdits(layer.graphics);
-
+              case 'esriGeometryMultipoint':
+                responseMultiPoints.applyEdits(layer.graphics);
                 break;
-
-
-            case 'esriGeometryPolyline':
-
-                var polylineGraphics = [];
-
-                for (var i = 0; i < layer.graphics.length; i++) {
-
-                    if (!includesProject(responseLines, layer.graphics[i].attributes.ID_Number)) {
-                        polylineGraphics.push(layer.graphics[i]);
-                        //      console.log(layer.graphics[i]);
-                    }
-                    //  console.log(layer.graphics[i]);
-                }
-
-                //console.log(polylineGraphics.length);
-                polylineGraphics.forEach(function(i) {
-                    evt = { graphic: i };
-                    generateScore(evt);
-
-                });
-
-                responseLines.applyEdits(polylineGraphics);
-
-                //  responseLines.applyEdits(layer.graphics);
-                break;
-
-        }
-        if (symbol) {
-            layer.setRenderer(new SimpleRenderer(symbol));
-        }
-    }
+              }
+             if (symbol) {
+               layer.setRenderer(new SimpleRenderer(symbol));
+             }
+           }
 
 
     //Extract Data
     function initializeHotSpotTool(evt) {
         showToolPanel();
+
 
 
         //Define the default inputs for the widget
@@ -754,6 +720,7 @@ require([
             { layer: schoolPolysLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
             { layer: dashCommunityBuffer, visible: true },
+            { layer: streetDesign, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
             { layer: halfMileSchool, visible: true },
@@ -770,6 +737,37 @@ require([
 
 
     layerListToggle.startup();
+    function updateScores(){
+        updateScoresButton.addEventListener("click", () => {
+
+          console.log(responsePolys);
+          responsePolys.graphics.forEach( x  => {
+              generateScore({graphic: x});
+
+
+          });
+
+          responsePoints.graphics.forEach( x  => {
+              generateScore({graphic: x});
+
+
+          });
+
+
+
+          responseLines.graphics.forEach( x  => {
+            generateScore({graphic: x});
+
+          });
+
+
+          console.log("done");
+
+
+
+        });
+    }
+    updateScores();
 
     function deleteGraphics() {
         deleteGraphicsButton.addEventListener("click", () => {
@@ -777,7 +775,9 @@ require([
             responseLines.applyEdits(null, null, responseLines.graphics);
             responsePoints.applyEdits(null, null, responsePoints.graphics);
             responseMultiPoints.applyEdits(null, null, responseMultiPoints.graphics);
-        });
+    });
+
+
 
 
         //build query filter
@@ -851,7 +851,7 @@ require([
                     result.feature.getLayer().applyEdits(null, [result.feature], null);
                 });
 
-                //console.log(evt);
+                console.log(evt);
                 generateScore(evt);
             });
         });
