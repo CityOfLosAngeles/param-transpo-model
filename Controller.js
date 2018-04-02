@@ -1,10 +1,11 @@
-//Set default values
+//Set default values for weights when application loads
 var section1WeightValue = 0.75;
 var section2WeightValue = 0.75;
 var section3WeightValue = 2;
 var section4WeightValue = 0.5;
 var section5WeightValue = 0.5;
 
+//Change weight value based on user input
 function updateWeights(sect1, sect2, sect3, sect4, sect5) {
     if (sect1.value >= 0 && sect2.value >= 0 && sect3.value >= 0 && sect4.value >= 0 && sect5.value >= 0) {
         section1WeightValue = sect1.value;
@@ -13,7 +14,7 @@ function updateWeights(sect1, sect2, sect3, sect4, sect5) {
         section4WeightValue = sect4.value;
         section5WeightValue = sect5.value;
 
-        modal.style.display = "none";
+        modal.style.display = "none"; //Hides weight window after valid numbers have been submitted
     } else alert("Please insert valid numbers only");
 }
 
@@ -57,8 +58,6 @@ require([
     "dojo/sniff",
     "dojo/_base/lang",
     "dojo/_base/event",
-
-
     "esri/renderers/SimpleRenderer", "esri/Color",
     "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
     "dojo/i18n!esri/nls/jsapi",
@@ -122,12 +121,14 @@ require([
     });
 
     var currentUser = "";
+
+    //Declare admininistrator users in this array - hardcoded for now
     var admins = ["anguyen56", "kevinlam825", "david.somers_lahub", "karina.macias", "hunterowens"];
 
-
+    //Creates the ArcGIS Map
     var map = new Map("map", {
-        basemap: "streets",
-        center: [-118.2, 34],
+        basemap: "streets", //Changes the display style of the map
+        center: [-118.2, 34], //Starting coordinates to be displayed upon load
         zoom: 12,
         slider: false
     });
@@ -138,8 +139,7 @@ require([
 
 
 
-    //layers
-
+    //Layers to display / pull data from using the featurelayer's service URL
     var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.7,
@@ -303,8 +303,8 @@ require([
 
     newVisuals();
 
-    //Change layer visualization
 
+    //Change layer visualization
     schoolBufferLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 12, 218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
         schoolBufferLayer.setRenderer(renderer);
@@ -366,9 +366,10 @@ require([
     });
 
 
+    //Adds layers to the drawing tool
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
-
+    //Adds layers to be loaded into the application
     var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
@@ -701,6 +702,7 @@ require([
         showSubLayers: false,
         showOpacitySlider: true,
         layers: [
+            //Add layers below to be added to the toggle widget
             { layer: schoolBufferLayer, visible: true },
             { layer: publicHealthLayer, visible: true },
             { layer: stormwaterLayer, visible: true },
@@ -760,6 +762,8 @@ require([
     }
     updateScores();
 
+
+    //Removes all features when delete graphics button is clicked
     function deleteGraphics() {
         deleteGraphicsButton.addEventListener("click", () => {
             responsePolys.applyEdits(null, null, responsePolys.graphics);
@@ -962,6 +966,8 @@ require([
 
         var projectLocation = query.geometry;
         var layersAfterQuery = {
+            //Add layers to be queried for intersecting / overlapping features
+            //Must be added by the "Name" field of the required feature layer
             "Half Mile Buffer Top 50": [],
             "California_HDI_Public_Health_Need_Indicator": [],
             "Stormwater_Management_Features_Feasibility": [],
@@ -984,6 +990,7 @@ require([
 
         };
 
+        // Initialize arrays to store the overlapping / intersecting features of the all featurelayers and the user drawn project
         var schoolBuffer = [];
         var publicHDI = [];
         var stormwater = [];
