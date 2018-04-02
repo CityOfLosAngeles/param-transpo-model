@@ -140,12 +140,6 @@ require([
 
 
     //Layers to display / pull data from using the featurelayer's service URL
-    var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0", {
-        outFields: ['*'],
-        opacity: 0.7,
-        visible: false
-    });
-
     var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.7,
@@ -183,7 +177,7 @@ require([
         visible: false
     });
 
-    var schoolPolysLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
+    var schoolBufferLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
         outFields: ['*'],
         opacity: 1,
         visible: false
@@ -305,11 +299,6 @@ require([
 
 
     //Change layer visualization
-    schoolBufferLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 12, 218])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
-        schoolBufferLayer.setRenderer(renderer);
-    });
-
     publicHealthLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 96, 5])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
         publicHealthLayer.setRenderer(renderer);
@@ -330,9 +319,9 @@ require([
         economicHDILayer.setRenderer(renderer);
     });
 
-    schoolPolysLayer.on("load", function() {
+    schoolBufferLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
-        schoolPolysLayer.setRenderer(renderer);
+        schoolBufferLayer.setRenderer(renderer);
     });
 
     downtownDashBuffer.on("load", function() {
@@ -370,7 +359,7 @@ require([
     map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
 
     //Adds layers to be loaded into the application
-    var layers = [schoolBufferLayer, publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolPolysLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolBufferLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -703,14 +692,13 @@ require([
         showOpacitySlider: true,
         layers: [
             //Add layers below to be added to the toggle widget
-            { layer: schoolBufferLayer, visible: true },
             { layer: publicHealthLayer, visible: true },
             { layer: stormwaterLayer, visible: true },
             { layer: urbanHeatLayer, visible: true },
             { layer: economicHDILayer, visible: true },
             { layer: criticalConnections, visible: true },
             { layer: highInjuryNetworkLayer, visible: true },
-            { layer: schoolPolysLayer, visible: true },
+            { layer: schoolBufferLayer, visible: true },
             { layer: downtownDashBuffer, visible: true },
             { layer: dashCommunityBuffer, visible: true },
             { layer: rStationConnectivity, visible: true },
@@ -968,7 +956,6 @@ require([
         var layersAfterQuery = {
             //Add layers to be queried for intersecting / overlapping features
             //Must be added by the "Name" field of the required feature layer
-            "Half Mile Buffer Top 50": [],
             "California_HDI_Public_Health_Need_Indicator": [],
             "Stormwater_Management_Features_Feasibility": [],
             "Urban_Heat_Island": [],
@@ -991,13 +978,12 @@ require([
         };
 
         // Initialize arrays to store the overlapping / intersecting features of the all featurelayers and the user drawn project
-        var schoolBuffer = [];
         var publicHDI = [];
         var stormwater = [];
         var urbanHeat = [];
         var economicHDI = [];
         var highInjuryNetwork = [];
-        var schoolPolys = [];
+        var schoolBuffer = [];
         var highInjuryBuffer = [];
         var criticalConnect = [];
         var threeMileTrips = [];
@@ -1011,7 +997,6 @@ require([
         var communityDash = [];
 
         //  search for features in these layers.
-        schoolBufferLayer.queryFeatures(query, selectInBuffer);
         publicHealthLayer.queryFeatures(query, selectInBuffer);
         stormwaterLayer.queryFeatures(query, selectInBuffer);
         urbanHeatLayer.queryFeatures(query, selectInBuffer);
@@ -1035,13 +1020,12 @@ require([
 
         setTimeout(function() {
 
-            var schoolBuffer = layersAfterQuery["Half Mile Buffer Top 50"];
             var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
             var stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
             var urbanHeat = layersAfterQuery["Urban_Heat_Island"];
             var economicHDI = layersAfterQuery["California_HDI_Economic_Need_Indicator"];
             var highInjuryNetwork = layersAfterQuery["High Injury Network"];
-            var schoolPolys = layersAfterQuery["Schools - Half-Mile Buffer"];
+            var schoolBuffer = layersAfterQuery["Schools - Half-Mile Buffer"];
             var highInjuryBuffer = layersAfterQuery["2 High Injury Network Half Mile Buffer"];
             var criticalConnect = layersAfterQuery["Critical_Connections"];
             var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
@@ -1054,7 +1038,9 @@ require([
             var downtownDash = layersAfterQuery["1d Downtown DASH Bus Stop Areas (Quarter-Mile Buffer)"];
             var communityDash = layersAfterQuery["DASH Community Bus Stop Areas (Quarter-Mile Buffer)"];
 
-            totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
+
+
+            totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat);
 
         }, 2000);
 
@@ -1189,22 +1175,22 @@ require([
         }
 
         //Start of Section 2 Scoring
-        function schoolLayerScores(schoolBuffer, schoolPolys) {
-            var schoolBufferScore = 0;
-            var schoolPolyScore = 0;
+        function schoolLayerScores(schoolBuffer) {
+            var schoolBufferScore = 0; //Half Mile Score
+            var schoolSafeScore = 0; //Top 50 SRS Score
             if (schoolBuffer.length > 0) {
                 schoolBufferScore = 5;
-                schoolPolyScore = 5;
-            } else if (schoolPolys.length > 0) {
-                schoolBufferScore = 0;
-                schoolPolyScore = 5;
+                schoolBuffer.forEach(feature => {
+                    if (feature.attributes.F50_Safe == 'Yes')
+                        schoolSafeScore = 5;
+                })
             }
-            score_content.innerHTML += "Half Mile School Score = " + schoolPolyScore + "<br>Safe Routes Score = " + schoolBufferScore + "<br>"
-            report += "Half Mile School Score = " + schoolPolyScore + "\nSafe Routes School Score = " + schoolBufferScore + "\n";
-            evt.graphic.attributes.Half_Mile_School_Score = schoolPolyScore;
-            evt.graphic.attributes.Safe_Routes_School_Score = schoolBufferScore;
+            score_content.innerHTML += "Half Mile School Score = " + schoolBufferScore + "<br>Safe Routes Score = " + schoolSafeScore + "<br>"
+            report += "Half Mile School Score = " + schoolBufferScore + "\nSafe Routes School Score = " + schoolSafeScore + "\n";
+            evt.graphic.attributes.Half_Mile_School_Score = schoolBufferScore;
+            evt.graphic.attributes.Safe_Routes_School_Score = schoolSafeScore;
 
-            return schoolBufferScore + schoolPolyScore;
+            return schoolBufferScore + schoolSafeScore;
         }
 
 
@@ -1249,9 +1235,9 @@ require([
         }
 
 
-        function safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI) {
+        function safeAndHealthyScore(schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI) {
             //score_content.innerHTML = " ";
-            var total = schoolLayerScores(schoolBuffer, schoolPolys) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
+            var total = schoolLayerScores(schoolBuffer) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
             var score = total / 4;
             score_content.innerHTML += "<b>Category 2 Score = " + score.toFixed(2) + "</b><br>";
             report += "Category 2 Score = " + score + "\n";
@@ -1336,13 +1322,13 @@ require([
         }
 
 
-        function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
+        function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
             score_content.innerHTML = " ";
 
             var section1TotalScore = mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash);
             var section1WeightedScore = (section1TotalScore / 2) * section1WeightValue;
 
-            var section2TotalScore = safeAndHealthyScore(schoolBuffer, schoolPolys, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
+            var section2TotalScore = safeAndHealthyScore(schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
             var section2WeightedScore = section2TotalScore * section2WeightValue;
 
             var section3TotalScore = economicHDIScore(economicHDI);
