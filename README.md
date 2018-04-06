@@ -6,15 +6,25 @@ The project creates a needs-driven transportation capital project scoring web ma
 
 # Web Map Functionalities 
 
-### How to add a new data layer on Geohub
+### How to add a new data layer
+
+Create a new layer variable to equal a new FeatureLayer with the link of the data layer inside the parameters.
+Ex:
+var schoolBufferLayer = new FeatureLayer("http://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/Half%20Mile%20Buffer%20Top%2050/FeatureServer/0")
+
+### How to update an existing data layer
 
 
+
+### How to change the scoring for existing layers
+
+If a user clicks on a project, a given table will pop up with its respective attributes. Within that table, the user is able to manually change the scoring for the existing layers that project corresponds to.
 
 ### How to change the weight and total score with a new layer
 
 The user has to log in with an administrator account to change the weight.  On the right-side column of the web map, there is a button called 'Weights' underneath the title "Change scoring weights".  Click on the 'Weights' button, 5 categories will appear and the user will be allowed to manually change weights for each of the given categories. Once the user is done changing weights of their chosen categories, the user will click the 'Submit' button so that the new weights are applied. After the weights are changed, the user has to click 'Updated Scores' button so that the new weights are implemented in the new score.  
 
-### How weighting by area works
+### How weighting by shape works
 
 
 
