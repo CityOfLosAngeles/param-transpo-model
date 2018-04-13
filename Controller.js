@@ -1111,7 +1111,6 @@ require([
         function latentActiveTransportationScore(threeMileTrips) {
             var score = 0;
             if (threeMileTrips.length > 0) {
-                threeMileTrips.forEach()
                 if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
                 else if (threeMileTrips[0].attributes.PCT_3MI >= .35 && threeMileTrips[0].attributes.PCT_3MI < .5) score = 2.5;
             }
