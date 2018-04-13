@@ -356,9 +356,10 @@ require([
 
 
     //Adds layers to the drawing tool
-    map.addLayers([responseLines, responsePolys, responsePoints, responseMultiPoints]);
+    var projectLayers = [responseLines, responsePolys, responsePoints, responseMultiPoints]
+    map.addLayers(projectLayers);
 
-    //Adds layers to be loaded into the application
+    //Adds layers to be loaded into the application for scoring
     var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolBufferLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
@@ -720,31 +721,12 @@ require([
 
     function updateScores() {
         updateScoresButton.addEventListener("click", () => {
-
-            console.log(responsePolys);
-            responsePolys.graphics.forEach(x => {
-                generateScore({ graphic: x });
-
-
-            });
-
-            responsePoints.graphics.forEach(x => {
-                generateScore({ graphic: x });
-
-
-            });
-
-
-
-            responseLines.graphics.forEach(x => {
-                generateScore({ graphic: x });
-
-            });
-
-
+            projectLayers.forEach(layer => { //Iterate through every project layer
+                layer.graphics.forEach(project => { //Iterate through every grapic within the layer
+                    generateScore({ graphic: project }) //Calculate the score for the graphic
+                })
+            })
             console.log("done");
-
-
 
         });
     }
@@ -754,14 +736,10 @@ require([
     //Removes all features when delete graphics button is clicked
     function deleteGraphics() {
         deleteGraphicsButton.addEventListener("click", () => {
-            responsePolys.applyEdits(null, null, responsePolys.graphics);
-            responseLines.applyEdits(null, null, responseLines.graphics);
-            responsePoints.applyEdits(null, null, responsePoints.graphics);
-            responseMultiPoints.applyEdits(null, null, responseMultiPoints.graphics);
+            projectLayers.forEach(layer => { //Iterate through every project layer
+                layer.applyEdits(null, null, layer.graphics) //Delete all the graphics in that layer
+            })
         });
-
-
-
 
         //build query filter
         var query = new esri.tasks.Query();
@@ -977,7 +955,7 @@ require([
 
         };
 
-        // Initialize arrays to store the overlapping / intersecting features of the all featurelayers and the user drawn project
+        //Initialize arrays to store the overlapping / intersecting features of the all featurelayers and the user drawn project
         var publicHDI = [];
         var stormwater = [];
         var urbanHeat = [];
@@ -996,7 +974,7 @@ require([
         var downtownDash = [];
         var communityDash = [];
 
-        //  search for features in these layers.
+        //Search for features in these layers
         publicHealthLayer.queryFeatures(query, selectInBuffer);
         stormwaterLayer.queryFeatures(query, selectInBuffer);
         urbanHeatLayer.queryFeatures(query, selectInBuffer);
@@ -1019,7 +997,7 @@ require([
 
 
         setTimeout(function() {
-
+            //Set up query features
             var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
             var stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
             var urbanHeat = layersAfterQuery["Urban_Heat_Island"];
@@ -1096,7 +1074,7 @@ require([
 
 
 
-        //Start of Section 1 Scoring
+        //Start of Mobility Plan Alignment (Section 1) Scoring
         //1a
         function modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) {
             score_content.innerHTML = " ";
@@ -1133,6 +1111,7 @@ require([
         function latentActiveTransportationScore(threeMileTrips) {
             var score = 0;
             if (threeMileTrips.length > 0) {
+                threeMileTrips.forEach()
                 if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
                 else if (threeMileTrips[0].attributes.PCT_3MI >= .35 && threeMileTrips[0].attributes.PCT_3MI < .5) score = 2.5;
             }
@@ -1166,6 +1145,7 @@ require([
             return score;
         }
 
+        //Section 1 Total Score
         function mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash) {
             var total = modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) + latentActiveTransportationScore(threeMileTrips) + connectivityScore(transitPrioArea, downtownDash, communityDash);
             var score = total / 3;
@@ -1173,15 +1153,18 @@ require([
             report += "Category 1 Score = " + score.toFixed(2) + "\n";
             return score;
         }
+        //End of Section 1 Scoring
 
-        //Start of Section 2 Scoring
+        //Start of Safe & Healthy (Section 2) Scoring
+
+        //Proximity to Schools and Safe Routes to School Program Target Areas
         function schoolLayerScores(schoolBuffer) {
             var schoolBufferScore = 0; //Half Mile Score
             var schoolSafeScore = 0; //Top 50 SRS Score
             if (schoolBuffer.length > 0) {
                 schoolBufferScore = 5;
                 schoolBuffer.forEach(feature => {
-                    if (feature.attributes.F50_Safe == 'Yes')
+                    if (feature.attributes.F50_Safe == 'Yes') //Check if Top 50 Schools with needed safety interventions
                         schoolSafeScore = 5;
                 })
             }
@@ -1193,11 +1176,11 @@ require([
             return schoolBufferScore + schoolSafeScore;
         }
 
-
+        //Vision Zero High Injury Network
         function highInjuryNetworkScore(highInjuryNetwork, highInjuryBuffer) {
             var score = 0;
-            if (highInjuryNetwork.length > 0) score = 5;
-            else if (highInjuryBuffer.length > 0) score = 2.5;
+            if (highInjuryNetwork.length > 0) score = 5; //Give score of 5 if it is on street
+            else if (highInjuryBuffer.length > 0) score = 2.5; //Give score of 2.5 if it is within a half mile buffer zone of the street
 
             score_content.innerHTML += "High Injury Network Score = " + score + "<br>";
             report += "High Injury Network Score = " + score + "\n";
@@ -1206,6 +1189,7 @@ require([
             return score;
         }
 
+        //Public Health Improvement Need Score
         function publicHDIScore(publicHDI) {
 
             var score = 0;
@@ -1234,7 +1218,7 @@ require([
             return score;
         }
 
-
+        //Section 2 Total Score
         function safeAndHealthyScore(schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI) {
             //score_content.innerHTML = " ";
             var total = schoolLayerScores(schoolBuffer) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
@@ -1245,7 +1229,9 @@ require([
         }
         //End of Section 2 Scoring
 
-        //Start of Section 3 Scoring
+        //Start of Equitable and Inclusive (Section 3) Scoring
+
+        //Economic Need Indicator
         function economicHDIScore(economicHDI) {
             var score = 0;
             if (economicHDI.length > 0) {
@@ -1262,7 +1248,9 @@ require([
         }
         //End of Section 3 Scoring
 
-        //Start of Section 4 Scoring
+        //Start of Accessible and Affordable (Section 4) Scoring
+
+        //Critical Conenction Indicator
         function criticalConnetionScore(criticalConnect) {
             var score = 0;
             if (criticalConnect.length > 0) {
@@ -1277,7 +1265,9 @@ require([
         }
         //End of Section 4 Scoring
 
-        //Start of Section 5 Scoring
+        //Start of Sustainable and Resilient (Section 5) Scoring
+
+        //Stormwater Management Features Feasibility
         function stormwaterScore(stormwater) {
             var score = 0;
             if (stormwater.length > 0) {
@@ -1296,6 +1286,7 @@ require([
             return score;
         }
 
+        //Urban Heat Island Effect Mitigation Need 
         function urbanHeatScore(urbanHeat) {
             var score = 0;
             if (urbanHeat.length > 0) {
@@ -1314,6 +1305,7 @@ require([
             return score;
         }
 
+        //Section 5 Total Score
         function sustainableAndResilientScore(stormwater, urbanHeat) {
             var score = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
             score_content.innerHTML += "<b>Category 5 Score = " + score + "</b><br>";
@@ -1321,7 +1313,7 @@ require([
             return score;
         }
 
-
+        //Overall Score
         function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
             score_content.innerHTML = " ";
 
