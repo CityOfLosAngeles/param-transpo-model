@@ -1143,7 +1143,7 @@ require([
                     }
                 });
             }
-            if(score = 2.5){
+            if(score == 2.5){
               score_features += "intersection, ";
             }else if(score == 5){
               score_features += "rail, ";
