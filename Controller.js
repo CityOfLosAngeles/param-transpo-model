@@ -100,8 +100,8 @@ require([
     var score_content = document.getElementById('score');
     var report = "";
     var score_features = "ID Number, Three Mile Trips, Transit Priority Area, Downtown Dash, " +
-    "Community Dash, Half Mile School Buffer, School Safe, High Injury Network, " +
-    "High Injury Buffer, Public HDI, Economic HDI, Critical Connection, Storm Water, Urban Heat\n";
+        "Community Dash, Half Mile School Buffer, School Safe, High Injury Network, " +
+        "High Injury Buffer, Public HDI, Economic HDI, Critical Connection, Storm Water, Urban Heat\n";
     var deleteGraphicsButton = document.getElementById('deleteGraphicsButton');
     var updateScoresButton = document.getElementById('updateScoresButton');
 
@@ -208,12 +208,6 @@ require([
     var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
-        visible: false
-    });
-
-    var halfMileSchool = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
-        outFields: ['*'],
-        opacity: 0.5,
         visible: false
     });
 
@@ -336,11 +330,6 @@ require([
         rStationConnectivity.setRenderer(renderer);
     });
 
-    halfMileSchool.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 255, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
-        halfMileSchool.setRenderer(renderer);
-    });
-
     transDemand.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         transDemand.setRenderer(renderer);
@@ -362,7 +351,7 @@ require([
     map.addLayers(projectLayers);
 
     //Adds layers to be loaded into the application for scoring
-    var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolBufferLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, halfMileSchool, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolBufferLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, schoolBufferLayer, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -706,7 +695,7 @@ require([
             { layer: dashCommunityBuffer, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
-            { layer: halfMileSchool, visible: true },
+            { layer: schoolBufferLayer, visible: true },
             { layer: transitEN, visible: true },
             { layer: bicycleN, visible: true },
             { layer: neighborhoodN, visible: true },
@@ -722,25 +711,25 @@ require([
     layerListToggle.startup();
 
     async function asyncForEach(array, callback) {
-      for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array)
-      }
+        for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array)
+        }
     }
 
     function updateScores() {
-      const waitFor = (ms) => new Promise(r => setTimeout(r, ms))
+        const waitFor = (ms) => new Promise(r => setTimeout(r, ms))
 
         updateScoresButton.addEventListener("click", () => {
             projectLayers.forEach(layer => { //Iterate through every project layer
 
-              const start = async () => {
-                await asyncForEach(layer.graphics, async (project) => {
-                  await waitFor(1000)
-                  generateScore({ graphic: project })
-                })
+                const start = async() => {
+                    await asyncForEach(layer.graphics, async(project) => {
+                        await waitFor(1000)
+                        generateScore({ graphic: project })
+                    })
 
-              }
-              start()
+                }
+                start()
 
             })
 
@@ -1003,7 +992,7 @@ require([
         urbanHeatLayer.queryFeatures(query, selectInBuffer);
         economicHDILayer.queryFeatures(query, selectInBuffer);
         highInjuryNetworkLayer.queryFeatures(query, selectInBuffer);
-        halfMileSchool.queryFeatures(query, selectInBuffer);
+        schoolBufferLayer.queryFeatures(query, selectInBuffer);
         highInjuryNetworkBuffer.queryFeatures(query, selectInBuffer);
         criticalConnections.queryFeatures(query, selectInBuffer);
         threeMileTripLayer.queryFeatures(query, selectInBuffer);
@@ -1134,11 +1123,11 @@ require([
         function latentActiveTransportationScore(threeMileTrips) {
             var score = 0;
             if (threeMileTrips.length > 0) {
-                score_features += threeMileTrips[0].attributes.PCT_3MI + ", " ;
+                score_features += threeMileTrips[0].attributes.PCT_3MI + ", ";
                 if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
                 else if (threeMileTrips[0].attributes.PCT_3MI >= .35 && threeMileTrips[0].attributes.PCT_3MI < .5) score = 2.5;
-            }else{
-              score_features += "0, ";
+            } else {
+                score_features += "0, ";
             }
             score_content.innerHTML += "Active Transportation Score = " + score + "<br>"
             report += "1c. Active Transportation Demand Score = " + score + "\n";
@@ -1158,28 +1147,28 @@ require([
                     }
                 });
             }
-            if(score == 2.5){
-              score_features += "intersection, ";
-            }else if(score == 5){
-              score_features += "rail, ";
-            }else{
-              score_features += "no connection, ";
+            if (score == 2.5) {
+                score_features += "intersection, ";
+            } else if (score == 5) {
+                score_features += "rail, ";
+            } else {
+                score_features += "no connection, ";
             }
 
             if (score == 0) {
                 if (downtownDash.length > 0 || communityDash.length > 0) score = 2.5;
             }
 
-            if(downtownDash.length > 0){
-              score_features += "yes, ";
-            }else{
-              score_features += "no, ";
+            if (downtownDash.length > 0) {
+                score_features += "yes, ";
+            } else {
+                score_features += "no, ";
             }
 
-            if(communityDash.length > 0 ){
-              score_features += "yes, ";
-            }else {
-              score_features += "no, ";
+            if (communityDash.length > 0) {
+                score_features += "yes, ";
+            } else {
+                score_features += "no, ";
             }
 
             score_content.innerHTML += "Connectivity Score = " + score + "<br>"
@@ -1210,21 +1199,21 @@ require([
                 schoolBufferScore = 5;
                 score_features += "yes, ";
                 schoolBuffer.forEach(feature => {
-                    if (feature.attributes.F50_Safe == 'Yes') {//Check if Top 50 Schools with needed safety interventions
+                    if (feature.attributes.F50_Safe == 'Yes') { //Check if Top 50 Schools with needed safety interventions
                         schoolSafeScore = 5;
                     }
 
 
                 })
 
-            }else{
-              score_features += "no, ";
+            } else {
+                score_features += "no, ";
             }
 
-            if(schoolSafeScore == 5){
-              score_features += "yes, ";
-            }else{
-              score_features += "no, ";
+            if (schoolSafeScore == 5) {
+                score_features += "yes, ";
+            } else {
+                score_features += "no, ";
             }
             score_content.innerHTML += "Half Mile School Score = " + schoolBufferScore + "<br>Safe Routes Score = " + schoolSafeScore + "<br>"
             report += "Half Mile School Score = " + schoolBufferScore + "\nSafe Routes School Score = " + schoolSafeScore + "\n";
@@ -1239,14 +1228,13 @@ require([
         function highInjuryNetworkScore(highInjuryNetwork, highInjuryBuffer) {
             var score = 0;
             if (highInjuryNetwork.length > 0) {
-              score = 5; //Give score of 5 if it is on street
-              score_features += "yes, yes, ";
-            }
-            else if (highInjuryBuffer.length > 0) { //Give score of 2.5 if it is within a half mile buffer zone of the street
-              score = 2.5;
-              score_features += "no, yes, ";
+                score = 5; //Give score of 5 if it is on street
+                score_features += "yes, yes, ";
+            } else if (highInjuryBuffer.length > 0) { //Give score of 2.5 if it is within a half mile buffer zone of the street
+                score = 2.5;
+                score_features += "no, yes, ";
             } else {
-              score_features += "no, no, ";
+                score_features += "no, no, ";
             }
 
             score_content.innerHTML += "High Injury Network Score = " + score + "<br>";
@@ -1272,7 +1260,7 @@ require([
                 }
             } else {
                 if (publicHDI.length > 0) {
-                  score_features += publicHDI[0].attributes.Health_Sco + ", ";
+                    score_features += publicHDI[0].attributes.Health_Sco + ", ";
                     score = publicHDI[0].attributes.Health_Sco;
                     if (score == 5) score = 5
                     else if (score == 4) score = 2.5;
@@ -1308,8 +1296,8 @@ require([
                 if (score == 5) score = 5;
                 else if (score == 4) score = 2.5;
                 else if (score == 3) score = 1.25;
-            }else{
-              score_features += "0, ";
+            } else {
+                score_features += "0, ";
             }
             score_content.innerHTML += "<b>Economic HDI Score = " + score + "</b><br>";
             report += "Economic HDI Score = " + score + "\n";
@@ -1328,8 +1316,8 @@ require([
                 score_features += criticalConnect[0].attributes.Ct_Need + ", ";
                 if (criticalConnect[0].attributes.Ct_Need == "Highly Critical") score = 5;
                 else score = 2.5;
-            }else{
-              score_features += "Not Critical, ";
+            } else {
+                score_features += "Not Critical, ";
             }
 
             score_content.innerHTML += "<b>Critical Connection Score = " + score + "</b><br>";
@@ -1354,14 +1342,14 @@ require([
                     }
                 });
 
-                if(score == 1.25){
-                  score_features += "Medium, ";
-                }else if(score == 2.5){
-                  score_features += "High, ";
-                }else if(score == 5){
-                  score_features += "Very High, ";
-                }else{
-                  score_features += "Low, ";
+                if (score == 1.25) {
+                    score_features += "Medium, ";
+                } else if (score == 2.5) {
+                    score_features += "High, ";
+                } else if (score == 5) {
+                    score_features += "Very High, ";
+                } else {
+                    score_features += "Low, ";
                 }
             }
             score_content.innerHTML += "Storm Water Score = " + score + "<br>";
@@ -1384,14 +1372,14 @@ require([
                 });
             }
 
-            if(score == 1.25){
-              score_features += "Low\n";
-            }else if(score == 2.5){
-              score_features += "Medium High\n";
-            }else if(score == 5 ){
-              score_features += "High\n";
-            }else{
-              score_features += "null\n";
+            if (score == 1.25) {
+                score_features += "Low\n";
+            } else if (score == 2.5) {
+                score_features += "Medium High\n";
+            } else if (score == 5) {
+                score_features += "High\n";
+            } else {
+                score_features += "null\n";
             }
             score_content.innerHTML += "Urban Heat Score = " + score + "<br>";
             report += "Urban Heat Score = " + score + "\n";
