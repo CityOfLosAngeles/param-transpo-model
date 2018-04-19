@@ -259,7 +259,7 @@ require([
         visible: false
     })
 
-    var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
+    var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/ML_Line/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
@@ -347,7 +347,7 @@ require([
 
 
     //Adds layers to the drawing tool
-    var projectLayers = [responseLines, responsePolys, responsePoints, responseMultiPoints]
+    var projectLayers = [responseLines /*, responsePolys, responsePoints, responseMultiPoints*/ ]
     map.addLayers(projectLayers);
 
     //Adds layers to be loaded into the application for scoring
@@ -578,8 +578,8 @@ require([
 
         //Define the default inputs for the widget
         var extractDataParams = {
-            featureLayers: [responseLines, responsePolys, responsePoints, responseMultiPoints],
-            inputLayers: [responseLines, responsePolys, responsePoints, responseMultiPoints],
+            featureLayers: [responseLines /*, responsePolys, responsePoints, responseMultiPoints*/ ],
+            inputLayers: [responseLines /*, responsePolys, responsePoints, responseMultiPoints*/ ],
             portalUrl: "https://www.arcgis.com",
             showSelectFolder: true,
             showChooseExtent: false,
@@ -695,7 +695,6 @@ require([
             { layer: dashCommunityBuffer, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
-            { layer: schoolBufferLayer, visible: true },
             { layer: transitEN, visible: true },
             { layer: bicycleN, visible: true },
             { layer: neighborhoodN, visible: true },
