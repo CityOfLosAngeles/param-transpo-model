@@ -721,19 +721,34 @@ require([
 
     layerListToggle.startup();
 
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array)
+      }
+    }
+
     function updateScores() {
+      const waitFor = (ms) => new Promise(r => setTimeout(r, ms))
+
         updateScoresButton.addEventListener("click", () => {
             projectLayers.forEach(layer => { //Iterate through every project layer
-                layer.graphics.forEach(project => { //Iterate through every grapic within the layer
 
-                      generateScore({ graphic: project }) //Calculate the score for the graphic
-
+              const start = async () => {
+                await asyncForEach(layer.graphics, async (project) => {
+                  await waitFor(1000)
+                  generateScore({ graphic: project })
                 })
+
+              }
+              start()
+
             })
-            console.log("done");
 
         });
     }
+
+
+
     updateScores();
 
 
@@ -1190,6 +1205,7 @@ require([
         function schoolLayerScores(schoolBuffer) {
             var schoolBufferScore = 0; //Half Mile Score
             var schoolSafeScore = 0; //Top 50 SRS Score
+
             if (schoolBuffer.length > 0) {
                 schoolBufferScore = 5;
                 score_features += "yes, ";
@@ -1216,6 +1232,7 @@ require([
             evt.graphic.attributes.Safe_Routes_School_Score = schoolSafeScore;
 
             return schoolBufferScore + schoolSafeScore;
+
         }
 
         //Vision Zero High Injury Network
@@ -1245,7 +1262,7 @@ require([
             var score = 0;
             if ((publicHDI.length > 0) && (projectLocation.type == "polygon")) {
 
-                score_features += publicHDI[0].attributes.Health_Sco + ", ";
+                // score_features += publicHDI[0].attributes.Health_Sco  + ", ";
                 var totalArea = 0;
                 for (var i = 0; i < publicHDI.length; i++) {
                     totalArea += publicHDI[i].area;
