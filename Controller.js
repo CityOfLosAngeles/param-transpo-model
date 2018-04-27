@@ -274,7 +274,7 @@ require([
         outFields: ['*']
     });
 
-    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/7gWb41uyMrJOS6dH/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
+    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/jrEQyV1fEd5jD9Ww/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
