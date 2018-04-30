@@ -261,6 +261,7 @@ require([
         outFields: ['*']
     });
 
+    /*
     var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
@@ -271,10 +272,11 @@ require([
         outFields: ['*']
     });
 
-    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/7gWb41uyMrJOS6dH/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
+    var responseMultiPoints = new FeatureLayer("", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
+*/
 
     function newVisuals() { //Change visuals for user drawn lines
         var symbol = new SimpleLineSymbol({
