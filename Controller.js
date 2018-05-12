@@ -253,11 +253,13 @@ require([
         visible: false
     })
 
+    
     var threeMileTripLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     })
+
 
     var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
@@ -340,18 +342,19 @@ require([
         highInjuryNetworkBuffer.setRenderer(renderer);
     });
 
+
     threeMileTripLayer.on("load", function() {
         var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         threeMileTripLayer.setRenderer(renderer);
     });
-
+    
 
     //Adds layers to the drawing tool
     var projectLayers = [responseLines, responsePolys, responsePoints, responseMultiPoints]
     map.addLayers(projectLayers);
 
     //Adds layers to be loaded into the application for scoring
-    var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, schoolBufferLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, schoolBufferLayer, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, schoolBufferLayer, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
@@ -695,7 +698,6 @@ require([
             { layer: dashCommunityBuffer, visible: true },
             { layer: rStationConnectivity, visible: true },
             { layer: transDemand, visible: true },
-            { layer: schoolBufferLayer, visible: true },
             { layer: transitEN, visible: true },
             { layer: bicycleN, visible: true },
             { layer: neighborhoodN, visible: true },
