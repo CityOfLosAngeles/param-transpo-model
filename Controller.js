@@ -59,7 +59,7 @@ require([
     "dojo/_base/lang",
     "dojo/_base/event",
     "esri/renderers/SimpleRenderer", "esri/Color",
-    "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
+    "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/renderers/ClassBreaksRenderer",
     "dojo/i18n!esri/nls/jsapi",
     "dojo/_base/array", "dojo/parser", "dojo/keys", "dojo/dom",
     "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
@@ -72,7 +72,7 @@ require([
     Editor, TemplatePicker,
     geometryEngine, ExtractData, registry, domStyle, domUtils, ready, array, urlUtils, arcgisPortal, FindHotSpots, Legend,
     esriConfig, InfoTemplate, request, scaleUtils, PictureMarkerSymbol, JSON, on, sniff, lang, event,
-    SimpleRenderer, Color, SimpleFillSymbol, SimpleLineSymbol,
+    SimpleRenderer, Color, SimpleFillSymbol, SimpleLineSymbol, ClassBreaksRenderer,
     jsapiBundle,
     arrayUtils, parser, keys, dom, BorderContainer, ContentPane
 ) {
