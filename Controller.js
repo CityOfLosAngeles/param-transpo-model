@@ -1,9 +1,9 @@
 //Set default values for weights when application loads
-var section1WeightValue = 0.75;
-var section2WeightValue = 0.75;
-var section3WeightValue = 2;
-var section4WeightValue = 0.5;
-var section5WeightValue = 0.5;
+let section1WeightValue = 0.75;
+let section2WeightValue = 0.75;
+let section3WeightValue = 2;
+let section4WeightValue = 0.5;
+let section5WeightValue = 0.5;
 
 //Change weight value based on user input
 function updateWeights(sect1, sect2, sect3, sect4, sect5) {
@@ -59,7 +59,8 @@ require([
     "dojo/_base/lang",
     "dojo/_base/event",
     "esri/renderers/SimpleRenderer", "esri/Color",
-    "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/renderers/ClassBreaksRenderer",
+    "esri/symbols/SimpleFillSymbol",
+    "esri/renderers/ClassBreaksRenderer",
     "dojo/i18n!esri/nls/jsapi",
     "dojo/_base/array", "dojo/parser", "dojo/keys", "dojo/dom",
     "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
@@ -72,7 +73,7 @@ require([
     Editor, TemplatePicker,
     geometryEngine, ExtractData, registry, domStyle, domUtils, ready, array, urlUtils, arcgisPortal, FindHotSpots, Legend,
     esriConfig, InfoTemplate, request, scaleUtils, PictureMarkerSymbol, JSON, on, sniff, lang, event,
-    SimpleRenderer, Color, SimpleFillSymbol, SimpleLineSymbol, ClassBreaksRenderer,
+    SimpleRenderer, Color, SimpleFillSymbol, ClassBreaksRenderer,
     jsapiBundle,
     arrayUtils, parser, keys, dom, BorderContainer, ContentPane
 ) {
@@ -90,29 +91,27 @@ require([
 
     // snapping is enabled for this sample - change the tooltip to reflect this
     jsapiBundle.toolbars.draw.start = jsapiBundle.toolbars.draw.start + "<br>Press <b>ALT</b> to enable snapping";
-    var portalUrl = "https://www.arcgis.com";
+    let portalUrl = "https://www.arcgis.com";
     // refer to "Using the Proxy Page" for more information:  https://developers.arcgis.com/javascript/3/jshelp/ags_proxy.html
     esriConfig.defaults.io.proxyUrl = "/proxy/";
 
     //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
     esriConfig.defaults.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
-    var score_content = document.getElementById('score');
-    var report = "";
-    var score_features = "ID Number, Three Mile Trips, Transit Priority Area, Downtown Dash, " +
+    let score_content = document.getElementById('score');
+    let report = "";
+    let score_features = "ID Number, Three Mile Trips, Transit Priority Area, Downtown Dash, " +
         "Community Dash, Half Mile School Buffer, School Safe, High Injury Network, " +
         "High Injury Buffer, Public HDI, Economic HDI, Critical Connection, Storm Water, Urban Heat\n";
-    var deleteGraphicsButton = document.getElementById('deleteGraphicsButton');
-    var updateScoresButton = document.getElementById('updateScoresButton');
-
-
+    const deleteGraphicsButtondeleteGraphicsButton = document.getElementById('deleteGraphicsButton');
+    const updateScoresButton = document.getElementById('updateScoresButton');
 
     esriConfig.defaults.io.corsEnabledServers.push('analysis.arcgis.com');
     on(dom.byId("uploadForm"), "change", function(event) {
-        var fileName = event.target.value.toLowerCase();
+        let fileName = event.target.value.toLowerCase();
 
         if (sniff("ie")) { //filename is full path in IE so extract the file name
-            var arr = fileName.split("\\");
+            const arr = fileName.split("\\");
             fileName = arr[arr.length - 1];
         }
         if (fileName.indexOf(".zip") !== -1) { //is file a zip - if not notify user
@@ -122,13 +121,13 @@ require([
         }
     });
 
-    var currentUser = "";
+    let currentUser = "";
 
     //Declare admininistrator users in this array - hardcoded for now
-    var admins = ["anguyen56", "kevinlam825", "david.somers_lahub", "karina.macias", "hunterowens"];
+    const admins = ["anguyen56", "kevinlam825", "david.somers_lahub", "karina.macias", "hunterowens"];
 
     //Creates the ArcGIS Map
-    var map = new Map("map", {
+    const map = new Map("map", {
         basemap: "streets", //Changes the display style of the map
         center: [-118.2, 34], //Starting coordinates to be displayed upon load
         zoom: 12,
@@ -142,229 +141,223 @@ require([
 
 
     //Layers to display / pull data from using the featurelayer's service URL
-    var publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
+    const publicHealthLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Public_Health_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.7,
         visible: false
     });
 
-    var stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
+    const stormwaterLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Stormwater_Management_Features_Feasibility/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.5,
         visible: false
     });
 
-    var urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
+    const urbanHeatLayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Urban_Heat_Island/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.7,
         visible: false
     });
 
-    var economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
+    const economicHDILayer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/California_HDI_Economic_Need_Indicator/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.7,
         visible: false
     });
 
-    var criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
+    const criticalConnections = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/Critical_Connections/FeatureServer/0", {
         outFields: ['*'],
         opacity: 1,
         visible: false
     });
 
 
-    var highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
+    const highInjuryNetworkLayer = new FeatureLayer("https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/hin_082015/FeatureServer/0/", {
         outFields: ['*'],
         opacity: 0.7,
         visible: false
     });
 
-    var schoolBufferLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
+    const schoolBufferLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_School_New/FeatureServer/1", {
         outFields: ['*'],
         opacity: 1,
         visible: false
     });
 
-    var downtownDashBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/1d%20Downtown%20DASH%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
+    const downtownDashBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/1d%20Downtown%20DASH%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     });
 
-    var dashCommunityBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/DASH%20Community%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
+    const dashCommunityBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/DASH%20Community%20Bus%20Stop%20Areas%20(Quarter-Mile%20Buffer)/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     });
 
-
-
-    var rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
+    const rStationConnectivity = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge_TPA/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     });
 
-    var transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
+    const transDemand = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     });
 
-    var transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
+    const transitEN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/5", {
         outFields: ['*'],
         opacity: 1.0,
         visible: false
     });
 
-    var bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
+    const bicycleN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/6", {
         outFields: ['*'],
         opacity: 1.0,
         visible: false
     });
 
-    var neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
+    const neighborhoodN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/7", {
         outFields: ['*'],
         opacity: 1.0,
         visible: false
     });
 
-    var pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
+    const pedestrianED = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/8", {
         outFields: ['*'],
         opacity: 1.0,
         visible: false
     });
 
-    var greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
+    const greenN = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/23", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     });
 
-    var transitPrio = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/4", {
+    const transitPrio = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/4", {
         outFields: ['*'],
         opacity: 1.0,
         visible: false
     });
 
-    var highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
+    const highInjuryNetworkBuffer = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/2%20High%20Injury%20Network%20Half%20Mile%20Buffer/FeatureServer/0", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     })
 
-    
-    var threeMileTripLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
+    const threeMileTripLayer = new FeatureLayer("https://services1.arcgis.com/tzwalEyxl2rpamKs/arcgis/rest/services/Great_Streets_Challenge/FeatureServer/9", {
         outFields: ['*'],
         opacity: 0.8,
         visible: false
     })
 
-
-    var responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
+    const responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
-    var responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
+    const responsePoints = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Point/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
-    var responsePolys = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Polygon/FeatureServer/0", {
+    const responsePolys = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Polygon/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
-    var responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/jrEQyV1fEd5jD9Ww/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
+    //Multipoint Layer expires 5/19/18
+    const responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/jrEQyV1fEd5jD9Ww/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
 
-    function newVisuals() { //Change visuals for user drawn lines
-        var symbol = new SimpleLineSymbol({
+
+    //Change layer visualization
+    responseLines.on("load", function() {
+        const symbol = new SimpleLineSymbol({
             "color": [0, 92, 230, 220],
             "width": 2.25,
             "type": "esriSLS",
             "style": "esriSLSSolid"
-        });
+        })
 
-        var renderer = new esri.renderer.SimpleRenderer(symbol);
-        responseLines.setRenderer(renderer);
-    }
+        const renderer = new esri.renderer.SimpleRenderer(symbol)
+        responseLines.setRenderer(renderer)
+    })
 
-    newVisuals();
-
-
-    //Change layer visualization
     publicHealthLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 96, 5])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 96, 5])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
         publicHealthLayer.setRenderer(renderer);
     });
 
     stormwaterLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([135, 12, 56])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([135, 12, 56])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
         stormwaterLayer.setRenderer(renderer);
     });
 
     urbanHeatLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 200, 86])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([15, 200, 86])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([15, 255, 18]))));
         urbanHeatLayer.setRenderer(renderer);
     });
 
     economicHDILayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([110, 85, 25])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         economicHDILayer.setRenderer(renderer);
     });
 
     schoolBufferLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 0, 255])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         schoolBufferLayer.setRenderer(renderer);
     });
 
     downtownDashBuffer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 100])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([29, 188, 255]))));
         downtownDashBuffer.setRenderer(renderer);
     });
 
     rStationConnectivity.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([158, 187, 215])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         rStationConnectivity.setRenderer(renderer);
     });
 
     transDemand.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([255, 0, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         transDemand.setRenderer(renderer);
     });
 
     highInjuryNetworkBuffer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         highInjuryNetworkBuffer.setRenderer(renderer);
     });
 
 
     threeMileTripLayer.on("load", function() {
-        var renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
+        const renderer = new SimpleRenderer(new SimpleFillSymbol().setColor(new Color([0, 128, 0])).setOutline(new SimpleLineSymbol().setWidth(0.1).setColor(new Color([39, 108, 205]))));
         threeMileTripLayer.setRenderer(renderer);
     });
     
 
     //Adds layers to the drawing tool
-    var projectLayers = [responseLines, responsePolys, responsePoints, responseMultiPoints]
+    const projectLayers = [responseLines, responsePolys, responsePoints, responseMultiPoints]
     map.addLayers(projectLayers);
 
     //Adds layers to be loaded into the application for scoring
-    var layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, schoolBufferLayer, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
+    const layers = [publicHealthLayer, stormwaterLayer, urbanHeatLayer, economicHDILayer, criticalConnections, highInjuryNetworkLayer, downtownDashBuffer, dashCommunityBuffer, rStationConnectivity, transDemand, schoolBufferLayer, transitEN, bicycleN, neighborhoodN, pedestrianED, greenN, highInjuryNetworkBuffer, threeMileTripLayer, transitPrio];
 
     layers.forEach(function(layer) {
         map.addLayer(layer);
     });
 
-    //console.log(map.graphicsLayerIds);
 
 
     //Download Score Report
-    function downloadReport(content) {
+    const downloadReport = (content) => {
         data = [];
 
         data.push(content);
@@ -437,99 +430,24 @@ require([
         });
     }
 
-
-
     function errorHandler(error) {
         dom.byId('upload-status').innerHTML =
             "<p style='color:red'>" + error.message + "</p>";
     }
 
-    function includesProject(responseLayer, ID_Number) {
 
-        for (var i = 0; i < responseLayer.graphics.length; i++) {
-            //  console.log(responseLayer.graphics[i]);
-            if (responseLayer.graphics[i].attributes.ID_Number == ID_Number) {
-                //    console.log(true);
-                return true;
-
-            }
-
-        }
-
-        return false;
-    }
-
-
-    //Add new Features
-    function generateFeatureCollection(fileName) {
-        var name = fileName.split(".");
-        //Chrome and IE add c:\fakepath to the value - we need to remove it
-        //See this link for more info: http://davidwalsh.name/fakepath
-        name = name[0].replace("c:\\fakepath\\", "");
-
-        dom.byId('upload-status').innerHTML = '<b>Loading </b>' + name;
-
-        //Define the input params for generate see the rest doc for details
-        //http://www.arcgis.com/apidocs/rest/index.html?generate.html
-        var params = {
-            'name': name,
-            'targetSR': map.spatialReference,
-            'maxRecordCount': 1000,
-            'enforceInputFileSizeLimit': true,
-            'enforceOutputJsonSizeLimit': true
-        };
-
-        //generalize features for display Here we generalize at 1:40,000 which is approx 10 meters
-        //This should work well when using web mercator.
-        var extent = scaleUtils.getExtentForScale(map, 40000);
-        var resolution = extent.getWidth() / map.width;
-        params.generalize = true;
-        params.maxAllowableOffset = resolution;
-        params.reducePrecision = true;
-        params.numberOfDigitsAfterDecimal = 0;
-
-        var myContent = {
-            'filetype': 'shapefile',
-            'publishParameters': JSON.stringify(params),
-            'f': 'json',
-            'callback.html': 'textarea'
-        };
-
-        //use the rest generate operation to generate a feature collection from the zipped shapefile
-        request({
-            url: portalUrl + '/sharing/rest/content/features/generate',
-            content: myContent,
-            form: dom.byId('uploadForm'),
-            handleAs: 'json',
-            load: lang.hitch(this, function(response) {
-                if (response.error) {
-                    errorHandler(response.error);
-                    return;
-                }
-                var layerName = response.featureCollection.layers[0].layerDefinition.name;
-                dom.byId('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
-                addShapefileToMap(response.featureCollection);
-            }),
-            error: lang.hitch(this, errorHandler)
-        });
-    }
-
-    function errorHandler(error) {
-        dom.byId('upload-status').innerHTML =
-            "<p style='color:red'>" + error.message + "</p>";
-    }
-
-    function addShapefileToMap(featureCollection) {
+    //Uploading Shapefiles to map
+    const addShapefileToMap = (featureCollection) => {
         //add the shapefile to the map and zoom to the feature collection extent
         //If you want to persist the feature collection when you reload browser you could store the collection in
         //local storage by serializing the layer using featureLayer.toJson()  see the 'Feature Collection in Local Storage' sample
         //for an example of how to work with local storage.
-        var fullExtent;
-        var layers = [];
+        let fullExtent;
+        let layers = [];
 
         arrayUtils.forEach(featureCollection.layers, function(layer) {
 
-            var featureLayer = new FeatureLayer(layer, {
+            let featureLayer = new FeatureLayer(layer, {
 
             });
             //associate the feature with the popup on click to enable highlight and zoom to
@@ -539,8 +457,7 @@ require([
 
             //change default symbol if desired. Comment this out and the layer will draw with the default symbology
             changeRenderer(featureLayer);
-            fullExtent = fullExtent ?
-                fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
+            fullExtent = fullExtent ? fullExtent.union(featureLayer.fullExtent) : featureLayer.fullExtent;
             layers.push(featureLayer);
         });
         map.addLayers(layers);
@@ -550,9 +467,9 @@ require([
         dom.byId('upload-status').innerHTML = "";
     }
 
-    function changeRenderer(layer) {
+    const changeRenderer = (layer) => {
         //change the default symbol for the feature collection for polygons and points
-        var symbol = null;
+        let symbol = null;
         switch (layer.geometryType) {
             case 'esriGeometryPoint':
                 responsePoints.applyEdits(layer.graphics);
@@ -580,7 +497,7 @@ require([
 
 
         //Define the default inputs for the widget
-        var extractDataParams = {
+        const extractDataParams = {
             featureLayers: [responseLines, responsePolys, responsePoints, responseMultiPoints],
             inputLayers: [responseLines, responsePolys, responsePoints, responseMultiPoints],
             portalUrl: "https://www.arcgis.com",
@@ -655,32 +572,20 @@ require([
         }, function() {
             console.log("resolved");
         });
-
-
-        //console.log(hotSpots.signInPromise.isFulfilled());
-
     }
 
 
-
-
-    function showToolPanel() {
+    const showToolPanel = () => {
         // expand the right panel to display the content
-        var cp = registry.byId("extractDiv");
+        const cp = registry.byId("extractDiv");
         domStyle.set(cp.domNode, { width: "20%" });
         registry.byId("rightContainer").resize();
 
 
     }
 
-    function getUser() {
-        console.log(hotSpots);
-    };
-
-
     // Use a LayerList widget to toggle a layer's visibility on or off
-
-    var layerListToggle = new LayerList({
+    const layerListToggle = new LayerList({
         map: map,
         showLegend: true,
         showSubLayers: false,
@@ -752,14 +657,14 @@ require([
         });
 
         //build query filter
-        var query = new esri.tasks.Query();
+        const query = new esri.tasks.Query();
         query.returnGeometry = true;
         query.outFields = ["*"];
         query.outSpatialReference = { "wkid": 27700 };
         query.where = "1 = 1";
         // Query for the features with the given object ID
         pointsOfInterestD.queryFeatures(query, function(featureSet) {
-            var graphics = featureSet.features;
+            const graphics = featureSet.features;
             pointsOfInterestD.applyEdits(null, null, graphics, function(deletes) {
                     console.debug(deletes.length)
                 },
@@ -770,27 +675,18 @@ require([
     }
 
     function initEditTool(results) {
+        let canEdit = false;
+        if(admins.includes(currentUser)){
+            canEdit = true;
+            document.getElementById("weightChange").style.display = "block";
+        }
+ 
 
-        var canEdit = false;
-        admins.forEach(function(username) {
-            if (currentUser == username) {
-                canEdit = true;
-                document.getElementById("weightChange").style.display = "block";
-            }
-
-        });
-
-
-
-
-
-
-
-        var layers = array.map(results.layers, function(result) {
+        const layers = array.map(results.layers, function(result) {
             return result.layer;
         });
         //display read-only info window when user clicks on feature
-        var query = new Query();
+        const query = new Query();
         array.forEach(layers, function(layer) {
             layer.on("click", function(evt) {
                 if (map.infoWindow.isShowing) {
@@ -826,15 +722,15 @@ require([
                 generateScore(evt);
             });
         });
-        var templatePicker = new TemplatePicker({
+        const templatePicker = new TemplatePicker({
             featureLayers: layers,
             rows: 'auto',
             columns: 'auto',
             grouping: true
         }, "templatePickerDiv");
         templatePicker.startup();
-        var drawToolbar = new Draw(map);
-        var selectedTemplate;
+        const drawToolbar = new Draw(map);
+        let selectedTemplate;
         templatePicker.on("selection-change", function() {
             selectedTemplate = templatePicker.getSelected();
             if (selectedTemplate) {
@@ -866,23 +762,23 @@ require([
 
             drawToolbar.deactivate();
 
-            var fieldAttributes = layerFieldToAttributes(selectedTemplate.featureLayer.fields);
-            var newAttributes = lang.mixin(fieldAttributes, selectedTemplate.template.prototype.attributes);
-            var newGraphic = new Graphic(result.geometry, null, newAttributes);
+            const fieldAttributes = layerFieldToAttributes(selectedTemplate.featureLayer.fields);
+            const newAttributes = lang.mixin(fieldAttributes, selectedTemplate.template.prototype.attributes);
+            const newGraphic = new Graphic(result.geometry, null, newAttributes);
             evt = { graphic: newGraphic };
             generateScore(evt);
 
 
 
-            var layerInfos = [{
+            const layerInfos = [{
                 'featureLayer': selectedTemplate.featureLayer,
                 'isEditable': true
             }];
-            var attInspector = new AttributeInspector({
+            const attInspector = new AttributeInspector({
                 layerInfos: layerInfos
             }, domConstruct.create("div"));
             selectedTemplate.featureLayer.applyEdits([newGraphic], null, null, function() {
-                var screenPoint = map.toScreen(getInfoWindowPositionPoint(newGraphic));
+                const screenPoint = map.toScreen(getInfoWindowPositionPoint(newGraphic));
                 map.infoWindow.setTitle("");
                 map.infoWindow.setContent(attInspector.domNode);
                 map.infoWindow.resize(325, 600);
@@ -903,13 +799,13 @@ require([
     }
 
     function getInfoWindowPositionPoint(feature) {
-        var point;
+        let point;
         switch (feature.getLayer().geometryType) {
             case "esriGeometryPoint":
                 point = feature.geometry;
                 break;
             case "esriGeometryPolyline":
-                var pathLength = feature.geometry.paths[0].length;
+                const pathLength = feature.geometry.paths[0].length;
                 point = feature.geometry.getPoint(0, Math.ceil(pathLength / 2));
                 break;
             case "esriGeometryPolygon":
@@ -926,7 +822,7 @@ require([
 
 
     function layerFieldToAttributes(fields) {
-        var attributes = {};
+        let attributes = {};
         array.forEach(fields.Object, function(field) {
             attributes[field.name] = null;
         });
@@ -941,11 +837,11 @@ require([
 
 
 
-        var query = new Query();
+        const query = new Query();
         query.geometry = evt.graphic.geometry;
 
-        var projectLocation = query.geometry;
-        var layersAfterQuery = {
+        const projectLocation = query.geometry;
+        const layersAfterQuery = {
             //Add layers to be queried for intersecting / overlapping features
             //Must be added by the "Name" field of the required feature layer
             "California_HDI_Public_Health_Need_Indicator": [],
@@ -970,23 +866,23 @@ require([
         };
 
         //Initialize arrays to store the overlapping / intersecting features of the all featurelayers and the user drawn project
-        var publicHDI = [];
-        var stormwater = [];
-        var urbanHeat = [];
-        var economicHDI = [];
-        var highInjuryNetwork = [];
-        var schoolBuffer = [];
-        var highInjuryBuffer = [];
-        var criticalConnect = [];
-        var threeMileTrips = [];
-        var bicycleNetwork = [];
-        var transitNetwork = [];
-        var neighborhoodNetwork = [];
-        var pedestrianNetwork = [];
-        var greenNetwork = [];
-        var transitPrioArea = [];
-        var downtownDash = [];
-        var communityDash = [];
+        let publicHDI = [];
+        let stormwater = [];
+        let urbanHeat = [];
+        let economicHDI = [];
+        let highInjuryNetwork = [];
+        let schoolBuffer = [];
+        let highInjuryBuffer = [];
+        let criticalConnect = [];
+        let threeMileTrips = [];
+        let bicycleNetwork = [];
+        let transitNetwork = [];
+        let neighborhoodNetwork = [];
+        let pedestrianNetwork = [];
+        let greenNetwork = [];
+        let transitPrioArea = [];
+        let downtownDash = [];
+        let communityDash = [];
 
         //Search for features in these layers
         publicHealthLayer.queryFeatures(query, selectInBuffer);
@@ -1012,23 +908,23 @@ require([
 
         setTimeout(function() {
             //Set up query features
-            var publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
-            var stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
-            var urbanHeat = layersAfterQuery["Urban_Heat_Island"];
-            var economicHDI = layersAfterQuery["California_HDI_Economic_Need_Indicator"];
-            var highInjuryNetwork = layersAfterQuery["High Injury Network"];
-            var schoolBuffer = layersAfterQuery["Schools - Half-Mile Buffer"];
-            var highInjuryBuffer = layersAfterQuery["2 High Injury Network Half Mile Buffer"];
-            var criticalConnect = layersAfterQuery["Critical_Connections"];
-            var threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
-            var bicycleNetwork = layersAfterQuery["Bicycle Network"];
-            var transitNetwork = layersAfterQuery["Transit Enhanced Network (TEN)"];
-            var neighborhoodNetwork = layersAfterQuery["Neighborhood Network (NEN)"];
-            var pedestrianNetwork = layersAfterQuery["Pedestrian Enhanced Districts (PEDs)"];
-            var greenNetwork = layersAfterQuery["Green Network"];
-            var transitPrioArea = layersAfterQuery["Transit Priority Area (TPA)"];
-            var downtownDash = layersAfterQuery["1d Downtown DASH Bus Stop Areas (Quarter-Mile Buffer)"];
-            var communityDash = layersAfterQuery["DASH Community Bus Stop Areas (Quarter-Mile Buffer)"];
+            let publicHDI = layersAfterQuery["California_HDI_Public_Health_Need_Indicator"];
+            let stormwater = layersAfterQuery["Stormwater_Management_Features_Feasibility"];
+            let urbanHeat = layersAfterQuery["Urban_Heat_Island"];
+            let economicHDI = layersAfterQuery["California_HDI_Economic_Need_Indicator"];
+            let highInjuryNetwork = layersAfterQuery["High Injury Network"];
+            let schoolBuffer = layersAfterQuery["Schools - Half-Mile Buffer"];
+            let highInjuryBuffer = layersAfterQuery["2 High Injury Network Half Mile Buffer"];
+            let criticalConnect = layersAfterQuery["Critical_Connections"];
+            let threeMileTrips = layersAfterQuery["Percentage of Trips Under Three Miles"];
+            let bicycleNetwork = layersAfterQuery["Bicycle Network"];
+            let transitNetwork = layersAfterQuery["Transit Enhanced Network (TEN)"];
+            let neighborhoodNetwork = layersAfterQuery["Neighborhood Network (NEN)"];
+            let pedestrianNetwork = layersAfterQuery["Pedestrian Enhanced Districts (PEDs)"];
+            let greenNetwork = layersAfterQuery["Green Network"];
+            let transitPrioArea = layersAfterQuery["Transit Priority Area (TPA)"];
+            let downtownDash = layersAfterQuery["1d Downtown DASH Bus Stop Areas (Quarter-Mile Buffer)"];
+            let communityDash = layersAfterQuery["DASH Community Bus Stop Areas (Quarter-Mile Buffer)"];
 
 
 
@@ -1039,9 +935,9 @@ require([
 
 
         function selectInBuffer(response) {
-            var feature;
-            var features = response.features;
-            var inBuffer = [];
+            let feature;
+            const features = response.features;
+            const inBuffer = [];
             // Check for intersection and containment of each feature in the the layer.
             for (var i = 0; i < features.length; i++) {
                 feature = features[i];
@@ -1062,9 +958,9 @@ require([
 
                         if (feature._layer.name == "California_HDI_Public_Health_Need_Indicator") {
 
-                            var intersectPolygon = geometryEngine.intersect(feature.geometry, projectLocation);
-                            var area = geometryEngine.geodesicArea(intersectPolygon, 'square-meters');
-                            var area_score = { "area": area, "score": feature.attributes.Health_Sco }
+                            const intersectPolygon = geometryEngine.intersect(feature.geometry, projectLocation);
+                            const area = geometryEngine.geodesicArea(intersectPolygon, 'square-meters');
+                            const area_score = { "area": area, "score": feature.attributes.Health_Sco }
                             layersAfterQuery[feature._layer.name].push(area_score);
 
                         } else {
@@ -1092,7 +988,7 @@ require([
         //1a
         function modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) {
             score_content.innerHTML = " ";
-            var score = 0;
+            let score = 0;
 
             if (evt.graphic.attributes.Modal_Prio == 'Pedestrian') { //Pedestrian Scoring
                 if (bicycleNetwork.length > 0) {
@@ -1123,7 +1019,7 @@ require([
 
         //1c
         function latentActiveTransportationScore(threeMileTrips) {
-            var score = 0;
+            let score = 0;
             if (threeMileTrips.length > 0) {
                 score_features += threeMileTrips[0].attributes.PCT_3MI + ", ";
                 if (threeMileTrips[0].attributes.PCT_3MI >= .5 && threeMileTrips[0].attributes.PCT_3MI <= .704) score = 5;
@@ -1140,7 +1036,7 @@ require([
 
         //1d
         function connectivityScore(transitPrioArea, downtownDash, communityDash) {
-            var score = 0;
+            let score = 0;
             if (transitPrioArea.length > 0) { //First check Transit Priority layer
                 transitPrioArea.forEach(function(feature) {
                     if (score < 5) {
@@ -1182,8 +1078,8 @@ require([
 
         //Section 1 Total Score
         function mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash) {
-            var total = modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) + latentActiveTransportationScore(threeMileTrips) + connectivityScore(transitPrioArea, downtownDash, communityDash);
-            var score = total / 3;
+            const total = modeScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork) + latentActiveTransportationScore(threeMileTrips) + connectivityScore(transitPrioArea, downtownDash, communityDash);
+            const score = total / 3;
             score_content.innerHTML += "<b>Category 1 Score = " + score.toFixed(2) + "</b><br>";
             report += "Category 1 Score = " + score.toFixed(2) + "\n";
             return score;
@@ -1194,8 +1090,8 @@ require([
 
         //Proximity to Schools and Safe Routes to School Program Target Areas
         function schoolLayerScores(schoolBuffer) {
-            var schoolBufferScore = 0; //Half Mile Score
-            var schoolSafeScore = 0; //Top 50 SRS Score
+            let schoolBufferScore = 0; //Half Mile Score
+            let schoolSafeScore = 0; //Top 50 SRS Score
 
             if (schoolBuffer.length > 0) {
                 schoolBufferScore = 5;
@@ -1228,7 +1124,7 @@ require([
 
         //Vision Zero High Injury Network
         function highInjuryNetworkScore(highInjuryNetwork, highInjuryBuffer) {
-            var score = 0;
+            let score = 0;
             if (highInjuryNetwork.length > 0) {
                 score = 5; //Give score of 5 if it is on street
                 score_features += "yes, yes, ";
@@ -1249,7 +1145,7 @@ require([
         //Public Health Improvement Need Score
         function publicHDIScore(publicHDI) {
 
-            var score = 0;
+            let score = 0;
             if ((publicHDI.length > 0) && (projectLocation.type == "polygon")) {
 
                 // score_features += publicHDI[0].attributes.Health_Sco  + ", ";
@@ -1279,8 +1175,8 @@ require([
         //Section 2 Total Score
         function safeAndHealthyScore(schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI) {
             //score_content.innerHTML = " ";
-            var total = schoolLayerScores(schoolBuffer) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
-            var score = total / 4;
+            const total = schoolLayerScores(schoolBuffer) + highInjuryNetworkScore(highInjuryNetwork, highInjuryNetworkBuffer) + publicHDIScore(publicHDI);
+            const score = total / 4;
             score_content.innerHTML += "<b>Category 2 Score = " + score.toFixed(2) + "</b><br>";
             report += "Category 2 Score = " + score + "\n";
             return score;
@@ -1291,7 +1187,7 @@ require([
 
         //Economic Need Indicator
         function economicHDIScore(economicHDI) {
-            var score = 0;
+            let score = 0;
             if (economicHDI.length > 0) {
                 score = economicHDI[0].attributes.econ_dis_1;
                 score_features += economicHDI[0].attributes.econ_dis_1 + ", ";
@@ -1313,7 +1209,7 @@ require([
 
         //Critical Conenction Indicator
         function criticalConnetionScore(criticalConnect) {
-            var score = 0;
+            let score = 0;
             if (criticalConnect.length > 0) {
                 score_features += criticalConnect[0].attributes.Ct_Need + ", ";
                 if (criticalConnect[0].attributes.Ct_Need == "Highly Critical") score = 5;
@@ -1334,7 +1230,7 @@ require([
 
         //Stormwater Management Features Feasibility
         function stormwaterScore(stormwater) {
-            var score = 0;
+            let score = 0;
             if (stormwater.length > 0) {
                 stormwater.forEach(function(feature) {
                     if (score < 5) {
@@ -1363,7 +1259,7 @@ require([
 
         //Urban Heat Island Effect Mitigation Need
         function urbanHeatScore(urbanHeat) {
-            var score = 0;
+            let score = 0;
             if (urbanHeat.length > 0) {
                 urbanHeat.forEach(function(feature) {
                     if (score < 5) {
@@ -1392,7 +1288,7 @@ require([
 
         //Section 5 Total Score
         function sustainableAndResilientScore(stormwater, urbanHeat) {
-            var score = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
+            const score = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
             score_content.innerHTML += "<b>Category 5 Score = " + score + "</b><br>";
             report += "Category 5 Score = " + score + "\n";
             return score;
@@ -1402,23 +1298,23 @@ require([
         function totalScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash, schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI, economicHDI, criticalConnect, stormwater, urbanHeat) {
             score_content.innerHTML = " ";
 
-            var section1TotalScore = mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash);
-            var section1WeightedScore = (section1TotalScore / 2) * section1WeightValue;
+            const section1TotalScore = mobilityPlanAlignmentScore(bicycleNetwork, transitNetwork, neighborhoodNetwork, pedestrianNetwork, greenNetwork, threeMileTrips, transitPrioArea, downtownDash, communityDash);
+            const section1WeightedScore = (section1TotalScore / 2) * section1WeightValue;
 
-            var section2TotalScore = safeAndHealthyScore(schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
-            var section2WeightedScore = section2TotalScore * section2WeightValue;
+            const section2TotalScore = safeAndHealthyScore(schoolBuffer, highInjuryNetwork, highInjuryNetworkBuffer, publicHDI);
+            const section2WeightedScore = section2TotalScore * section2WeightValue;
 
-            var section3TotalScore = economicHDIScore(economicHDI);
-            var section3WeightedScore = section3TotalScore * section3WeightValue;
+            const section3TotalScore = economicHDIScore(economicHDI);
+            const section3WeightedScore = section3TotalScore * section3WeightValue;
 
-            var section4TotalScore = criticalConnetionScore(criticalConnect);
-            var section4WeightedScore = section4TotalScore * section4WeightValue;
+            const section4TotalScore = criticalConnetionScore(criticalConnect);
+            const section4WeightedScore = section4TotalScore * section4WeightValue;
 
-            var section5TotalScore = sustainableAndResilientScore(stormwater, urbanHeat);
-            var section5WeightedScore = section5TotalScore * section5WeightValue;
+            const section5TotalScore = sustainableAndResilientScore(stormwater, urbanHeat);
+            const section5WeightedScore = section5TotalScore * section5WeightValue;
 
-            var total = (section1TotalScore + section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore).toFixed(2);
-            var weighted = (section1WeightedScore + section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore).toFixed(2);
+            const total = (section1TotalScore + section2TotalScore + section3TotalScore + section4TotalScore + section5TotalScore).toFixed(2);
+            const weighted = (section1WeightedScore + section2WeightedScore + section3WeightedScore + section4WeightedScore + section5WeightedScore).toFixed(2);
             score_content.innerHTML = "<br><b>Total Score = " + total + "</b><br><b>Weighted Score = " + weighted + "</b><br><br>" + score_content.innerHTML;
             //score_content.innerHTML += "<b>Weighted Score = " + weighted + "</b><br>";
             report += "\nTotal Score = " + total + "\n";
@@ -1447,7 +1343,7 @@ require([
 
             console.log(score_features);
             score_features = "";
-            var reportArray = [];
+            const reportArray = [];
             reportArray.push(("FID: " + evt.graphic.attributes.FID + "\n\n"));
             reportArray.push(("ID_Number: " + evt.graphic.attributes.ID_Number + "\n\n"));
             reportArray.push(("Id: " + evt.graphic.attributes.Id + "\n\n"));
