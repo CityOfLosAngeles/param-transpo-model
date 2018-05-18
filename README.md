@@ -15,7 +15,7 @@ In the `index.js` file, press `CTRL-F` or seach for this line
 To add a new data layer, add the following block of code below the line above. Replace newLayerName with a new variable name and place in the new featurelayer's service URL inside of the quotation marks. The opacity of the layer can also be changed here with the values ranging from 0 to 1.0.
 
 ```
-var newLayerName = new FeatureLayer("INSERT SERVICE URL HERE", {
+const newLayerName = new FeatureLayer("INSERT SERVICE URL HERE", {
     outFields: ['*'],
     opacity: 1,
     visible: false
@@ -29,7 +29,7 @@ Now to load that layer into the map, press `CTRL-F` or seach again for the follo
 Search for `//Adds layers to the drawing tool`
 
 Below that line will be the follwing code
-`var projectLayers = [...]`
+`const projectLayers = [...]`
 
 Insert the new variable name that was created into the brackets.
 
@@ -39,7 +39,7 @@ Insert the new variable name that was created into the brackets.
 Search for `//Adds layers to be loaded into the application for scoring`
 
 Below that line will be the follwing code
-`var layers = [...]`
+`const layers = [...]`
 
 Insert the new variable name that was created into the layers array.
 Now to query the new layer for scoring implementation, the following must be done
@@ -47,17 +47,17 @@ Now to query the new layer for scoring implementation, the following must be don
 1. Search for or find `//Add layers to be queried for intersecting / overlapping features`
 2. Insert the following line of code below with the name of the layer between in quotation marks `"INSERT NAME OF THE LAYER HERE": [],`
 3. Search for or find `//Initialize arrays to store the overlapping / intersecting features`
-4. Create a new array to store the queried features below with the format `var newArrayName = [];`
+4. Create a new array to store the queried features below with the format `let newArrayName = [];`
 5. Search for or find `//Search for features in these layers`
 6. Insert the following line of code below with the new layer name that was created `newLayerName.queryFeatures(query, selectInBuffer);`
 7. Search for or find `//Set up query features`
-8. Insert the following line of code below with the name of the featurelayer between the quotation marks `var newArrayName = layersAfterQuery["INSERT NAME OF LAYER HERE"];`
+8. Insert the following line of code below with the name of the featurelayer between the quotation marks `let newArrayName = layersAfterQuery["INSERT NAME OF LAYER HERE"];`
 
 ### How to update an existing data layer
 
 Find or search the data layer that needs to be updated by variable name or service URL. The data layer should be in the following format
 ```
-var layerName = new FeatureLayer("SERVICE URL", {
+const layerName = new FeatureLayer("SERVICE URL", {
     outFields: ['*'],
     opacity: 1,
     visible: false
