@@ -271,8 +271,8 @@ require([
         outFields: ['*']
     });
 
-    //Multipoint Layer expires 5/19/18
-    const responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/jrEQyV1fEd5jD9Ww/ArcGIS/rest/services/Multipoint/FeatureServer/0", {
+    //Multipoint Layer expires 6/8/18
+    const responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/eEPXxIG0xgiz22eG/arcgis/rest/services/Multipoint/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
