@@ -272,7 +272,7 @@ require([
     });
 
     //Multipoint Layer expires 6/8/18
-    const responseMultiPoints = new FeatureLayer("https://services8.arcgis.com/eEPXxIG0xgiz22eG/arcgis/rest/services/Multipoint/FeatureServer/0", {
+    const responseMultiPoints = new FeatureLayer("https://services9.arcgis.com/3qmVVkYjolUSICNC/arcgis/rest/services/Multipoint/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
