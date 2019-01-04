@@ -124,7 +124,7 @@ require([
     let currentUser = "";
 
     //Declare admininistrator users in this array - hardcoded for now
-    const admins = ["david.somers_lahub", "karina.macias", "hunterowens", "rosemary.mccarron_lahub", "wajenda.chambeshi_lahub"];
+    const admins = ["david.somers_lahub", "karina.macias", "hunterowens", "rosemary.mccarron_lahub", "wajenda.chambeshi_lahub", "aneesa.andrabi_lahub"];
 
     //Creates the ArcGIS Map
     const map = new Map("map", {
