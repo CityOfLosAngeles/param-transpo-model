@@ -674,11 +674,8 @@ require([
     }
 
     function initEditTool(results) {
-        let canEdit = false;
-        if(admins.includes(currentUser)){
-            canEdit = true;
-            document.getElementById("weightChange").style.display = "block";
-        }
+        let canEdit = true;
+        document.getElementById("weightChange").style.display = "block";
  
 
         const layers = array.map(results.layers, function(result) {
