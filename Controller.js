@@ -1284,7 +1284,8 @@ require([
 
         //Section 5 Total Score
         function sustainableAndResilientScore(stormwater, urbanHeat) {
-            const score = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
+            const total = stormwaterScore(stormwater) + urbanHeatScore(urbanHeat);
+            const score = total / 2;
             score_content.innerHTML += "<b>Category 5 Score = " + score + "</b><br>";
             report += "Category 5 Score = " + score + "\n";
             return score;
