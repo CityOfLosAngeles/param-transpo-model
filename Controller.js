@@ -96,7 +96,7 @@ require([
     esriConfig.defaults.io.proxyUrl = "/proxy/";
 
     //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
-    esriConfig.defaults.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
+    esriConfig.defaults.geometryService = new GeometryService("https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
     let score_content = document.getElementById('score');
     let report = "";
