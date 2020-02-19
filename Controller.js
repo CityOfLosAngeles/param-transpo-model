@@ -256,7 +256,7 @@ require([
         visible: false
     })
 
-    const responseLines = new FeatureLayer("https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/MIP_Score_Templates/FeatureServer/1", {
+    const responseLines = new FeatureLayer("https://services8.arcgis.com/bsI4aojNB8UUgFuY/arcgis/rest/services/Line/FeatureServer/0", {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ['*']
     });
